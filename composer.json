@@ -1,5 +1,6 @@
 {
     "name": "wangta69/laravel-board",
+    "description": "BBS",
     "license": "MIT",
     "authors": [
         {
@@ -7,12 +8,12 @@
             "email": "wangta69@naver.com"
         }
     ],
+    "require": {
+    	"illuminate/html": ">=4.2"
+    },
     "autoload": {
         "psr-4": {
             "Pondols\\LaravelBoard\\": "src/"
         }
-    },
-    "require": {
-    	"illuminate/html": ">=4.2"
     }
 }
