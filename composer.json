@@ -11,9 +11,7 @@
 			"homepage": "http://www.shop-wiz.com"
         }
     ],
-    "require": {
-    	"illuminate/html": "^4.2"
-    },
+
     "autoload": {
         "psr-4": {
             "Pondols\\LaravelBoard\\": "src"
