@@ -21,9 +21,9 @@ class BoardServiceProvider extends \Illuminate\Support\ServiceProvider {
         ], 'public');
 
 		// set package route
-		if (! $this->app->routesAreCached()) {
-	        require __DIR__.'/routes.php';
-	    }
+		//if (! $this->app->routesAreCached()) {
+	    //    require __DIR__.'/routes.php';
+	    //}
 
 		// 기본 스킨을 위한 view 경로 지정.
 		$this->loadViewsFrom(__DIR__.'/resources/views', 'pondol/board');
