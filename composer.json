@@ -10,12 +10,11 @@
         }
     ],
     "require": {
-        "laravel/Pondols": "@dev",
-    	"illuminate/html": ">=4.2"
+    	"illuminate/html": "^4.2"
     },
     "autoload": {
         "psr-4": {
-            "Pondols\\LaravelBoard\\": "src/"
+            "Pondols\\LaravelBoard\\": "src"
         }
     }
 }
