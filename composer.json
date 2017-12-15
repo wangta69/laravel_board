@@ -1,4 +1,21 @@
 {
 
-    "name": "wangta69/laravel_board"
+    "name": "wangta69/laravel_board",
+    "description": "BBS",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "pondol",
+            "email": "wangta69@naver.com",
+			"homepage": "http://www.shop-wiz.com"
+        }
+    ],
+    "require": {
+    	"illuminate/html": "^4.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pondols\\LaravelBoard\\": "src"
+        }
+    }
 }
