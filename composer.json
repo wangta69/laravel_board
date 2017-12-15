@@ -1,5 +1,6 @@
 {
     "name": "wangta69/laravel-board",
+    "minimum-stability": "dev",
     "description": "BBS",
     "license": "MIT",
     "authors": [
