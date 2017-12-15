@@ -1,5 +1,5 @@
 <?php
-namespace Pondol\Board;
+namespace Pondol\Bbs;
 
 use Illuminate\Http\Request;
 
@@ -7,18 +7,14 @@ use Route;
 use Auth;
 use View;
 
+use Pondol\Bbs\Models\Bbs_table as Tables;
+
+
+    
+    
+
 class AdminController extends \App\Http\Controllers\Controller {
-	// 기본 라우트 이름
-	protected $baseRouteName = '';
-	
-	// 관리자 스킨
-	protected $skin = 'board::admin';
-	
-	// 게시판 설정 테이블 모델
-	protected $model = '';
-	
-	// 한 화면에 표시할 리스트 개수
-	protected $itemsPerPage = 10;
+
 	
 	public function __construct() {
 		// 기본 라우트 이름을 저장한다.
@@ -37,25 +33,22 @@ class AdminController extends \App\Http\Controllers\Controller {
 	 */
     public function index()
     {
-    	$model = new $this->model;
-		
-		$list = $model->orderBy('created_at', 'desc')->paginate($this->itemsPerPage);
-		
-    	return view($this->skin.'.index')->with(compact('list'));
+		$list = Tables::orderBy('created_at', 'desc')->paginate($this->itemsPerPage);
+        return view('bbs.admin.index')->with(compact('list'));
     }
     
 	/*
-	 * 게시판 생성 뷰
+	 * CREATE BBS
 	 * 
 	 * @return \Illuminate\Http\Response
 	 */
     public function create()
     {
-    	return view($this->skin.'.create');
+        return view('bbs.admin.create');
     }
 
 	/*
-	 * 게시판 생성
+	 * Delete BBS
 	 * 
 	 * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -68,14 +61,14 @@ class AdminController extends \App\Http\Controllers\Controller {
     		'skin' => 'required',
     	]);
 		
-		$model = new $this->model;
+		$model = new Tables;
 		
 		$model->name 		= $request->get('name');
 		$model->table_name 	= $request->get('table_name');
 		$model->skin		= $request->get('skin');
 		$model->save();
 		
-		return redirect()->route($this->baseRouteName.'.index');
+        return redirect()->route('bbs.admin');
 	}
 
 	/*
@@ -90,7 +83,7 @@ class AdminController extends \App\Http\Controllers\Controller {
 		
 		$board = $model->findOrFail($id);
 		
-		return view($this->skin.'.show')->with(compact('board'));
+		return view('bbs.admin.show')->with(compact('board'));
     }
 
 	/*
@@ -122,11 +115,8 @@ class AdminController extends \App\Http\Controllers\Controller {
 	 */
     public function destroy($id)
     {
-    	$model = new $this->model;
-		
-		$board = $model->findOrFail($id);
+		$board = Tables::findOrFail($id);
 		$board->delete();
-		
-		return redirect()->route($this->baseRouteName.'.index');
+		return redirect()->route('bbs.admin');
     }
 }

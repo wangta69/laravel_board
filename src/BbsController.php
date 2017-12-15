@@ -1,5 +1,5 @@
 <?php
-namespace Pondol\Board;
+namespace Pondol\Bbs;
 
 use Illuminate\Http\Request;
 
@@ -9,21 +9,20 @@ use View;
 use Cookie;
 use Storage;
 
-class BoardController extends \App\Http\Controllers\Controller {
+use Pondol\Bbs\Models\Wizboard_config as Config;
+
+class BbsController extends \App\Http\Controllers\Controller {
 	// 게시판 설정 테이블 모델
 	protected $config_model = '';
 
 	// 게시글 테이블 모델
-	protected $articles_model = 'Pondol\Board\Articles';
+	//protected $articles_model = 'Visualplus\Board\Articles';
 
 	// 게시글 파일 테이블 모델
-	protected $article_files_model = 'Pondol\Board\ArticleFiles';
+	//protected $article_files_model = 'Visualplus\Board\ArticleFiles';
 
-	// 한 화면에 표시할 리스트 개수
-	protected $itemsPerPage = 10;
 
-	// 파일 업로드 경로
-	protected $uploadPath = '../storage/app/board/';
+	
 
 	// 기본 라우트 이름
 	private $baseRouteName = "";
@@ -41,10 +40,10 @@ class BoardController extends \App\Http\Controllers\Controller {
 		// 게시판 설정 로드
 		if ($this->config_model == '') abort('500');
 		$config_model = new $this->config_model;
-
+/*
 		if (Route::current() != null) {
 			$bo_id = Route::current()->parameters()['bo_id'];
-			$this->board_setting = $config_model->findOrFail($bo_id);
+			$this->board_setting = Config::findOrFail($bo_id);
 
 			// 첨부파일 업로드 경로 변경
 			$this->uploadPath .= $bo_id.'/';
@@ -53,6 +52,23 @@ class BoardController extends \App\Http\Controllers\Controller {
 			View::share('bo_id', $bo_id);
 			View::share('board_setting', $this->board_setting);
 		}
+ * */
+	}
+
+	/*
+	 * 파일명을 일정 규칙에 따라 리턴함
+	 *
+	 * @param UploadedFile
+	 * @return string
+	 */
+	protected function getFilename($file) {
+		$filename = time();
+
+		while (Storage::exists(str_replace('../storage/app/', '', $this->uploadPath.$filename.'.'.$file->getClientOriginalExtension()))) {
+			$filename ++;
+		}
+
+		return $filename.'.'.$file->getClientOriginalExtension();
 	}
 
 	/*
@@ -247,22 +263,6 @@ class BoardController extends \App\Http\Controllers\Controller {
 
 		return redirect()->route($this->baseRouteName.'.show', $bo_id);
     }
-
-	
-	/*
-	 * 파일명을 일정 규칙에 따라 리턴함
-	 *
-	 * @param UploadedFile
-	 * @return string
-	 */
-	protected function getFilename($file) {
-		$filename = time();
-
-		while (Storage::exists(str_replace('../storage/app/', '', $this->uploadPath.$filename.'.'.$file->getClientOriginalExtension()))) {
-			$filename ++;
-		}
-
-		return $filename.'.'.$file->getClientOriginalExtension();
-	}
+    
 
 }

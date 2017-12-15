@@ -13,7 +13,7 @@ class CreateWizboardTables extends Migration
     public function up()
     {
     	// 게시판 설정값 담을 테이블
-		Schema::create('wizboard_configs', function(BluePrint $table) {
+		Schema::create('bbs_tables', function(BluePrint $table) {
 			$table->engine = 'InnoDB';
 			
 			$table->increments('id');
@@ -26,7 +26,7 @@ class CreateWizboardTables extends Migration
 		
 		// 게시글 담을 테이블
 		// 새로운 게시판을 생성할시 이 아래 정의한 테이블들만 새로 추가하면 됩니다.
-        Schema::create('wizboard_articles', function(BluePrint $table) {
+        Schema::create('bbs_articles', function(BluePrint $table) {
         	$table->increments('id');
 			
 			$table->integer('user_id')->unsigned();
@@ -39,16 +39,16 @@ class CreateWizboardTables extends Migration
         });
 		
 		// 게시글에 연결된 파일 담을 테이블
-		Schema::create('wizboard_files', function(BluePrint $table) {
+		Schema::create('bbs_files', function(BluePrint $table) {
 			$table->engine = 'InnoDB';
 			
 			$table->increments('id');
-			$table->integer('wizboard_articles_id')->unsigned();
+			$table->integer('bbs_articles_id')->unsigned();
 			$table->string('filename');
 			$table->integer('rank')->unsigned();
 			$table->timestamps();
 			
-			$table->foreign('wizboard_articles_id')->references('id')->on('wizboard_articles');
+			$table->foreign('bbs_articles_id')->references('id')->on('bbs_articles');
 		});
     }
 
@@ -60,11 +60,11 @@ class CreateWizboardTables extends Migration
     public function down()
     {
 		Schema::table('articles_files', function($table) {
-			$table->dropForeign('wizboard_files_wizboard_articles_id_foreign');
+			$table->dropForeign('bbs_files_bbs_articles_id_foreign');
 		});
 		
-    	Schema::drop('board_configs');
-		Schema::drop('wizboard_articles');
-		Schema::drop('wizboard_files');
+    	Schema::drop('bbs_tables');
+		Schema::drop('bbs_articles');
+		Schema::drop('bbs_files');
     }
 }
