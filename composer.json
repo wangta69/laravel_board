@@ -14,7 +14,7 @@
 
     "autoload": {
         "psr-4": {
-            "Pondols\\LaravelBoard\\": "src"
+            "pondol\\board\\": "src"
         }
     }
 }
