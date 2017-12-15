@@ -1,6 +1,7 @@
 {
     "name": "wangta69/laravel_board",
-    "description": "My first Composer project",
+    "description": "BBS bulletin board system",
+    "license": "MIT",
     "authors": [
         {
             "name": "Pondol",
