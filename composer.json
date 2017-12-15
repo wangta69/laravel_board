@@ -1,5 +1,7 @@
 {
+
     "name": "wangta69/laravel_board",
+    "minimum-stability": "dev",
     "description": "BBS",
     "license": "MIT",
     "authors": [
@@ -10,11 +12,11 @@
         }
     ],
     "require": {
-    	"illuminate/html": ">=4.2"
+    	"illuminate/html": "^4.2"
     },
     "autoload": {
         "psr-4": {
-            "Pondols\\LaravelBoard\\": "src/"
+            "Pondols\\LaravelBoard\\": "src"
         }
     }
 }
