@@ -1,6 +1,12 @@
 {
     "name": "wangta69/laravel_board",
-    "require": {
-        "monolog/monolog": "1.0.*"
-    }
+    "description": "BBs",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Pondol",
+            "email": "wangta69@gmail.com"
+        }
+    ],
+    "require": {}
 }
