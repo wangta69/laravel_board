@@ -10,11 +10,5 @@
             "email": "wangta69@naver.com",
 			"homepage": "http://www.shop-wiz.com"
         }
-    ],
-
-    "autoload": {
-        "psr-4": {
-            "pondol\\board\\": "src"
-        }
-    }
+    ]
 }
