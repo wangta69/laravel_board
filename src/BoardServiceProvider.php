@@ -1,7 +1,7 @@
 <?php
 namespace Pondol\Board;
 
-class ServiceProvider extends \Illuminate\Support\ServiceProvider {
+class BoardServiceProvider extends \Illuminate\Support\ServiceProvider {
 
 	/**
      * Bootstrap any application services.

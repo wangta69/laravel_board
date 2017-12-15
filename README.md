@@ -15,5 +15,5 @@ composer require wangta69/laravel_board
 ### Setup
 Add ServiceProvider to the providers array in `config/app.php`.
 ```
-Pondol/Board/BoardServiceProvider::class,
+Pondol\Board\BoardServiceProvider::class,
 ```
