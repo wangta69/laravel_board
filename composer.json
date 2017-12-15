@@ -1,14 +1,4 @@
 {
 
-    "name": "wangta69/laravel_board",
-    "minimum-stability": "dev",
-    "description": "BBS",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "pondol",
-            "email": "wangta69@naver.com",
-			"homepage": "http://www.shop-wiz.com"
-        }
-    ]
+    "name": "wangta69/laravel_board"
 }
