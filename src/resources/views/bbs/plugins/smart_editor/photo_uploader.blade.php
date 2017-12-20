@@ -25,7 +25,7 @@ a:hover,a:active,a:focus{text-decoration:underline}
 h1{color:#333;font-size:14px;letter-spacing:-1px}
 .btn_area{word-spacing:2px}
 .pop_container .drag_area{overflow:hidden;overflow-y:auto;position:relative;width:341px;height:129px;margin-top:4px;border:1px solid #eceff2}
-.pop_container .drag_area .bg{display:block;position:absolute;top:0;left:0;width:341px;height:129px;background:#fdfdfd url(/visualplus/assets/smart_editor/img/bg_drag_image.png) 0 0 no-repeat}
+.pop_container .drag_area .bg{display:block;position:absolute;top:0;left:0;width:341px;height:129px;background:#fdfdfd url(/assets/pondol_bbs/smart_editor/img/bg_drag_image.png) 0 0 no-repeat}
 .pop_container .nobg{background:none}
 .pop_container .bar{color:#e0e0e0}
 .pop_container .lst_type li{overflow:hidden;position:relative;padding:7px 0 6px 8px;border-bottom:1px solid #f4f4f4;vertical-align:top}
@@ -56,7 +56,7 @@ h1{color:#333;font-size:14px;letter-spacing:-1px}
 	    	 그밖의 경우 pop_container2 클래스와 하위 HTML 적용      -->
 	<div id="pop_container2" class="pop_container2">
     	<!-- content -->
-		<form id="editor_upimage" name="editor_upimage" action="/visualplus/plugins/file-upload" method="post" enctype="multipart/form-data" onSubmit="return false;">
+		<form id="editor_upimage" name="editor_upimage" action="/pondol_bbs/plugins/file-upload" method="post" enctype="multipart/form-data" onSubmit="return false;">
 			{!! csrf_field() !!}
         <div id="pop_content2">
 			<input type="file" class="upload" id="uploadInputBox" name="Filedata">
@@ -87,14 +87,14 @@ h1{color:#333;font-size:14px;letter-spacing:-1px}
     <!-- footer -->
     <div id="pop_footer">
 	    <div class="btn_area">
-            <a href="#"><img src="/visualplus/assets/smart_editor/photo_uploader/img/btn_confirm.png" width="49" height="28" alt="확인" id="btn_confirm"></a>
-            <a href="#"><img src="/visualplus/assets/smart_editor/photo_uploader/img/btn_cancel.png" width="48" height="28" alt="취소" id="btn_cancel"></a>
+            <a href="#"><img src="/assets/pondol_bbs/smart_editor/photo_uploader/img/btn_confirm.png" width="49" height="28" alt="확인" id="btn_confirm"></a>
+            <a href="#"><img src="/assets/pondol_bbs/smart_editor/photo_uploader/img/btn_cancel.png" width="48" height="28" alt="취소" id="btn_cancel"></a>
         </div>
     </div>
     <!-- //footer -->
 </div>
-{!! Html::script('visualplus/assets/smart_editor/photo_uploader/jindo.min.js') !!}
-{!! Html::script('visualplus/assets/smart_editor/photo_uploader/jindo.fileuploader.js') !!}
-{!! Html::script('visualplus/assets/smart_editor/photo_uploader/attach_photo.js') !!}
+{!! Html::script('assets/pondol_bbs/smart_editor/photo_uploader/jindo.min.js') !!}
+{!! Html::script('assets/pondol_bbs/smart_editor/photo_uploader/jindo.fileuploader.js') !!}
+{!! Html::script('assets/pondol_bbs/smart_editor/photo_uploader/attach_photo.js') !!}
 </body>
 </html>

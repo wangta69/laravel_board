@@ -8,8 +8,6 @@ use Auth;
 use View;
 
 use Pondol\Bbs\Models\Bbs_table as Tables;
-
-
     
     
 

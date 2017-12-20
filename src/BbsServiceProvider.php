@@ -1,14 +1,27 @@
 <?php
 namespace Pondol\Bbs;
 
-class BbsServiceProvider extends \Illuminate\Support\ServiceProvider {
+use Illuminate\Routing\Router;
+use Illuminate\Support\ServiceProvider;
+use Route;
 
+class BbsServiceProvider extends ServiceProvider {
+
+
+
+/**
+     * Where the route file lives, both inside the package and in the app (if overwritten).
+     *
+     * @var string
+     */
+    public $routeFilePath = '/routes/bbs/base.php';
+    
 	/**
      * Bootstrap any application services.
      *
      * @return void
      */
-    public function boot()
+    public function boot(\Illuminate\Routing\Router $router)
     {
 		//set migrations
         $this->publishes([
@@ -25,10 +38,43 @@ class BbsServiceProvider extends \Illuminate\Support\ServiceProvider {
 	    //    require __DIR__.'/routes.php';
 	   // }
 
-		// 기본 스킨을 위한 view 경로 지정.
-		$this->loadViewsFrom(__DIR__.'/resources/views', 'bbs');
+        // LOAD THE VIEWS
+        // - first the published views (in case they have any changes)
+        $this->loadViewsFrom(resource_path('views/bbs'), 'bbs');
+        // - then the stock views that come with the package, in case a published view might be missing
+        $this->loadViewsFrom(realpath(__DIR__.'/resources/views'), 'bbs');
+        
+        
+        //$this->registerAdminMiddleware($this->app->router);
+        $this->setupRoutes($this->app->router);
+        $this->publishFiles();
+        $this->loadHelpers();
+        
+		// set path to views
+		//$this->loadViewsFrom(__DIR__.'/resources/views', 'bbs');
+        
+        //$this->publishes([
+        //    __DIR__.'/resources/views' => resource_path('views/bbs'),
+       // ]);
     }
 
+    /**
+         * Define the routes for the application.
+         *
+         * @param \Illuminate\Routing\Router $router
+         *
+         * @return void
+         */
+        public function setupRoutes(Router $router)
+        {
+            // by default, use the routes file provided in vendor
+            $routeFilePathInUse = __DIR__.$this->routeFilePath;
+            // but if there's a file with the same name in routes/backpack, use that one
+            if (file_exists(base_path().$this->routeFilePath)) {
+                $routeFilePathInUse = base_path().$this->routeFilePath;
+            }
+            $this->loadRoutesFrom($routeFilePathInUse);
+        }
     /**
      * Register any application services.
      *
