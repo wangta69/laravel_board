@@ -29,4 +29,8 @@ Step 3) create tables
 php artisan migrate
 ```
 
+Step 4) create storage link <br />
 
+```
+ln -s [Absolute Path]/storage/app/public [Absolute Path]/public/storage
+```

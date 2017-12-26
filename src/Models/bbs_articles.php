@@ -36,10 +36,9 @@ class Bbs_articles extends Model
         return $this->belongsTo('App\User');
     }
     
-    public function bbs_article()
+    public function table()
     {
-        return $this->belongsTo('Pondol\Bbs\Models\Bbs_tables');
-        //return $this->belongsTo('Pondol\Bbs\Models\Bbs_tables', 'user_id');
+        return $this->belongsTo('Pondol\Bbs\Models\Bbs_tables', 'bbs_table_id');
     }
     
     /*
@@ -48,13 +47,6 @@ class Bbs_articles extends Model
      * @return ArticleFiles 모델
      */
     public function files() {
-       // $foreignKey = $this->getForeignKey();
-       // $localKey = $this->getKeyName();
-        //$instance = new \Visualplus\Board\ArticleFiles;
-        //$instance->setTable($this->table.'_files');
-        
-       // return new HasMany($instance->newQuery(), $this, $instance->getTable().'.'.$foreignKey, $localKey);
-       
        return $this->HasMany('Pondol\Bbs\Models\Bbs_files');
     }
     /*

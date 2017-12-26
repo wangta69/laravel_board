@@ -6,10 +6,6 @@
 </head>
 <body>
     <script type="text/javascript">
-    	// alert("callback");
-		// document.domain 설정
-		try { document.domain = "http://*.naver.com"; } catch(e) {}
-		
         // execute callback script
         var sUrl = document.location.search.substr(1);
 		if (sUrl != "blank") {
@@ -19,7 +15,7 @@
 	            oParameter[arguments[1]] = arguments[2];
 	            return "";
 	        });
-	        
+
 	        if ((oParameter.errstr || '').length) { // on error
 	            (parent.jindo.FileUploader._oCallback[oParameter.callback_func+'_error'])(oParameter);
 	        } else {

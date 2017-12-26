@@ -3,7 +3,7 @@
 @section ('content')
 <div class='basic-table show'>
 	<h1 class='title'>
-		{{ $article->bbs_articles->name }}
+		{{ $article->table->name }}
 	</h1>
 	
 	<table>
@@ -39,9 +39,9 @@
 			<td colspan='5'>
 				@foreach ($article->files as $file)
 					<!-- 파일 다운로드 경로 등을 넣으세요.. -->
-					<a href="#">
-						{{ $file->filename }}
-					</a>
+					
+					{{ link_to_route('bbs.download', $file->file_name, $file->id) }}
+
 				@endforeach
 			</td>
 		</tr>

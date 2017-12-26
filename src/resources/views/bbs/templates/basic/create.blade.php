@@ -20,7 +20,11 @@
 	<h1 class='title'>
 		{{ $bbs_config->name }}
 	</h1>
-	
+	@if (!$errors->isEmpty())
+        <div class="alert alert-danger" role="alert">
+            {!! $errors->first() !!}
+        </div>
+    @endif
 	<table>
 	<colgroup>
 		<col width='120' />

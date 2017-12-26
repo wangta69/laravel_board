@@ -25,7 +25,7 @@
 	var oNavigator = jindo.$Agent().navigator();
 	
 	//마크업-공통 
-	var welBtnConfirm = $Element("btn_confirm");				//확인 버튼
+	var welBtnConfirm = $Element("btn_confirm");			//확인 버튼
 	var welBtnCancel= $Element("btn_cancel");				//취소 버튼
 	
 	//진도로 랩핑된 element
@@ -61,7 +61,7 @@
      function goStartMode(){
     	 var sSrc = welBtnConfirm.attr("src")|| "";
     	 if(sSrc.indexOf("btn_confirm2.png") < 0 ){
-    		 welBtnConfirm.attr("src","/visualplus/assets/smart_editor/photo_uploader/img/btn_confirm2.png");
+    		 welBtnConfirm.attr("src","/assets/pondol_bbs/smart_editor/photo_uploader/img/btn_confirm2.png");
     		 fnUploadImage.attach(welBtnConfirm.$value(), "click");
     	 }
      } 
@@ -482,9 +482,9 @@
  	function callFileUploader (){
  		oFileUploader = new jindo.FileUploader(jindo.$("uploadInputBox"),{
  			//sUrl  : location.href.replace(/\/[^\/]*$/, '') + '/file_uploader.php',	//샘플 URL입니다.
- 			sUrl : '/visualplus/plugins/file-upload',
+ 			sUrl : '/bbs/plugins/smart-editor/file-upload',
  	        //sCallback : location.href.replace(/\/[^\/]*$/, '') + '/callback.html',	//업로드 이후에 iframe이 redirect될 콜백페이지의 주소
- 	        sCallback : '/visualplus/plugins/callback', 
+ 	        sCallback : '/bbs/plugins/smart-editor/callback', 
  	    	sFiletype : "*.jpg;*.png;*.bmp;*.gif",						//허용할 파일의 형식. ex) "*", "*.*", "*.jpg", 구분자(;)	
  	    	sMsgNotAllowedExt : 'JPG, GIF, PNG, BMP 확장자만 가능합니다',	//허용할 파일의 형식이 아닌경우에 띄워주는 경고창의 문구
  	    	bAutoUpload : false,									 	//파일이 선택됨과 동시에 자동으로 업로드를 수행할지 여부 (upload 메소드 수행)
@@ -508,7 +508,7 @@
 // 	    		oCustomEvent.stop(); 수행시 bAllowed 가 false이더라도 alert이 수행되지 않음
  	    	},
  	    	success : function(oCustomEvent) {
- 	    		// alert("success");
+ 	    	    
  	    		// 업로드가 성공적으로 완료되었을 때 발생
  	    		// oCustomEvent(이벤트 객체) = {
  	    		//	htResult (Object) 서버에서 전달해주는 결과 객체 (서버 설정에 따라 유동적으로 선택가능)

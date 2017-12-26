@@ -22116,10 +22116,6 @@ nhn.FindReplace = jindo.$Class({
 			var aTexts = htTmp.aTexts;
 			var aElTexts = htTmp.aElTexts;
 	
-//			console.log(sOriginalWord);
-//			console.log(aTexts);
-//			console.log(aElTexts);
-
 			var nMatchCnt = 0;
 			
 			var nOriginLen = sOriginalWord.length;
@@ -22165,21 +22161,10 @@ nhn.FindReplace = jindo.$Class({
 					continue;
 				}
 			}
-			/*
-			var t2 = new Date();
-			console.log("OK");
-			console.log(sOriginalWord);
-			console.log("MC:"+(t1-t0));
-			console.log("RP:"+(t2-t1));
-			*/
 
 			return nMatchCnt;
 		}catch(e){
-			/*
-			console.log("ERROR");
-			console.log(sOriginalWord);
-			console.log(new Date()-t0);
-			*/
+
 			return nMatchCnt;
 		}
 	}

@@ -12,7 +12,7 @@ var oEditors = [];
 nhn.husky.EZCreator.createInIFrame({
 	oAppRef: oEditors,
 	elPlaceHolder: "{{ $name }}",
-	sSkinURI: "/bbs/plugins/smart-editor-skin",
+	sSkinURI: "/bbs/plugins/smart-editor",
 	sCSSBaseURI: "/assets/pondol_bbs/smart_editor/css",
 	htParams : {
 		bUseToolbar : true,				// 툴바 사용 여부 (true:사용/ false:사용하지 않음)

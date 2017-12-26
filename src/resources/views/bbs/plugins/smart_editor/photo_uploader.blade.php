@@ -56,12 +56,15 @@ h1{color:#333;font-size:14px;letter-spacing:-1px}
 	    	 그밖의 경우 pop_container2 클래스와 하위 HTML 적용      -->
 	<div id="pop_container2" class="pop_container2">
     	<!-- content -->
-		<form id="editor_upimage" name="editor_upimage" action="/pondol_bbs/plugins/file-upload" method="post" enctype="multipart/form-data" onSubmit="return false;">
+		<form id="editor_upimage" name="editor_upimage" action="/bbs/plugins/smart-editor/file-upload" method="post" enctype="multipart/form-data" onSubmit="return false;">
+		<!--<form id="editor_upimage" name="editor_upimage" action="/bbs/plugins/smart-editor/file-upload" method="post" enctype="multipart/form-data" > -->
 			{!! csrf_field() !!}
         <div id="pop_content2">
 			<input type="file" class="upload" id="uploadInputBox" name="Filedata">
             <p class="dsc" id="info"><strong>10MB</strong>이하의 이미지 파일만 등록할 수 있습니다.<br>(JPG, GIF, PNG, BMP)</p>
         </div>
+        
+       <!-- <button type="submit">submit</button> -->
 		</form>
         <!-- //content -->
     </div>
