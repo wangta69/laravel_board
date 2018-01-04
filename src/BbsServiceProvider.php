@@ -23,6 +23,8 @@ class BbsServiceProvider extends ServiceProvider {
      */
     public function boot(\Illuminate\Routing\Router $router)
     {
+        
+        echo "11111111111111111111111111111111111111";
 		//set migrations
         $this->publishes([
         	__DIR__.'/migrations/' => database_path('migrations'),
@@ -38,15 +40,17 @@ class BbsServiceProvider extends ServiceProvider {
 	    //    require __DIR__.'/routes.php';
 	   // }
 
+	    // LOAD Routes
+	    $this->loadRoutesFrom(__DIR__.'/routes/web.php');
         // LOAD THE VIEWS
         // - first the published views (in case they have any changes)
-        $this->loadViewsFrom(resource_path('views/bbs'), 'bbs');
+        $this->loadViewsFrom(resource_path('views/bbs'), __DIR__.'/resources/views/bbs');
         // - then the stock views that come with the package, in case a published view might be missing
-        $this->loadViewsFrom(realpath(__DIR__.'/resources/views'), 'bbs');
+        //$this->loadViewsFrom(realpath(__DIR__.'/resources/views'), 'bbs');
         
         
         //$this->registerAdminMiddleware($this->app->router);
-        $this->setupRoutes($this->app->router);
+        //$this->setupRoutes($this->app->router);
         $this->publishFiles();
         $this->loadHelpers();
         
@@ -58,6 +62,43 @@ class BbsServiceProvider extends ServiceProvider {
        // ]);
     }
 
+
+/**
+     * Define the routes for the application.
+     *
+     * @param  \Illuminate\Routing\Router $router
+     *
+     * @return void
+     */
+//    public function map(Router $router)
+//    {
+//        echo "===============================================";
+        
+        
+
+        /*
+        |--------------------------------------------------------------------------
+        | Web Router 
+        |--------------------------------------------------------------------------
+        */
+
+//        $router->group(['prefix' => 'bbs', 'as' => 'bbs.', 'namespace' => 'Bbs'], function ($router) {
+//            require app_path('Http/routes.web.php');
+ //       });
+
+        /*
+        |--------------------------------------------------------------------------
+        | Api Router 
+        |--------------------------------------------------------------------------
+        */
+
+        //$router->group(['namespace' => $this->apiNamespace], function ($router) {
+        //    require app_path('Http/routes.api.php');
+        //});
+
+//    }
+    
+    
     /**
          * Define the routes for the application.
          *
@@ -65,6 +106,7 @@ class BbsServiceProvider extends ServiceProvider {
          *
          * @return void
          */
+         /*
         public function setupRoutes(Router $router)
         {
             // by default, use the routes file provided in vendor
@@ -75,6 +117,8 @@ class BbsServiceProvider extends ServiceProvider {
             }
             $this->loadRoutesFrom($routeFilePathInUse);
         }
+        
+        */
     /**
      * Register any application services.
      *
