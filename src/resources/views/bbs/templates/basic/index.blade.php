@@ -3,7 +3,7 @@
 @section ('content')
 <div class='basic-table index'>
 	<h1 class='title'>
-		{{ $bbs_config->name }}
+		{{ $cfg->name }}
 	</h1>
 	<table>
 	<colgroup>
@@ -26,10 +26,10 @@
 		@foreach ($list as $index => $article)
 			<tr>
 				<td class='text-center'>{{ number_format($list->total() - $list->perPage() * ($list->currentPage() - 1) - $index) }}</td>
-				<td>{!! Html::link(route('bbs.show', [$tbl_name, $article->id]), $article->title) !!}</td>
+				<td>{!! Html::link(route('bbs.show', [$cfg->table_name, $article->id]), $article->title) !!}</td>
 				<td class='text-center'>
 					@if (isset($article->user))
-						{{ $article->user->name }}
+						{{ $article->user->domain }}
 					@else
 						-
 					@endif
@@ -46,7 +46,7 @@
 	</div>
 	
 	<div class='btn-area text-right'>
-		{!! Html::link(route('bbs.create', [$tbl_name]), '글쓰기', [
+		{!! Html::link(route('bbs.create', [$cfg->table_name]), '글쓰기', [
 			'role' => 'button',
 			'class' => 'btn btn-sm btn-default',
 		]) !!}
@@ -56,6 +56,6 @@
 
 @section ('css')
 <style>
-	@include ('bbs.templates.basic.css.style')
+	@include ('bbs.templates.'.$cfg->skin.'.css.style')
 </style>
 @stop

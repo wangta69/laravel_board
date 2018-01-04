@@ -4,21 +4,21 @@
 <div class='basic-table create'>
 	@if (isset($article))
 		{!! Form::open([
-			'route' => ['bbs.update', $tbl_name, $article->id],
+			'route' => ['bbs.update', $cfg->table_name, $article->id],
 			'class' => 'form-horizontal',
 			'method' => 'put',
 			'enctype' => 'multipart/form-data',
 		]) !!}
 	@else
 		{!! Form::open([
-			'route' => ['bbs.store', $tbl_name],
+			'route' => ['bbs.store', $cfg->table_name],
 			'class' => 'form-horizontal',
 			'enctype' => 'multipart/form-data',
 		]) !!}
 	@endif
 	
 	<h1 class='title'>
-		{{ $bbs_config->name }}
+		{{ $cfg->name }}
 	</h1>
 	@if (!$errors->isEmpty())
         <div class="alert alert-danger" role="alert">
@@ -73,7 +73,7 @@
 			{!! Form::submit('작성완료', [
 				'class' => 'btn btn-primary btn-sm',
 			]) !!}
-			{!! Html::link(route('bbs.index', [$tbl_name]), '목록', [
+			{!! Html::link(route('bbs.index', [$cfg->table_name]), '목록', [
 				'class' => 'btn btn-default btn-sm',
 			]) !!}
 		</div>
@@ -84,7 +84,7 @@
 
 @section ('css')
 <style>
-	@include ('bbs.templates.basic.css.style')
+	@include ('bbs.templates.'.$cfg->skin.'.css.style')
 </style>
 @stop
 

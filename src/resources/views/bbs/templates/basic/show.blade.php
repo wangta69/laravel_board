@@ -54,11 +54,11 @@
 	
 	<div class='btn-area text-right'>
 		{!! Form::open([
-			'route' => ['bbs.destroy', $tbl_name, $article->id],
+			'route' => ['bbs.destroy', $cfg->table_name, $article->id],
 			'method' => 'delete',
 		]) !!}
 			@if ($article->isOwner(Auth::user()))
-				{!! Html::link(route('bbs.edit', [$tbl_name, $article->id]), '수정', [
+				{!! Html::link(route('bbs.edit', [$cfg->table_name, $article->id]), '수정', [
 					'role' => 'button',
 					'class' => 'btn btn-primary btn-sm',
 				]) !!}
@@ -66,7 +66,7 @@
 					'class' => 'btn btn-danger btn-sm',
 				]) !!}
 			@endif
-			{!! Html::link(route('bbs.index', $tbl_name), '목록', [
+			{!! Html::link(route('bbs.index', $cfg->table_name), '목록', [
 				'class' => 'btn btn-default btn-sm',
 			]) !!}
 		{!! Form::close() !!}
@@ -76,6 +76,6 @@
 
 @section ('css')
 <style>
-	@include ('bbs.templates.basic.css.style')
+	@include ('bbs.templates.'.$cfg->skin.'.css.style')
 </style>
 @stop

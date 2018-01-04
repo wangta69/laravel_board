@@ -20,36 +20,7 @@ use Pondol\Bbs\Models\Bbs_files as Files;
 class BbsController extends \App\Http\Controllers\Controller {
 
 	public function __construct() {
-	    
-
-        
-		// 기본 라우트 이름을 저장한다.
-		/*
-		$routeArr = explode('.', Route::currentRouteName());
-		array_pop($routeArr);
-
-		$this->baseRouteName = implode('.', $routeArr);
-
-		// 게시판 설정 로드
-		if ($this->config_model == '') abort('500');
-		$config_model = new $this->config_model;
-        */
-/*
-		if (Route::current() != null) {
-			$tbl_name = Route::current()->parameters()['bo_id'];
-			$this->board_setting = Config::findOrFail($tbl_name);
-
-			// 첨부파일 업로드 경로 변경
-			$this->uploadPath .= $tbl_name.'/';
-
-			View::share('baseRouteName', $this->baseRouteName);
-			View::share('bo_id', $tbl_name);
-			View::share('board_setting', $this->board_setting);
-		}
- * */
 	}
-
-
 
 	/*
 	 * List Page
@@ -59,12 +30,10 @@ class BbsController extends \App\Http\Controllers\Controller {
 	 */
     public function index($tbl_name)
     {
+        $cfg = $this->get_table_info($tbl_name);
 
-       
-       $bbs_config = $this->get_table_info($tbl_name);
-		$list = Articles::orderBy('created_at', 'desc')->paginate($this->itemsPerPage);
-
-        return view('bbs.templates.basic.index')->with(compact('list', 'bbs_config', 'tbl_name'));
+        $list = Articles::orderBy('created_at', 'desc')->paginate($this->itemsPerPage);
+        return view('bbs.templates.'.$cfg->skin.'.index')->with(compact('list', 'cfg'));
         
     }
 
@@ -74,15 +43,12 @@ class BbsController extends \App\Http\Controllers\Controller {
 	 * @param String $tbl_name
 	 * @return \Illuminate\Http\Response
 	 */
-    public function create($tbl_name)
+    public function createForm($tbl_name)
     {
 
-        $bbs_config = $this->get_table_info($tbl_name);
+        $cfg = $this->get_table_info($tbl_name);
         
-       
-        //$download_link = link_to_route('bbs.download', 'file/example.png', [1]);
-       // echo $download_link;
-        return view('bbs.templates.basic.create')->with(compact('tbl_name', 'bbs_config'));
+        return view('bbs.templates.'.$cfg->skin.'.create')->with(compact('cfg'));
     }
 
 	/*
@@ -94,7 +60,6 @@ class BbsController extends \App\Http\Controllers\Controller {
 	 */
     public function store(Request $request, $tbl_name)
     {
-
         $validator = Validator::make($request->all(), [
             'title' => 'required|min:2|max:100',
             'content' => 'required',
@@ -103,31 +68,28 @@ class BbsController extends \App\Http\Controllers\Controller {
         
         if ($validator->fails()) return redirect()->back()->withErrors($validator->errors());
         
-        $bbs_config = $this->get_table_info($tbl_name);
-
-//print_r($request);
+        $cfg = $this->get_table_info($tbl_name);
 
 		$article = new Articles;
-        
-		$article->bbs_table_id = $bbs_config->id;
-
+		$article->bbs_table_id = $cfg->id;
 		$article->title = $request->get('title');
 		$article->content = $request->get('content');
-        
+
 		if (Auth::check()) {
 			$article->user_id = Auth::user()->id;
 		} else {
 			$article->user_id = 0;
 		}
-        
 		$article->save();
+        
         $date_Ym = date("Ym");
+        $filepath = 'public/bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;
         if(is_array($request->file('uploads')))
     		foreach ($request->file('uploads') as $index => $upload) {
     			if ($upload == null) continue;
                 
                 //get file path (bbs/bbs_tables_id/YM/bbs_articles_id)
-                $filepath = 'public/bbs/'.$bbs_config->id.'/'.$date_Ym.'/'.$article->id;
+                
                 //upload to storage
                 $filename = $upload->getClientOriginalName();
                 $path=Storage::put($filepath,$upload); // //Storage::disk('local')->put($name,$file,'public');
@@ -142,11 +104,75 @@ class BbsController extends \App\Http\Controllers\Controller {
                 $file->save();
             }//foreach if
             
-        $this->contents_update($article, $bbs_config->id, $date_Ym);
+        $this->contents_update($article, $cfg->id, $date_Ym);
         return redirect()->route('bbs.show', [$tbl_name, $article->id]);
 	}
 
+    /*
+     * Modify Article
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param String $tbl_name
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $tbl_name, $id)
+    {
+        //$articles_model = new $this->articles_model;
+        //$articles_model->setTable($this->board_setting->table_name);
+        $cfg = $this->get_table_info($tbl_name);
+        $article = Articles::findOrFail($id);
+        //$article->setTable($this->board_setting->table_name);
 
+        if (!$article->isOwner(Auth::user())) {
+            return redirect()->route('bbs.index', $tbl_name);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|min:2|max:100',
+            'content' => 'required',
+            //'username' => 'required|unique:users|min:2|max:8',
+        ]);
+        
+        if ($validator->fails()) return redirect()->back()->withErrors($validator->errors());
+
+        $article->title = $request->get('title');
+        $article->content = $request->get('content');
+        $article->save();
+
+        // 첨부파일 업로드
+        $date_Ym = date("Ym", strtotime($article->created_at));//수정일경우 기존 데이타의 생성일을 기준으로 가져온다.
+        $filepath = 'public/bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;
+
+        if(is_array($request->file('uploads')))
+            foreach ($request->file('uploads') as $index => $upload) {
+                
+                echo "index:".$index.PHP_EOL;
+             
+                if ($upload == null) continue;
+    
+                // 기존 파일 삭제
+                if (($file = $article->files->where('rank', $index)->first())) {
+                    Storage::delete($file->path_to_file);
+                    $file->delete();
+                }
+                
+                $filename = $upload->getClientOriginalName();
+               $path=Storage::put($filepath,$upload); // //Storage::disk('local')->put($name,$file,'public');
+                
+                //save to database
+                $file = new Files;
+                $file->rank = $index;
+                $file->bbs_articles_id = $article->id;
+                $file->file_name = $filename;
+                $file->path_to_file = $path;
+                $file->name_on_disk = basename($path);
+                $file->save();
+            }
+
+        $this->contents_update($article, $cfg->id, $date_Ym);
+        return redirect()->route('bbs.show', [$tbl_name, $article->id]);
+    }
     /**
      * 에디터에 이미지가 포함된 경우 이미지를 현재 아이템에 editor라는 폴더를 만들고 그곳에 모두 복사한다. 
      * 그리고 contents에 포함된 링크 주소고 변경하여 데이타를 업데이트 한다. 
@@ -160,23 +186,13 @@ class BbsController extends \App\Http\Controllers\Controller {
         
         $article->content = str_replace('/storage/bbs/tmp/editor/'.session()->getId(), '/storage/bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor', $article->content);
         
-        echo $article->content;
         $article->save();
-       // echo $sourceDir.PHP_EOL;
-        //echo $destinationDir.PHP_EOL;
-        
-        //Storage::delete(str_replace('../storage/app/', '', $this->uploadPath.$file->filename));
-        
+
         $success = File::copyDirectory($sourceDir, $destinationDir);
-        //delete temp folder
-      // $result = Storage::deleteDirectory($sourceDir);
-       // exec('rm -r ' . $sourceDir);
        Storage::deleteDirectory('public/bbs/tmp/editor/'. session()->getId());
-        //Log::info($result);
-        //Storage::deleteDirectory('app/public/bbs/tmp/editor/'. session()->getId());
     }
 	/*
-	 * 게시글 보기
+	 * Show Article
 	 *
 	 * @param String $tbl_name
 	 * @param  int  $id
@@ -184,7 +200,8 @@ class BbsController extends \App\Http\Controllers\Controller {
 	 */
     public function show(Request $request, $tbl_name, $id)
     {
-    	$article = Articles::findOrFail($id);
+        $cfg = $this->get_table_info($tbl_name);
+        $article = Articles::findOrFail($id);
 
 		if ($request->cookie($tbl_name.$id) != '1') {
 			$article->hit ++;
@@ -192,105 +209,57 @@ class BbsController extends \App\Http\Controllers\Controller {
 		}
 
 		Cookie::queue(Cookie::make($tbl_name.$id, '1'));
-        return view('bbs.templates.basic.show')->with(compact('article', 'tbl_name'));
+        return view('bbs.templates.'.$cfg->skin.'.show')->with(compact('article', 'cfg'));
     }
 
 	/*
-	 * 게시글 수정 뷰
+	 * Modify Form
 	 *
 	 * @param String $tbl_name
 	 * @param  int  $id
      * @return \Illuminate\Http\Response
 	 */
-    public function edit($tbl_name, $id)
+    public function editForm($tbl_name, $id)
     {
-    	$articles_model = new $this->articles_model;
-		//$articles_model->setTable($this->board_setting->table_name);
-
-		$article = $articles_model->findOrFail($id);
+        $cfg = $this->get_table_info($tbl_name);
+        $article = Articles::findOrFail($id);
+        
 		if (!$article->isOwner(Auth::user())) {
 			return redirect()->route('bbs.index', $tbl_name);
 		}
 
-		return view($this->board_setting->skin.'.create')->with(compact('article'));
+		return view('bbs.templates.'.$cfg->skin.'.create')->with(compact('article', 'cfg'));
     }
 
 	/*
-	 * 게시글 수정
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param String $tbl_name
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-	 */
-    public function update(Request $request, $tbl_name, $id)
-    {
-    	$articles_model = new $this->articles_model;
-		$articles_model->setTable($this->board_setting->table_name);
-
-		$article = $articles_model->findOrFail($id);
-		$article->setTable($this->board_setting->table_name);
-
-		if (!$article->isOwner(Auth::user())) {
-			return redirect()->route('bbs.index', $tbl_name);
-		}
-
-		$this->validate($request, [
-			'title' => 'required',
-			'content' => 'required',
-		]);
-
-		$article->title = $request->get('title');
-		$article->content = $request->get('content');
-		$article->save();
-
-		// 첨부파일 업로드
-		foreach ($request->file('uploads') as $index => $upload) {
-			if ($upload == null) continue;
-
-			// 기존 파일 삭제
-			if (($file = $article->files->where('rank', $index)->first())) {
-				Storage::delete(str_replace('../storage/app/', '', $this->uploadPath.$file->filename));
-				$file->setTable($this->board_setting->table_name.'_files');
-				$file->delete();
-			}
-
-			$filename = $this->getFilename($upload);
-			$upload->move($this->uploadPath, $filename);
-
-			$article_file = new $this->article_files_model;
-			$article_file->setTable($this->board_setting->table_name.'_files');
-			$article_file->rank = $index;
-			$article_file->articles_id = $article->id;
-			$article_file->filename = $filename;
-			$article_file->save();
-		}
-
-		return redirect()->route('bbs.show', [$tbl_name, $article->id]);
-    }
-
-	/*
-	 * 게시글 삭제
-	 *
+	 * Delete Article
+	 * Step1 : delete files
+     * Step2 : files table
+     * Step3 : delete article
 	 * @param String $tbl_name
 	 * @param  int  $id
      * @return \Illuminate\Http\Response
 	 */
     public function destroy($tbl_name, $id)
     {
-    	$articles_model = new $this->articles_model;
-		$articles_model->setTable($this->board_setting->table_name);
-
-		$article = $articles_model->findOrFail($id);
-		$article->setTable($this->board_setting->table_name);
+        
+        $cfg = $this->get_table_info($tbl_name);
+    	$article = Articles::findOrFail($id);
 
 		if (!$article->isOwner(Auth::user())) {
 			return redirect()->route('bbs.index', $tbl_name);
 		}
+        //1. delete files 
+        Storage::deleteDirectory('public/bbs/'.$cfg->id.'/'.date("Ym", strtotime($article->created_at)).'/'.$article->id);
 
+        //2. delete files table
+        //$article->files->delete();
+        Files::where('bbs_articles_id', $article->id)->delete();
+
+        //3. delete article
 		$article->delete();
 
-		return redirect()->route('bbs.show', $tbl_name);
+		return redirect()->route('bbs.index', $tbl_name);
     }
     
     /**
@@ -301,8 +270,7 @@ class BbsController extends \App\Http\Controllers\Controller {
         $file = Files::findOrFail($id);
         
         $file_path = storage_path() .'/app/'. $file->path_to_file;
-        
-        echo $file_path;
+
         if (file_exists($file_path))
         {
             // Send Download
@@ -312,27 +280,11 @@ class BbsController extends \App\Http\Controllers\Controller {
         }
         else
         {
-            // Error
             exit('Requested file does not exist on our server!');
         }
         
     }
-        /*
-     * 파일명을 일정 규칙에 따라 리턴함
-     *
-     * @param UploadedFile
-     * @return string
-     
-    protected function getFilename($file) {
-        $filename = time();
 
-        while (Storage::exists(str_replace('../storage/app/', '', $this->uploadPath.$filename.'.'.$file->getClientOriginalExtension()))) {
-            $filename ++;
-        }
-
-        return $filename.'.'.$file->getClientOriginalExtension();
-    }
-    */
     /**
      * @param String $tbl_name
      * @return Tables 

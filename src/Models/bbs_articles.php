@@ -33,7 +33,8 @@ class Bbs_articles extends Model
      * If you have Defferent UserTable, OverWrite This.
      */
     public function user() {
-        return $this->belongsTo('App\User');
+        //return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Models\Vendors');
     }
     
     public function table()
