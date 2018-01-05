@@ -22,20 +22,7 @@ Step 1.2) Add Facade to the aliases array in `config/app.php`.
 'Bbs' => Pondol\Bbs\BbsFacade::class,
 ```
 
-
-Step 2)
-
-```
-php artisan vendor:publish
-```
-
-Step 3) create tables
+Step 2) create tables
 ```
 php artisan migrate
-```
-
-Step 4) create storage link <br />
-
-```
-ln -s [Absolute Path]/storage/app/public [Absolute Path]/public/storage
 ```
