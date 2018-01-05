@@ -19,7 +19,7 @@ Pondol\Bbs\BoardServiceProvider::class,
 ```
 Step 1.2) Add Facade to the aliases array in `config/app.php`.
 ```
-Pondol\Bbs\BbsFacade::class,
+'Bbs' => Pondol\Bbs\BbsFacade::class,
 ```
 
 

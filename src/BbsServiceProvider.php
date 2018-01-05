@@ -3,7 +3,9 @@ namespace Pondol\Bbs;
 
 //use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
-use Route;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
+//use Route;
 
 class BbsServiceProvider extends ServiceProvider {
 
@@ -23,6 +25,8 @@ class BbsServiceProvider extends ServiceProvider {
      */
     public function register()
     {
+       // echo "resister start...";
+         Log::info('resister start...');
         $this->app->bind('pondol-bbs', function() {
             return new Bbs;
         });
@@ -37,7 +41,15 @@ class BbsServiceProvider extends ServiceProvider {
 	public function boot()
     {
         
-        echo "11111111111111111111111111111111111111";
+
+        Log::info('boot start...');
+        // LOAD Routes
+        //$this->loadRoutesFrom(__DIR__.'/routes/web.php');
+        //require __DIR__ . '/routes/web.php';
+         if (!$this->app->routesAreCached()) {
+            require __DIR__ . '/routes/web.php';
+        }
+        
 		//set migrations
         $this->publishes([
         	__DIR__.'/migrations/' => database_path('migrations'),
@@ -53,9 +65,7 @@ class BbsServiceProvider extends ServiceProvider {
 	    //    require __DIR__.'/routes.php';
 	   // }
 
-	    // LOAD Routes
-	    //$this->loadRoutesFrom(__DIR__.'/routes/web.php');
-		require __DIR__ . '/routes/web.php';
+	    
         // LOAD THE VIEWS
         // - first the published views (in case they have any changes)
         $this->loadViewsFrom(resource_path('views/bbs'), __DIR__.'/resources/views/bbs');
