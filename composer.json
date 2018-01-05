@@ -1,6 +1,7 @@
 {
     "name": "wangta69/laravel_board",
     "description": "BBS bulletin board system",
+	"keywords": ["laravel", "bbs", "pondol" , "board"],
     "license": "MIT",
     "authors": [
         {

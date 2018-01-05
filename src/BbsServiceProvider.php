@@ -41,7 +41,8 @@ class BbsServiceProvider extends ServiceProvider {
 	   // }
 
 	    // LOAD Routes
-	    $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+	    //$this->loadRoutesFrom(__DIR__.'/routes/web.php');
+		require __DIR__ . '/routes/web.php';
         // LOAD THE VIEWS
         // - first the published views (in case they have any changes)
         $this->loadViewsFrom(resource_path('views/bbs'), __DIR__.'/resources/views/bbs');
