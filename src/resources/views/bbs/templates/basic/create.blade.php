@@ -1,4 +1,4 @@
-@extends ('bbs.layouts.default')
+@extends ('bbs::layouts.default')
 
 @section ('content')
 <div class='basic-table create'>
@@ -43,7 +43,7 @@
 		<tr>
 			<th>내용</th>
 			<td style='padding: 5px 10px;'>
-				@include ('bbs.plugins.smart_editor.editor', ['name' => 'content', 'value' => isset($article) ? $article->content : old('content')])
+				@include ('bbs::plugins.smart_editor.editor', ['name' => 'content', 'value' => isset($article) ? $article->content : old('content')])
 			</td>
 		</tr>
 		<tr class='file-control'>
@@ -84,7 +84,7 @@
 
 @section ('css')
 <style>
-	@include ('bbs.templates.'.$cfg->skin.'.css.style')
+	@include ('bbs::templates.'.$cfg->skin.'.css.style')
 </style>
 @stop
 

@@ -6,6 +6,6 @@ use Illuminate\Support\Facades\Facade;
 class BbsFacade extends Facade
 {
     protected static function getFacadeAccessor() { 
-        return 'pondol-bbs';
+        return 'bbs';
     }
 }

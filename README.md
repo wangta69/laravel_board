@@ -15,7 +15,7 @@ composer require wangta69/laravel_board
 ### Setup
 Step 1.1) Add ServiceProvider to the providers array in `config/app.php`.
 ```
-Pondol\Bbs\BoardServiceProvider::class,
+Pondol\Bbs\BbsServiceProvider::class,
 ```
 Step 1.2) Add Facade to the aliases array in `config/app.php`.
 ```

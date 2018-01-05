@@ -61,7 +61,7 @@
      function goStartMode(){
     	 var sSrc = welBtnConfirm.attr("src")|| "";
     	 if(sSrc.indexOf("btn_confirm2.png") < 0 ){
-    		 welBtnConfirm.attr("src","/assets/pondol_bbs/smart_editor/photo_uploader/img/btn_confirm2.png");
+    		 welBtnConfirm.attr("src","/assets/pondol/bbs/smart_editor/photo_uploader/img/btn_confirm2.png");
     		 fnUploadImage.attach(welBtnConfirm.$value(), "click");
     	 }
      } 

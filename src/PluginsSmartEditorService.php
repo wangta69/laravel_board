@@ -13,21 +13,21 @@ class PluginsSmartEditorService {
 
     
 	public function getSmartEditorSkin() {
-	   // return view('bbs.plugins.smart_editor.test');
-        return view('bbs.plugins.smart_editor.skin');
+	   // return view('bbs::plugins.smart_editor.test');
+        return view('bbs::plugins.smart_editor.skin');
 		//return view('bbs::plugins.smart_editor.skin');
 	}
 	
 	public function getInputArea($mode = '') {
 		if ($mode == 'ie8') {
-			return view('bbs.plugins.smart_editor.inputarea_ie8');
+			return view('bbs::plugins.smart_editor.inputarea_ie8');
 		} else {
-			return view('bbs.plugins.smart_editor.inputarea');
+			return view('bbs::plugins.smart_editor.inputarea');
 		}
 	}
 	
 	public function getPhotoUploader() {
-		return view('bbs.plugins.smart_editor.photo_uploader');
+		return view('bbs::plugins.smart_editor.photo_uploader');
 	}
 	
 	public function postFileUpload(Request $request) {
@@ -75,7 +75,7 @@ class PluginsSmartEditorService {
 	}
 
 	public function getCallback() {
-		return view('bbs.plugins.smart_editor.callback');
+		return view('bbs::plugins.smart_editor.callback');
 	}
 	
 	public function getImage($filename) {

@@ -1,4 +1,4 @@
-@extends ('bbs.layouts.default')
+@extends ('bbs::layouts.default')
 
 @section ('content')
 <div class='basic-table index'>
@@ -56,6 +56,6 @@
 
 @section ('css')
 <style>
-	@include ('bbs.templates.'.$cfg->skin.'.css.style')
+	@include ('bbs::templates.'.$cfg->skin.'.css.style')
 </style>
 @stop

@@ -1,10 +1,10 @@
-@include ('bbs.layouts.partials.header')
+@include ('bbs::layouts.partials.header')
 @yield ('css')
 
 <div class='container'>
 	@yield ('content')
 </div>
 
-@include ('bbs.layouts.partials.footer')
+@include ('bbs::layouts.partials.footer')
 
 @yield ('script')

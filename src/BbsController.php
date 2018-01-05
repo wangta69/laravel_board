@@ -33,7 +33,7 @@ class BbsController extends \App\Http\Controllers\Controller {
         $cfg = $this->get_table_info($tbl_name);
 
         $list = Articles::orderBy('created_at', 'desc')->paginate($this->itemsPerPage);
-        return view('bbs.templates.'.$cfg->skin.'.index')->with(compact('list', 'cfg'));
+        return view('bbs::templates.'.$cfg->skin.'.index')->with(compact('list', 'cfg'));
         
     }
 
@@ -47,8 +47,9 @@ class BbsController extends \App\Http\Controllers\Controller {
     {
 
         $cfg = $this->get_table_info($tbl_name);
+        //$errors = '';
         
-        return view('bbs.templates.'.$cfg->skin.'.create')->with(compact('cfg'));
+        return view('bbs::templates.'.$cfg->skin.'.create')->with(compact('cfg', 'errors'));
     }
 
 	/*
@@ -209,7 +210,7 @@ class BbsController extends \App\Http\Controllers\Controller {
 		}
 
 		Cookie::queue(Cookie::make($tbl_name.$id, '1'));
-        return view('bbs.templates.'.$cfg->skin.'.show')->with(compact('article', 'cfg'));
+        return view('bbs::templates.'.$cfg->skin.'.show')->with(compact('article', 'cfg'));
     }
 
 	/*
@@ -227,8 +228,9 @@ class BbsController extends \App\Http\Controllers\Controller {
 		if (!$article->isOwner(Auth::user())) {
 			return redirect()->route('bbs.index', $tbl_name);
 		}
-
-		return view('bbs.templates.'.$cfg->skin.'.create')->with(compact('article', 'cfg'));
+        
+        return view('bbs::templates.'.$cfg->skin.'.create')->with(compact('article', 'cfg'));
+		//return view('bbs::templates.'.$cfg->skin.'.create')->with(compact('article', 'cfg'));
     }
 
 	/*

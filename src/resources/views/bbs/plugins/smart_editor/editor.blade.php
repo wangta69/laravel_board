@@ -4,7 +4,7 @@
 ]) !!}
 
 @section ('script')
-{!! Html::script('assets/pondol_bbs/smart_editor/js/HuskyEZCreator.js') !!}
+{!! Html::script('assets/pondol/bbs/smart_editor/js/HuskyEZCreator.js') !!}
 @parent
 <script>
 var oEditors = [];
@@ -13,7 +13,7 @@ nhn.husky.EZCreator.createInIFrame({
 	oAppRef: oEditors,
 	elPlaceHolder: "{{ $name }}",
 	sSkinURI: "/bbs/plugins/smart-editor",
-	sCSSBaseURI: "/assets/pondol_bbs/smart_editor/css",
+	sCSSBaseURI: "/assets/pondol/bbs/smart_editor/css",
 	htParams : {
 		bUseToolbar : true,				// 툴바 사용 여부 (true:사용/ false:사용하지 않음)
 		bUseVerticalResizer : true,		// 입력창 크기 조절바 사용 여부 (true:사용/ false:사용하지 않음)

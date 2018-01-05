@@ -5,13 +5,12 @@ namespace App\Http\Controllers\Bbs;
 use Illuminate\Http\Request;
 use \Pondol\Bbs\PluginsSmartEditorService as SmartEditor;
 
-class PluginsController extends \Pondol\Bbs\PluginsController
+class PluginsController
 {
 
     protected $uploadPath = "../storage/app/editor/";
     
     public function index($plugins, $action=null){
-        
 
         switch($plugins){
             case "smart-editor":

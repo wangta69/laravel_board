@@ -1,4 +1,4 @@
-@extends ('bbs.layouts.default')
+@extends ('bbs::layouts.default')
 
 @section ('content')
 <div class='basic-table show'>
@@ -40,7 +40,7 @@
 				@foreach ($article->files as $file)
 					<!-- 파일 다운로드 경로 등을 넣으세요.. -->
 					
-					{{ link_to_route('bbs.download', $file->file_name, $file->id) }}
+					{{ link_to_route('bbs::download', $file->file_name, $file->id) }}
 
 				@endforeach
 			</td>
@@ -76,6 +76,6 @@
 
 @section ('css')
 <style>
-	@include ('bbs.templates.'.$cfg->skin.'.css.style')
+	@include ('bbs::templates.'.$cfg->skin.'.css.style')
 </style>
 @stop

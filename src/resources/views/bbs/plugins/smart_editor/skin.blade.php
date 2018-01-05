@@ -6,19 +6,19 @@
 <meta http-equiv="Content-Style-Type" content="text/css">
 <title>네이버 :: Smart Editor 2 &#8482;</title>
 
-{!! Html::style('assets/pondol_bbs/smart_editor/css/smart_editor2.css') !!}
+{!! Html::style('assets/pondol/bbs/smart_editor/css/smart_editor2.css') !!}
 <style type="text/css">
 	body { margin: 10px; }
 </style>
 
-{!! Html::script('assets/pondol_bbs/smart_editor/js/lib/jindo2.all.js') !!}
-{!! Html::script('assets/pondol_bbs/smart_editor/js/lib/jindo_component.js') !!}
-{!! Html::script('assets/pondol_bbs/smart_editor/js/SE2M_Configuration.js') !!} <!-- 설정 파일 -->
-{!! Html::script('assets/pondol_bbs/smart_editor/js/SE2BasicCreator.js') !!}
-{!! Html::script('assets/pondol_bbs/smart_editor/js/smarteditor2.js') !!}
+{!! Html::script('assets/pondol/bbs/smart_editor/js/lib/jindo2.all.js') !!}
+{!! Html::script('assets/pondol/bbs/smart_editor/js/lib/jindo_component.js') !!}
+{!! Html::script('assets/pondol/bbs/smart_editor/js/SE2M_Configuration.js') !!} <!-- 설정 파일 -->
+{!! Html::script('assets/pondol/bbs/smart_editor/js/SE2BasicCreator.js') !!}
+{!! Html::script('assets/pondol/bbs/smart_editor/js/smarteditor2.js') !!}
 
 <!-- 사진 첨부  --> 
-{!! Html::script('assets/pondol_bbs/smart_editor/photo_uploader/js/hp_SE2M_AttachQuickPhoto.js') !!}
+{!! Html::script('assets/pondol/bbs/smart_editor/photo_uploader/js/hp_SE2M_AttachQuickPhoto.js') !!}
 </head>
 <body>
 
