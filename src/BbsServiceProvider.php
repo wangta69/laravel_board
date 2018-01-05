@@ -1,7 +1,7 @@
 <?php
 namespace Pondol\Bbs;
 
-use Illuminate\Routing\Router;
+//use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use Route;
 
@@ -14,14 +14,27 @@ class BbsServiceProvider extends ServiceProvider {
      *
      * @var string
      */
-    public $routeFilePath = '/routes/bbs/base.php';
+   // public $routeFilePath = '/routes/bbs/base.php';
     
+	/**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->app->bind('pondol-bbs', function() {
+            return new Bbs;
+        });
+    }
+
 	/**
      * Bootstrap any application services.
      *
      * @return void
      */
-    public function boot(\Illuminate\Routing\Router $router)
+    //public function boot(\Illuminate\Routing\Router $router)
+	public function boot()
     {
         
         echo "11111111111111111111111111111111111111";
@@ -120,13 +133,5 @@ class BbsServiceProvider extends ServiceProvider {
         }
         
         */
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
-    }
+
 }

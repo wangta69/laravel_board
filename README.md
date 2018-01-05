@@ -13,10 +13,15 @@ composer require wangta69/laravel_board
 ## Laravel 5
 
 ### Setup
-Step 1) Add ServiceProvider to the providers array in `config/app.php`.
+Step 1.1) Add ServiceProvider to the providers array in `config/app.php`.
 ```
 Pondol\Bbs\BoardServiceProvider::class,
 ```
+Step 1.2) Add Facade to the aliases array in `config/app.php`.
+```
+Pondol\Bbs\BbsFacade::class,
+```
+
 
 Step 2)
 
