@@ -1,25 +1,23 @@
-@extends ('bbs.layouts.default')
-
+@extends(($blade_extends ? $blade_extends : 'bbs.layouts.default' ))
 @section ('content')
+<h2>게시판 리스트</h2>
 <table class='table table-striped'>
 <colgroup>
 	<col width='50' />
 	<col width='' />
 	<col width='120' />
 	<col width='120' />
-	<col width='200' />
 	<col width='100' />
-	<col width='80' />
+	<col width='180' />
 </colgroup>
 <thead>
 	<tr>
 		<th class='text-center'>#</th>
-		<th class='text-center'>게시판 이름</th>
-		<th class='text-center'>DB 테이블</th>
-		<th class='text-center'>스킨</th>
-		<th class='text-center'>카테고리</th>
-		<th class='text-center'>생성 일시</th>
-		<th class='text-center'>명령</th>
+		<th class='text-center'>name</th>
+		<th class='text-center'>category</th>
+		<th class='text-center'>skin</th>
+		<th class='text-center'>created</th>
+		<th class='text-center'></th>
 	</tr>
 </thead>
 <tbody>
@@ -38,17 +36,19 @@
 				{{ $board->skin }}
 			</td>
 			<td class='text-center'>
-				{{ $board->category }}
-			</td>
-			<td class='text-center'>
 				{{ date('Y-m-d', strtotime($board->created_at)) }}
 			</td>
 			<td class='text-center'>
+			    {!! Html::link(route('bbs.admin.show', [ $board->id]), 'edit', array('class' => 'btn btn-default btn-xs')) !!}
+			    {!! Html::link(route('bbs.index', $board->table_name), 'view', array('class' => 'btn btn-default btn-xs')) !!}
+
 				{!! Form::open([
 					'method' => 'delete',
-					'route' => [$baseRouteName.'.admin.bbs.destroy', $board->id]
+					'route' => ['bbs.admin.destroy', $board->id],
+					'style'=>'display:inline'
 				]) !!}
-					{!! Form::submit('삭제', [
+				
+					{!! Form::submit('delete', [
 						'class' => 'btn btn-danger btn-xs',
 					]) !!}
 				{!! Form::close() !!}
@@ -63,7 +63,7 @@
 </div>
 
 <div class='btn-area text-right'>
-	{!! Html::link(route($baseRouteName.'.admin.bbs.create'), '게시판 생성', [
+	{!! Html::link(route('bbs.admin.create'), 'create', [
 		'role' => 'button',
 		'class' => 'btn btn-primary btn-sm',
 	]) !!}

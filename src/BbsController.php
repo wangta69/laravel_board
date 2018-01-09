@@ -5,7 +5,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 use Validator;
-use Route;
 use Auth;
 use View;
 use Cookie;
@@ -16,49 +15,49 @@ use Response;
 use Pondol\Bbs\Models\Bbs_tables as Tables;
 use Pondol\Bbs\Models\Bbs_articles as Articles;
 use Pondol\Bbs\Models\Bbs_files as Files;
+use Pondol\Bbs\BbsService;
 
 class BbsController extends \App\Http\Controllers\Controller {
 
-	public function __construct() {
-	}
+    protected $bbsSvc;
+    protected $cfg;
+    public function __construct(BbsService $bbsSvc) {
+        $this->bbsSvc   = $bbsSvc;
+    }
 
-	/*
-	 * List Page
-	 *
-	 * @param String $tbl_name
-	 * @return \Illuminate\Http\Response
-	 */
-    public function index($tbl_name)
+    /*
+     * List Page
+     *
+     * @param String $tbl_name
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request, $tbl_name)
     {
-        $cfg = $this->get_table_info($tbl_name);
-
-        $list = Articles::orderBy('created_at', 'desc')->paginate($this->itemsPerPage);
+        $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+        $list = Articles::where('bbs_table_id', $cfg->id)->orderBy('created_at', 'desc')->paginate($this->itemsPerPage);
         return view('bbs::templates.'.$cfg->skin.'.index')->with(compact('list', 'cfg'));
         
     }
 
-	/*
-	 * Write Form Page
-	 *
-	 * @param String $tbl_name
-	 * @return \Illuminate\Http\Response
-	 */
+    /*
+     * Write Form Page
+     *
+     * @param String $tbl_name
+     * @return \Illuminate\Http\Response
+     */
     public function createForm($tbl_name)
     {
-
-        $cfg = $this->get_table_info($tbl_name);
-        //$errors = '';
-        
+        $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         return view('bbs::templates.'.$cfg->skin.'.create')->with(compact('cfg', 'errors'));
     }
 
-	/*
-	 * Store to BBS
-	 *
-	 * @param String $tbl_name
-	 * @param  \Illuminate\Http\Request  $request
+    /*
+     * Store to BBS
+     *
+     * @param String $tbl_name
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
-	 */
+     */
     public function store(Request $request, $tbl_name)
     {
         $validator = Validator::make($request->all(), [
@@ -69,28 +68,27 @@ class BbsController extends \App\Http\Controllers\Controller {
         
         if ($validator->fails()) return redirect()->back()->withErrors($validator->errors());
         
-        $cfg = $this->get_table_info($tbl_name);
+        $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
 
-		$article = new Articles;
-		$article->bbs_table_id = $cfg->id;
-		$article->title = $request->get('title');
-		$article->content = $request->get('content');
+        $article = new Articles;
+        $article->bbs_table_id = $cfg->id;
+        $article->title = $request->get('title');
+        $article->content = $request->get('content');
 
-		if (Auth::check()) {
-			$article->user_id = Auth::user()->id;
-		} else {
-			$article->user_id = 0;
-		}
-		$article->save();
+        if (Auth::check()) {
+            $article->user_id = Auth::user()->id;
+        } else {
+            $article->user_id = 0;
+        }
+        $article->save();
         
         $date_Ym = date("Ym");
         $filepath = 'public/bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;
         if(is_array($request->file('uploads')))
-    		foreach ($request->file('uploads') as $index => $upload) {
-    			if ($upload == null) continue;
+            foreach ($request->file('uploads') as $index => $upload) {
+                if ($upload == null) continue;
                 
                 //get file path (bbs/bbs_tables_id/YM/bbs_articles_id)
-                
                 //upload to storage
                 $filename = $upload->getClientOriginalName();
                 $path=Storage::put($filepath,$upload); // //Storage::disk('local')->put($name,$file,'public');
@@ -107,7 +105,7 @@ class BbsController extends \App\Http\Controllers\Controller {
             
         $this->contents_update($article, $cfg->id, $date_Ym);
         return redirect()->route('bbs.show', [$tbl_name, $article->id]);
-	}
+    }
 
     /*
      * Modify Article
@@ -119,11 +117,9 @@ class BbsController extends \App\Http\Controllers\Controller {
      */
     public function update(Request $request, $tbl_name, $id)
     {
-        //$articles_model = new $this->articles_model;
-        //$articles_model->setTable($this->board_setting->table_name);
-        $cfg = $this->get_table_info($tbl_name);
+
+        $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $article = Articles::findOrFail($id);
-        //$article->setTable($this->board_setting->table_name);
 
         if (!$article->isOwner(Auth::user())) {
             return redirect()->route('bbs.index', $tbl_name);
@@ -141,7 +137,7 @@ class BbsController extends \App\Http\Controllers\Controller {
         $article->content = $request->get('content');
         $article->save();
 
-        // 첨부파일 업로드
+        // Upload Attached files
         $date_Ym = date("Ym", strtotime($article->created_at));//수정일경우 기존 데이타의 생성일을 기준으로 가져온다.
         $filepath = 'public/bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;
 
@@ -152,7 +148,7 @@ class BbsController extends \App\Http\Controllers\Controller {
              
                 if ($upload == null) continue;
     
-                // 기존 파일 삭제
+                // Delete exist files
                 if (($file = $article->files->where('rank', $index)->first())) {
                     Storage::delete($file->path_to_file);
                     $file->delete();
@@ -179,8 +175,7 @@ class BbsController extends \App\Http\Controllers\Controller {
      * 그리고 contents에 포함된 링크 주소고 변경하여 데이타를 업데이트 한다. 
      */
     private function contents_update($article, $table_id, $date_Ym){
-        
-        Log::info('contents_update start ');
+
         $sourceDir = storage_path() .'/app/public/bbs/tmp/editor/'. session()->getId();
         $destinationDir = storage_path() .'/app/public/bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor';
         
@@ -192,65 +187,66 @@ class BbsController extends \App\Http\Controllers\Controller {
         $success = File::copyDirectory($sourceDir, $destinationDir);
        Storage::deleteDirectory('public/bbs/tmp/editor/'. session()->getId());
     }
-	/*
-	 * Show Article
-	 *
-	 * @param String $tbl_name
-	 * @param  int  $id
+    /*
+     * Show Article
+     *
+     * @param String $tbl_name
+     * @param  int  $id
      * @return \Illuminate\Http\Response
-	 */
+     */
     public function show(Request $request, $tbl_name, $id)
     {
-        $cfg = $this->get_table_info($tbl_name);
+        $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $article = Articles::findOrFail($id);
 
-		if ($request->cookie($tbl_name.$id) != '1') {
-			$article->hit ++;
-			$article->save();
-		}
+        if ($request->cookie($tbl_name.$id) != '1') {
+            $article->hit ++;
+            $article->save();
+        }
 
-		Cookie::queue(Cookie::make($tbl_name.$id, '1'));
+        Cookie::queue(Cookie::make($tbl_name.$id, '1'));
         return view('bbs::templates.'.$cfg->skin.'.show')->with(compact('article', 'cfg'));
     }
 
-	/*
-	 * Modify Form
-	 *
-	 * @param String $tbl_name
-	 * @param  int  $id
+    /*
+     * Modify Form
+     *
+     * @param String $tbl_name
+     * @param  int  $id
      * @return \Illuminate\Http\Response
-	 */
+     */
     public function editForm($tbl_name, $id)
     {
-        $cfg = $this->get_table_info($tbl_name);
+        $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+        
         $article = Articles::findOrFail($id);
         
-		if (!$article->isOwner(Auth::user())) {
-			return redirect()->route('bbs.index', $tbl_name);
-		}
+        if (!$article->isOwner(Auth::user())) {
+            return redirect()->route('bbs.index', $tbl_name);
+        }
         
         return view('bbs::templates.'.$cfg->skin.'.create')->with(compact('article', 'cfg'));
-		//return view('bbs::templates.'.$cfg->skin.'.create')->with(compact('article', 'cfg'));
+        //return view('bbs::templates.'.$cfg->skin.'.create')->with(compact('article', 'cfg'));
     }
 
-	/*
-	 * Delete Article
-	 * Step1 : delete files
+    /*
+     * Delete Article
+     * Step1 : delete files
      * Step2 : files table
      * Step3 : delete article
-	 * @param String $tbl_name
-	 * @param  int  $id
+     * @param String $tbl_name
+     * @param  int  $id
      * @return \Illuminate\Http\Response
-	 */
+     */
     public function destroy($tbl_name, $id)
     {
         
-        $cfg = $this->get_table_info($tbl_name);
-    	$article = Articles::findOrFail($id);
+        $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+        $article = Articles::findOrFail($id);
 
-		if (!$article->isOwner(Auth::user())) {
-			return redirect()->route('bbs.index', $tbl_name);
-		}
+        if (!$article->isOwner(Auth::user())) {
+            return redirect()->route('bbs.index', $tbl_name);
+        }
         //1. delete files 
         Storage::deleteDirectory('public/bbs/'.$cfg->id.'/'.date("Ym", strtotime($article->created_at)).'/'.$article->id);
 
@@ -259,9 +255,9 @@ class BbsController extends \App\Http\Controllers\Controller {
         Files::where('bbs_articles_id', $article->id)->delete();
 
         //3. delete article
-		$article->delete();
+        $article->delete();
 
-		return redirect()->route('bbs.index', $tbl_name);
+        return redirect()->route('bbs.index', $tbl_name);
     }
     
     /**
@@ -286,15 +282,4 @@ class BbsController extends \App\Http\Controllers\Controller {
         }
         
     }
-
-    /**
-     * @param String $tbl_name
-     * @return Tables 
-     */
-    private function get_table_info($tbl_name){
-        
-        $tables = new Tables;
-        return $tables->get_config_by_tablename($tbl_name);
-    }
-
 }

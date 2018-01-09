@@ -3,17 +3,36 @@
 namespace App\Http\Controllers\Bbs;
 
 use Illuminate\Http\Request;
-
+use Auth;
+use Pondol\Bbs\BbsService;
 
 
 class AdminController extends \Pondol\Bbs\AdminController
 {
-    // 기본 라우트 이름
-    protected $baseRouteName = '';
-    
+
     // BBS Items per Page
     protected $itemsPerPage = 10;
+    //protected $blade_extends = 'bbs.layouts.default';
+    protected $blade_extends = 'admin.layouts.admin';
+   // protected $deaultUrlParams = array('blade_extends' =>'bbs.layouts.default');
+    protected $deaultUrlParams = array('blade_extends' =>'admin.layouts.admin');
     
-
-    
+     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware(function ($request, $next) {
+            if (Auth::check()) {
+                if(!Auth::user()->hasRole('administrator'))
+                    return redirect('');
+            } else {
+                return redirect('');
+            }
+            return $next($request);
+        });
+    }
 }

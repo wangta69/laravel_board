@@ -10,8 +10,8 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-//namespace App\Http\Controllers\Bbs;
-Route::group(['prefix' => 'bbs', 'as' => 'bbs.', 'namespace' => 'App\Http\Controllers\Bbs', 'middleware' => ['web']], function () {
+
+Route::group(['prefix' => 'bbs', 'as' => 'bbs.', 'namespace' => 'Bbs'], function () {
     
     Route::get('admin', 'AdminController@index')->name('admin');
     Route::get('admin/create', 'AdminController@create')->name('admin.bbs.create');

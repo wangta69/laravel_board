@@ -4,49 +4,58 @@ namespace Pondol\Bbs;
 use Illuminate\Http\Request;
 
 use Route;
-use Auth;
 use View;
 
-use Pondol\Bbs\Models\Bbs_table as Tables;
-    
+use Pondol\Bbs\Models\Bbs_tables as Tables;
+use Pondol\Bbs\Models\Role;
+
+//use Pondol\Bbs\Models\Bbs_roles as Roles;
     
 
 class AdminController extends \App\Http\Controllers\Controller {
 
 	
 	public function __construct() {
-		// 기본 라우트 이름을 저장한다.
-		$routeArr = explode('.', Route::currentRouteName());
-		array_pop($routeArr);
-		
-		$this->baseRouteName = implode('.', $routeArr);
-		
-		View::share('baseRouteName', $this->baseRouteName);
+	    // var_dump(Auth::user());
 	}
 	
 	/*
-	 * 게시판 리스트
+	 * BBS Tables List
 	 * 
 	 * @return \Illuminate\Http\Response
 	 */
-    public function index()
+    public function index(Request $request)
     {
-		$list = Tables::orderBy('created_at', 'desc')->paginate($this->itemsPerPage);
-        return view('bbs.admin.index')->with(compact('list'));
+        
+        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+        
+        $list = Tables::orderBy('created_at', 'desc')->paginate($this->itemsPerPage);
+        //return view('bbs.admin.index')->with(compact('list', $this->blade_extends));
+        return view('bbs.admin.index', ['list' => $list, 'urlParams'=>$urlParams]);
     }
     
 	/*
-	 * CREATE BBS
+	 * BBS CREATE Form
 	 * 
 	 * @return \Illuminate\Http\Response
 	 */
-    public function create()
+    public function createForm(Request $request)
     {
-        return view('bbs.admin.create');
+        $skin_dir =  resource_path('views/bbs/templates/');
+        $tmp_skins = array_map('basename',\File::directories($skin_dir));
+        //키를 text로 변경
+        foreach($tmp_skins as $v){
+            $skins[$v] = $v;
+        }
+        
+
+
+        //return view('bbs.admin.create')->with(compact('skins'));
+        return view('bbs.admin.create', ['skins' => $skins, 'blade_extends' => $this->blade_extends, 'roles' => Role::get()]);
     }
 
 	/*
-	 * Delete BBS
+	 * Create BBS
 	 * 
 	 * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -58,34 +67,104 @@ class AdminController extends \App\Http\Controllers\Controller {
     		'table_name' => 'required',
     		'skin' => 'required',
     	]);
+
+        $table = new Tables;
+        $table->name 		= $request->get('name');
+        $table->table_name 	= $request->get('table_name');
+        $table->skin		= $request->get('skin');
+        $table->save();
 		
-		$model = new Tables;
-		
-		$model->name 		= $request->get('name');
-		$model->table_name 	= $request->get('table_name');
-		$model->skin		= $request->get('skin');
-		$model->save();
-		
+        
+        //set roles
+        $table->roles_read()->detach();
+        
+        if ($this->has_roles($request->get('roles-read'))) {
+            $table->roles_read()->attach($request->get('roles-read'));
+        }
+
+        if ($this->has_roles($request->get('roles-write'))) {
+            $table->roles_write()->attach($request->get('roles-write'));
+        }
+        
         return redirect()->route('bbs.admin');
 	}
 
+
+    /*
+     * Excute BBS Update
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $table = Tables::findOrFail($id);
+        $table->name        = $request->name;
+        $table->table_name  = $request->table_name;
+        $table->skin        = $request->skin;
+
+        $table->save();
+        
+        
+     
+        //set roles
+        $table->roles_read()->detach();
+      
+        if ($this->has_roles($request->get('roles-read'))) {
+            $table->roles_read()->attach($request->get('roles-read'));
+        }
+
+        if ($this->has_roles($request->get('roles-write'))) {
+            $table->roles_write()->attach($request->get('roles-write'));
+        }
+
+         return redirect()->route('bbs.admin');
+    }
+    
+    
+    /**
+     * role has a value or not
+     * @return Boolean
+     */
+    private function has_roles($roles){
+        if(!is_array($roles))
+            return false;
+        else{
+            foreach($roles as $v){
+                if($v == 0) 
+                    return false;
+            }
+        }
+        
+        return true;
+    }
+
+
 	/*
-	 * 게시판 보기
+	 * Show BBS Board
 	 * 
 	 * @param  int  $id
      * @return \Illuminate\Http\Response
 	 */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-    	$model = new $this->model;
-		
-		$board = $model->findOrFail($id);
-		
-		return view('bbs.admin.show')->with(compact('board'));
+        $cfg = Tables::findOrFail($id);
+        
+        $skin_dir =  resource_path('views/bbs/templates/');
+        $tmp_skins = array_map('basename',\File::directories($skin_dir));
+        
+        //키를 text로 변경
+        foreach($tmp_skins as $v){
+            $skins[$v] = $v;
+        }
+        
+        return view('bbs.admin.create', ['cfg'=> $cfg, 'skins' => $skins, 'roles' => Role::get(), 'blade_extends' => $this->blade_extends]);
+        //return view('bbs.admin.create')->with(compact('cfg', 'skins'));
     }
 
 	/*
-	 * 게시판 수정 뷰
+	 * BBS Edit Form
 	 * 
 	 * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -94,27 +173,19 @@ class AdminController extends \App\Http\Controllers\Controller {
     {
     }
 
-	/*
-	 * 게시판 수정
-	 * 
-	 * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-	 */
-    public function update(Request $request, $id)
-    {
-    }
 
 	/*
-	 * 게시판 삭제
+	 * Delete BBS
 	 * 
 	 * @param  int  $id
      * @return \Illuminate\Http\Response
 	 */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-		$board = Tables::findOrFail($id);
-		$board->delete();
-		return redirect()->route('bbs.admin');
+        $cfg = Tables::findOrFail($id);
+        $cfg->delete();
+        return redirect()->route('bbs.admin');
     }
+    
+
 }

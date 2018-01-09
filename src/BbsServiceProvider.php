@@ -45,17 +45,17 @@ class BbsServiceProvider extends ServiceProvider {
         
 
 		//set migrations (automatic)
-		/*
-		Log::info(__DIR__.'/migrations/');
-        Log::info(realpath(__DIR__.'/migrations/'));
+		
+		//Log::info(__DIR__.'/migrations/');
+        //Log::info(realpath(__DIR__.'/migrations/'));
 		$this->loadMigrationsFrom(__DIR__.'/migrations/');
-        $this->artisan('migrate');
-        */
+        //$this->artisan('migrate');
+        \Artisan::call('migrate');
     
         //if you use this one you have to command php artisan migrate
-        $this->publishes([
-        	__DIR__.'/migrations/' => database_path('migrations'),
-        ], 'migrations');
+        //$this->publishes([
+        //	__DIR__.'/migrations/' => database_path('migrations'),
+        //], 'migrations');
      
 
 		//set assets

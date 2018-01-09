@@ -18,7 +18,7 @@ class CreatePondolBbsTables extends Migration
             
             $table->increments('id');
             $table->string('name');
-            $table->string('table_name');
+            $table->string('table_name')->unique();
             $table->string('skin');
             $table->timestamps();
             $table->softDeletes();
@@ -30,10 +30,10 @@ class CreatePondolBbsTables extends Migration
             $table->increments('id');
             
             $table->integer('user_id')->unsigned();
-            $table->integer('cate_id')->unsigned();
+            $table->integer('bbs_table_id')->unsigned();
             $table->string('title', '255');
             $table->text('content');
-            $table->integer('hit')->unsigned();
+            $table->integer('hit')->unsigned()->default(0);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -44,11 +44,22 @@ class CreatePondolBbsTables extends Migration
             
             $table->increments('id');
             $table->integer('bbs_articles_id')->unsigned();
-            $table->string('filename');
+            $table->string('file_name');
+            $table->string('path_to_file');
+            $table->string('name_on_disk');
             $table->integer('rank')->unsigned();
             $table->timestamps();
             
             $table->foreign('bbs_articles_id')->references('id')->on('bbs_articles');
+        });
+
+    // 게시판과 연결되 role
+        Schema::create('bbs_roles', function(BluePrint $table) {
+            $table->engine = 'InnoDB';
+            
+            $table->integer('bbs_tables_id')->unsigned();
+            $table->integer('read_role_id')->unsigned()->nullable();
+            $table->integer('write_role_id')->unsigned()->nullable();
         });
     }
 
