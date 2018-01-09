@@ -23,7 +23,7 @@ Step 1.2) Add Facade to the aliases array in `config/app.php`.
 ```
 
 ## How to Use
-# Login To Admin
+### Login To Admin
 After Install, Goto App/Http/Controllers/Bbs/AdminController.php 
 ```
 if(!Auth::user()->hasRole('administrator')) => hasRole('Your Admin Role name')
@@ -32,7 +32,7 @@ Type url http://YourDomain/bbs/admin and Create What you want Bbs.  <br />
 
 If you have rolls not yet,  do 'php artisan make:model Role -m' <br />
 
-#Extract datas only
+### Extract datas only
 ```
 use Pondol\Bbs\BbsService;
 public function Anything()
@@ -41,7 +41,7 @@ public function Anything()
 }
 ```
 
-#Change Layout
+### Change Layout
 Go to App/Http/Controllers/Bbs/AdminController.php or  BoardController.php
 ```
 protected $blade_extends = null; to protected $blade_extends = 'SomeThing you want. example 'admin.layouts.admin';
