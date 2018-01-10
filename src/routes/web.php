@@ -11,12 +11,14 @@
 |
 */
 
-Route::group(['prefix' => 'bbs', 'as' => 'bbs.', 'namespace' => 'Bbs'], function () {
+Route::group(['prefix' => 'bbs', 'as' => 'bbs.', 'namespace' => 'Bbs', 'middleware' => ['web']], function () {
     
     Route::get('admin', 'AdminController@index')->name('admin');
-    Route::get('admin/create', 'AdminController@createForm')->name('admin.bbs.create');
-    Route::post('admin/create', 'AdminController@store')->name('admin.bbs.store');
-    Route::delete('admin/{tbl_id}/delete', 'AdminController@destroy')->name('admin.bbs.destroy');
+    Route::get('admin/create', 'AdminController@createForm')->name('admin.create');
+    Route::get('admin/{tbl_id}/create', 'AdminController@createForm')->name('admin.show');
+    Route::post('admin/create', 'AdminController@store')->name('admin.store');
+    Route::put('admin/{tbl_id}/create', 'AdminController@update')->name('admin.store');
+    Route::delete('admin/{tbl_id}/delete', 'AdminController@destroy')->name('admin.destroy');
    // Route::get('{tbl_id}/board', 'BbsController@index')->name('board');
    
     Route::post('/plugins/{plugins}/file-upload', 'PluginsController@fileUpload')->name('plugin.fileupload');

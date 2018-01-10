@@ -5,19 +5,19 @@ use Illuminate\Http\Request;
 
 use Route;
 use View;
+use Validator;
 
 use Pondol\Bbs\Models\Bbs_tables as Tables;
 use Pondol\Bbs\Models\Role;
-
+use Pondol\Bbs\BbsService;
 //use Pondol\Bbs\Models\Bbs_roles as Roles;
     
 
 class AdminController extends \App\Http\Controllers\Controller {
 
-	
-	public function __construct() {
-	    // var_dump(Auth::user());
-	}
+	protected $bbsSvc;
+    protected $cfg;
+    public function __construct() {}
 	
 	/*
 	 * BBS Tables List
@@ -39,8 +39,15 @@ class AdminController extends \App\Http\Controllers\Controller {
 	 * 
 	 * @return \Illuminate\Http\Response
 	 */
-    public function createForm(Request $request)
+    public function createForm(Request $request, $id=null)
     {
+        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+
+        if($id)
+            $cfg = $this->bbsSvc->get_table_info_by_id($id);
+        else 
+            $cfg = null;
+            
         $skin_dir =  resource_path('views/bbs/templates/');
         $tmp_skins = array_map('basename',\File::directories($skin_dir));
         //키를 text로 변경
@@ -49,9 +56,8 @@ class AdminController extends \App\Http\Controllers\Controller {
         }
         
 
-
         //return view('bbs.admin.create')->with(compact('skins'));
-        return view('bbs.admin.create', ['skins' => $skins, 'blade_extends' => $this->blade_extends, 'roles' => Role::get()]);
+        return view('bbs.admin.create', ['cfg'=>$cfg, 'skins' => $skins, 'roles' => Role::get(), 'urlParams'=>$urlParams]);
     }
 
 	/*
@@ -62,11 +68,28 @@ class AdminController extends \App\Http\Controllers\Controller {
 	 */
     public function store(Request $request)
     {
-    	$this->validate($request, [
-    		'name' => 'required',
-    		'table_name' => 'required',
-    		'skin' => 'required',
-    	]);
+        
+        $reserved_table_name = ['admin', 'root'];
+        
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'table_name' => 'required|unique:bbs_tables',
+            'skin' => 'required',
+            //'username' => 'required|unique:users|min:2|max:8',
+        ]);
+        
+        $validator->after(function($validator) use ($request, $reserved_table_name)
+        {
+            if (in_array($request->input('table_name'), $reserved_table_name))
+            {
+                $validator->errors()->add('table_name', $request->input('table_name').' is reserved');
+            }
+        });
+
+        if ($validator->fails()) return redirect()->back()->withErrors($validator->errors());
+        
+        
+        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
         $table = new Tables;
         $table->name 		= $request->get('name');
@@ -86,7 +109,7 @@ class AdminController extends \App\Http\Controllers\Controller {
             $table->roles_write()->attach($request->get('roles-write'));
         }
         
-        return redirect()->route('bbs.admin');
+        return redirect()->route('bbs.admin', ['urlParams'=>$urlParams->enc]);
 	}
 
 
@@ -99,15 +122,30 @@ class AdminController extends \App\Http\Controllers\Controller {
      */
     public function update(Request $request, $id)
     {
+        
         $table = Tables::findOrFail($id);
+        
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'skin' => 'required',
+            //'username' => 'required|unique:users|min:2|max:8',
+        ]);
+        
+        $validator->sometimes('table_name', 'unique:bbs_tables', function ($input) use ($table) {
+            return strtolower($input->table_name) != strtolower($table->table_name);
+        });
+        
+        if ($validator->fails()) return redirect()->back()->withErrors($validator->errors());
+
         $table->name        = $request->name;
         $table->table_name  = $request->table_name;
         $table->skin        = $request->skin;
 
         $table->save();
         
+
+        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
         
-     
         //set roles
         $table->roles_read()->detach();
       
@@ -119,7 +157,7 @@ class AdminController extends \App\Http\Controllers\Controller {
             $table->roles_write()->attach($request->get('roles-write'));
         }
 
-         return redirect()->route('bbs.admin');
+         return redirect()->route('bbs.admin', ['urlParams'=>$urlParams->enc]);
     }
     
     
@@ -150,6 +188,7 @@ class AdminController extends \App\Http\Controllers\Controller {
     public function show(Request $request, $id)
     {
         $cfg = Tables::findOrFail($id);
+        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
         
         $skin_dir =  resource_path('views/bbs/templates/');
         $tmp_skins = array_map('basename',\File::directories($skin_dir));
@@ -159,7 +198,7 @@ class AdminController extends \App\Http\Controllers\Controller {
             $skins[$v] = $v;
         }
         
-        return view('bbs.admin.create', ['cfg'=> $cfg, 'skins' => $skins, 'roles' => Role::get(), 'blade_extends' => $this->blade_extends]);
+        return view('bbs.admin.create', ['cfg'=> $cfg, 'skins' => $skins, 'roles' => Role::get(), 'urlParams'=>$urlParams]);
         //return view('bbs.admin.create')->with(compact('cfg', 'skins'));
     }
 
@@ -183,8 +222,10 @@ class AdminController extends \App\Http\Controllers\Controller {
     public function destroy(Request $request, $id)
     {
         $cfg = Tables::findOrFail($id);
+        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+        
         $cfg->delete();
-        return redirect()->route('bbs.admin');
+        return redirect()->route('bbs.admin', ['urlParams'=>$urlParams->enc]);
     }
     
 

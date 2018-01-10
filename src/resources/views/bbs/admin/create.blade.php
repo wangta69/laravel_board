@@ -1,20 +1,26 @@
-@extends(($blade_extends ? $blade_extends : 'bbs.layouts.default' ))
+
+<h2>게시판 생성/수정</h2>
+@extends($urlParams->dec['blade_extends'])
 @section ('content')
 
 @if (isset($cfg))
     {!! Form::open([
-        'route' => ['bbs.admin.update', $cfg->id],
+        'route' => ['bbs.admin.store', $cfg->id, 'urlParams='.$urlParams->enc],
         'class' => 'form-horizontal',
         'method' => 'put'
     ]) !!}
 @else
     {!! Form::open([
-        'route' => ['bbs.admin.store'],
+        'route' => ['bbs.admin.store', 'urlParams='.$urlParams->enc],
         'class' => 'form-horizontal',
         'method' => 'post'
     ]) !!}
 @endif
-<h2>게시판 생성/수정</h2>
+@if (!$errors->isEmpty())
+    <div class="alert alert-danger" role="alert">
+        {!! $errors->first() !!}
+    </div>
+@endif
 <div class='form-group'>
 	<label for='name' class='col-sm-2 control-label'>게시판 이름</label>
 	<div class='col-sm-10'>
@@ -28,6 +34,7 @@
 <div class='form-group'>
 	<label for='table_name' class='col-sm-2 control-label'>DB 테이블</label>
 	<div class='col-sm-10'>
+	    {{$cfg->table_name}}
 		{!! Form::text('table_name', isset($cfg) ? $cfg->table_name : old('table_name'), [
 			'class' => 'form-control',
 			'id' => 'table_name',
@@ -73,7 +80,7 @@
         {!! Form::submit('Create', [
             'class' => 'btn btn-primary btn-sm',
         ]) !!}
-        {!! Html::link(route('bbs.admin'), 'List', [
+        {!! Html::link(route('bbs.admin', ['urlParams='.$urlParams->enc]), 'List', [
             'class' => 'btn btn-default btn-sm',
         ]) !!}
     </div>

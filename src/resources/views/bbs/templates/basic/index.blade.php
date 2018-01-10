@@ -1,5 +1,4 @@
-@extends ('bbs::layouts.default')
-
+@extends($urlParams->dec['blade_extends'])
 @section ('content')
 <div class='basic-table index'>
     <h1 class='title'>
@@ -26,7 +25,7 @@
         @foreach ($list as $index => $article)
             <tr>
                 <td class='text-center'>{{ number_format($list->total() - $list->perPage() * ($list->currentPage() - 1) - $index) }}</td>
-                <td>{!! Html::link(route('bbs.show', [$cfg->table_name, $article->id]), $article->title) !!}</td>
+                <td>{!! Html::link(route('bbs.show', [$cfg->table_name, $article->id, 'urlParams='.$urlParams->enc]), $article->title) !!}</td>
                 <td class='text-center'>
                     @if (isset($article->user))
                         {{ $article->user->domain }}
@@ -48,7 +47,7 @@
     <div class='btn-area text-right'>
 
         @if ($cfg->hasRole('write'))
-            {!! Html::link(route('bbs.create', [$cfg->table_name]), '글쓰기', [
+            {!! Html::link(route('bbs.create', [$cfg->table_name, 'urlParams='.$urlParams->enc]), '글쓰기', [
                 'role' => 'button',
                 'class' => 'btn btn-sm btn-default',
             ]) !!}
@@ -57,7 +56,8 @@
 </div>
 @stop
 
-@section ('css')
+@section ('styles')
+@parent
 <style>
     @include ('bbs::templates.'.$cfg->skin.'.css.style')
 </style>

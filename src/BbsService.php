@@ -31,7 +31,8 @@ class BbsService
     
     public function get_table_info_by_table_name($tbl_name){
         $tables = new Tables;
-        return $tables->where('table_name', $tbl_name)->first();
+       // return $tables->where('table_name', $tbl_name)->first();
+        return $tables->get_config_by_tablename($tbl_name);
     }
     
     public function get_table_info_by_id($id){

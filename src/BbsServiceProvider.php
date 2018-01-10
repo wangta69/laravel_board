@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Log;
 class BbsServiceProvider extends ServiceProvider {
 
 
-
 /**
      * Where the route file lives, both inside the package and in the app (if overwritten).
      *
@@ -39,10 +38,12 @@ class BbsServiceProvider extends ServiceProvider {
 	public function boot()
     {
 
+
          if (!$this->app->routesAreCached()) {
-            require __DIR__ . '/Https/routes/web.php';
+             Log::info(__DIR__ . '/Https/routes/web.php');
+            //require __DIR__ . '/Https/routes/web.php';
         }
-        
+      
 
 		//set migrations (automatic)
 		
@@ -73,6 +74,9 @@ class BbsServiceProvider extends ServiceProvider {
          $this->loadViewsFrom(__DIR__.'/resources/views/bbs', 'bbs');
         
         //default controller file set
+        
+        Log::info(__DIR__.'/Https/Controllers/Bbs/');
+        Log::info(app_path('Http/Controllers/Bbs'));
         $this->publishes([
             __DIR__.'/Https/Controllers/Bbs/' => app_path('Http/Controllers/Bbs'),
         ]);

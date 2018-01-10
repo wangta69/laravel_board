@@ -5,17 +5,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 use Validator;
-use Auth;
 use View;
 use Cookie;
 use File;
 use Storage;
 use Response;
+use Auth;
 
 use Pondol\Bbs\Models\Bbs_tables as Tables;
 use Pondol\Bbs\Models\Bbs_articles as Articles;
 use Pondol\Bbs\Models\Bbs_files as Files;
-use Pondol\Bbs\BbsService;
+
 
 class BbsController extends \App\Http\Controllers\Controller {
 
@@ -34,8 +34,11 @@ class BbsController extends \App\Http\Controllers\Controller {
     public function index(Request $request, $tbl_name)
     {
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+
         $list = Articles::where('bbs_table_id', $cfg->id)->orderBy('created_at', 'desc')->paginate($this->itemsPerPage);
-        return view('bbs::templates.'.$cfg->skin.'.index')->with(compact('list', 'cfg'));
+        //return view('bbs::templates.'.$cfg->skin.'.index')->with(compact('list', 'cfg'));
+        return view('bbs::templates.'.$cfg->skin.'.index', ['list' => $list, 'cfg'=>$cfg, 'urlParams'=>$urlParams]);
         
     }
 
@@ -45,10 +48,12 @@ class BbsController extends \App\Http\Controllers\Controller {
      * @param String $tbl_name
      * @return \Illuminate\Http\Response
      */
-    public function createForm($tbl_name)
+    public function createForm(Request $request, $tbl_name)
     {
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
-        return view('bbs::templates.'.$cfg->skin.'.create')->with(compact('cfg', 'errors'));
+        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+       // return view('bbs::templates.'.$cfg->skin.'.create')->with(compact('cfg', 'errors'));
+        return view('bbs::templates.'.$cfg->skin.'.create', ['cfg'=>$cfg, 'urlParams'=>$urlParams]);
     }
 
     /*
@@ -68,8 +73,11 @@ class BbsController extends \App\Http\Controllers\Controller {
         
         if ($validator->fails()) return redirect()->back()->withErrors($validator->errors());
         
+        
+        
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
-
+        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+        
         $article = new Articles;
         $article->bbs_table_id = $cfg->id;
         $article->title = $request->get('title');
@@ -104,7 +112,7 @@ class BbsController extends \App\Http\Controllers\Controller {
             }//foreach if
             
         $this->contents_update($article, $cfg->id, $date_Ym);
-        return redirect()->route('bbs.show', [$tbl_name, $article->id]);
+        return redirect()->route('bbs.show', [$tbl_name, $article->id, 'urlParams='.$urlParams->enc]);
     }
 
     /*
@@ -119,10 +127,12 @@ class BbsController extends \App\Http\Controllers\Controller {
     {
 
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+        
         $article = Articles::findOrFail($id);
 
         if (!$article->isOwner(Auth::user())) {
-            return redirect()->route('bbs.index', $tbl_name);
+            return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
         }
 
         $validator = Validator::make($request->all(), [
@@ -168,7 +178,7 @@ class BbsController extends \App\Http\Controllers\Controller {
             }
 
         $this->contents_update($article, $cfg->id, $date_Ym);
-        return redirect()->route('bbs.show', [$tbl_name, $article->id]);
+        return redirect()->route('bbs.show', [$tbl_name, $article->id, 'urlParams='.$urlParams->enc]);
     }
     /**
      * 에디터에 이미지가 포함된 경우 이미지를 현재 아이템에 editor라는 폴더를 만들고 그곳에 모두 복사한다. 
@@ -197,6 +207,7 @@ class BbsController extends \App\Http\Controllers\Controller {
     public function show(Request $request, $tbl_name, $id)
     {
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
         $article = Articles::findOrFail($id);
 
         if ($request->cookie($tbl_name.$id) != '1') {
@@ -205,7 +216,8 @@ class BbsController extends \App\Http\Controllers\Controller {
         }
 
         Cookie::queue(Cookie::make($tbl_name.$id, '1'));
-        return view('bbs::templates.'.$cfg->skin.'.show')->with(compact('article', 'cfg'));
+        //return view('bbs::templates.'.$cfg->skin.'.show')->with(compact('article', 'cfg'));
+        return view('bbs::templates.'.$cfg->skin.'.show', ['article' => $article, 'cfg'=>$cfg, 'urlParams'=>$urlParams]);
     }
 
     /*
@@ -215,17 +227,19 @@ class BbsController extends \App\Http\Controllers\Controller {
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function editForm($tbl_name, $id)
+    public function editForm(Request $request, $tbl_name, $id)
     {
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
         
         $article = Articles::findOrFail($id);
         
         if (!$article->isOwner(Auth::user())) {
-            return redirect()->route('bbs.index', $tbl_name);
+            return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
         }
         
-        return view('bbs::templates.'.$cfg->skin.'.create')->with(compact('article', 'cfg'));
+        //return view('bbs::templates.'.$cfg->skin.'.create')->with(compact('article', 'cfg'));
+        return view('bbs::templates.'.$cfg->skin.'.create', ['article'=>$article, 'cfg'=>$cfg,'urlParams'=>$urlParams]);
         //return view('bbs::templates.'.$cfg->skin.'.create')->with(compact('article', 'cfg'));
     }
 
@@ -238,14 +252,15 @@ class BbsController extends \App\Http\Controllers\Controller {
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($tbl_name, $id)
+    public function destroy(Request $request, $tbl_name, $id)
     {
         
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
         $article = Articles::findOrFail($id);
 
         if (!$article->isOwner(Auth::user())) {
-            return redirect()->route('bbs.index', $tbl_name);
+            return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
         }
         //1. delete files 
         Storage::deleteDirectory('public/bbs/'.$cfg->id.'/'.date("Ym", strtotime($article->created_at)).'/'.$article->id);
@@ -257,7 +272,7 @@ class BbsController extends \App\Http\Controllers\Controller {
         //3. delete article
         $article->delete();
 
-        return redirect()->route('bbs.index', $tbl_name);
+        return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
     }
     
     /**

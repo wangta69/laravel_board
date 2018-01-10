@@ -6,14 +6,11 @@ use Illuminate\Http\Request;
 use Auth;
 use Pondol\Bbs\BbsService;
 
-
 class AdminController extends \Pondol\Bbs\AdminController
 {
 
     // BBS Items per Page
     protected $itemsPerPage = 10;
-    //protected $blade_extends = 'bbs.layouts.default';
-    protected $blade_extends = 'admin.layouts.admin';
    // protected $deaultUrlParams = array('blade_extends' =>'bbs.layouts.default');
     protected $deaultUrlParams = array('blade_extends' =>'admin.layouts.admin');
     
@@ -22,8 +19,12 @@ class AdminController extends \Pondol\Bbs\AdminController
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(BbsService $bbsSvc)
     {
+        parent::__construct();
+        $this->bbsSvc = $bbsSvc;
+        
+        
         $this->middleware('auth');
         $this->middleware(function ($request, $next) {
             if (Auth::check()) {

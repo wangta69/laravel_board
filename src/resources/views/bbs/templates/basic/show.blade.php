@@ -1,5 +1,4 @@
-@extends ('bbs::layouts.default')
-
+@extends($urlParams->dec['blade_extends'])
 @section ('content')
 <div class='basic-table show'>
     <h1 class='title'>
@@ -54,11 +53,11 @@
     
     <div class='btn-area text-right'>
         {!! Form::open([
-            'route' => ['bbs.destroy', $cfg->table_name, $article->id],
+            'route' => ['bbs.destroy', $cfg->table_name, $article->id, 'urlParams='.$urlParams->enc],
             'method' => 'delete',
         ]) !!}
             @if ($article->isOwner(Auth::user()))
-                {!! Html::link(route('bbs.edit', [$cfg->table_name, $article->id]), '수정', [
+                {!! Html::link(route('bbs.edit', [$cfg->table_name, $article->id, 'urlParams='.$urlParams->enc]), '수정', [
                     'role' => 'button',
                     'class' => 'btn btn-primary btn-sm',
                 ]) !!}
@@ -66,7 +65,7 @@
                     'class' => 'btn btn-danger btn-sm',
                 ]) !!}
             @endif
-            {!! Html::link(route('bbs.index', $cfg->table_name), '목록', [
+            {!! Html::link(route('bbs.index', [$cfg->table_name, 'urlParams='.$urlParams->enc]), '목록', [
                 'class' => 'btn btn-default btn-sm',
             ]) !!}
         {!! Form::close() !!}
@@ -74,7 +73,8 @@
 </div>
 @stop
 
-@section ('css')
+@section ('styles')
+@parent
 <style>
     @include ('bbs::templates.'.$cfg->skin.'.css.style')
 </style>
