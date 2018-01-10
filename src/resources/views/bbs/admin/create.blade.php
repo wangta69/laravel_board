@@ -1,8 +1,6 @@
-
-<h2>게시판 생성/수정</h2>
 @extends($urlParams->dec['blade_extends'])
 @section ('content')
-
+<h2>게시판 생성/수정</h2>
 @if (isset($cfg))
     {!! Form::open([
         'route' => ['bbs.admin.store', $cfg->id, 'urlParams='.$urlParams->enc],
@@ -34,7 +32,6 @@
 <div class='form-group'>
 	<label for='table_name' class='col-sm-2 control-label'>DB 테이블</label>
 	<div class='col-sm-10'>
-	    {{$cfg->table_name}}
 		{!! Form::text('table_name', isset($cfg) ? $cfg->table_name : old('table_name'), [
 			'class' => 'form-control',
 			'id' => 'table_name',

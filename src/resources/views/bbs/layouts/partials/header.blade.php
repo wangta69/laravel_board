@@ -1,11 +1,24 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="{{ app()->getLocale() }}">
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-	<title></title>
+
+	{{--CSRF Token--}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    {{--Title and Meta--}}
+    @meta
+
+    {{--Common App Styles--}}
+    {{ Html::style(mix('assets/app/css/app.css')) }}
+
+    {{--Styles--}}
+    @yield('styles')
+
+    {{--Head--}}
+    @yield('head')
 	
 	<!-- Bootstrap -->
 	<!-- Latest compiled and minified CSS -->

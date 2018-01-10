@@ -37,8 +37,7 @@ class BbsController extends \App\Http\Controllers\Controller {
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
         $list = Articles::where('bbs_table_id', $cfg->id)->orderBy('created_at', 'desc')->paginate($this->itemsPerPage);
-        //return view('bbs::templates.'.$cfg->skin.'.index')->with(compact('list', 'cfg'));
-        return view('bbs::templates.'.$cfg->skin.'.index', ['list' => $list, 'cfg'=>$cfg, 'urlParams'=>$urlParams]);
+        return view('bbs.templates.'.$cfg->skin.'.index', ['list' => $list, 'cfg'=>$cfg, 'urlParams'=>$urlParams]);
         
     }
 
@@ -52,8 +51,8 @@ class BbsController extends \App\Http\Controllers\Controller {
     {
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
-       // return view('bbs::templates.'.$cfg->skin.'.create')->with(compact('cfg', 'errors'));
-        return view('bbs::templates.'.$cfg->skin.'.create', ['cfg'=>$cfg, 'urlParams'=>$urlParams]);
+       // return view('bbs.templates.'.$cfg->skin.'.create')->with(compact('cfg', 'errors'));
+        return view('bbs.templates.'.$cfg->skin.'.create', ['cfg'=>$cfg, 'urlParams'=>$urlParams]);
     }
 
     /*
@@ -216,8 +215,8 @@ class BbsController extends \App\Http\Controllers\Controller {
         }
 
         Cookie::queue(Cookie::make($tbl_name.$id, '1'));
-        //return view('bbs::templates.'.$cfg->skin.'.show')->with(compact('article', 'cfg'));
-        return view('bbs::templates.'.$cfg->skin.'.show', ['article' => $article, 'cfg'=>$cfg, 'urlParams'=>$urlParams]);
+        //return view('bbs.templates.'.$cfg->skin.'.show')->with(compact('article', 'cfg'));
+        return view('bbs.templates.'.$cfg->skin.'.show', ['article' => $article, 'cfg'=>$cfg, 'urlParams'=>$urlParams]);
     }
 
     /*
@@ -238,9 +237,9 @@ class BbsController extends \App\Http\Controllers\Controller {
             return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
         }
         
-        //return view('bbs::templates.'.$cfg->skin.'.create')->with(compact('article', 'cfg'));
-        return view('bbs::templates.'.$cfg->skin.'.create', ['article'=>$article, 'cfg'=>$cfg,'urlParams'=>$urlParams]);
-        //return view('bbs::templates.'.$cfg->skin.'.create')->with(compact('article', 'cfg'));
+        //return view('bbs.templates.'.$cfg->skin.'.create')->with(compact('article', 'cfg'));
+        return view('bbs.templates.'.$cfg->skin.'.create', ['article'=>$article, 'cfg'=>$cfg,'urlParams'=>$urlParams]);
+        //return view('bbs.templates.'.$cfg->skin.'.create')->with(compact('article', 'cfg'));
     }
 
     /*

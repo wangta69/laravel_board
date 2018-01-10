@@ -3,7 +3,7 @@
 	'style' => 'display: none;',
 ]) !!}
 
-@section ('script')
+@section ('scripts')
 {!! Html::script('assets/pondol/bbs/smart_editor/js/HuskyEZCreator.js') !!}
 @parent
 <script>
