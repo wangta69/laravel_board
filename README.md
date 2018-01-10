@@ -48,3 +48,8 @@ protected $blade_extends = null; to protected $blade_extends = 'SomeThing you wa
 ```
 
 
+### Copied File/Dir Info
+After Install this package make copy to  <br />
+app - Http - Controllers - Bbs
+public - assets - pondol - bbs
+resources - views - bbs
