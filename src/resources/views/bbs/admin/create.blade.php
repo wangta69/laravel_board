@@ -3,13 +3,13 @@
 <h2>게시판 생성/수정</h2>
 @if (isset($cfg))
     {!! Form::open([
-        'route' => ['bbs.admin.store', $cfg->id, 'urlParams='.$urlParams->enc],
+        'route' => ['bbs.admin.create', $cfg->id, 'urlParams='.$urlParams->enc],
         'class' => 'form-horizontal',
         'method' => 'put'
     ]) !!}
 @else
     {!! Form::open([
-        'route' => ['bbs.admin.store', 'urlParams='.$urlParams->enc],
+        'route' => ['bbs.admin.create', 'urlParams='.$urlParams->enc],
         'class' => 'form-horizontal',
         'method' => 'post'
     ]) !!}
@@ -19,6 +19,7 @@
         {!! $errors->first() !!}
     </div>
 @endif
+
 <div class='form-group'>
 	<label for='name' class='col-sm-2 control-label'>게시판 이름</label>
 	<div class='col-sm-10'>

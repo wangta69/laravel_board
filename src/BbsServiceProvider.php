@@ -42,6 +42,7 @@ class BbsServiceProvider extends ServiceProvider {
          if (!$this->app->routesAreCached()) {
              Log::info(__DIR__ . '/Https/routes/web.php');
             //require __DIR__ . '/Https/routes/web.php';
+            require_once __DIR__ . '/Https/routes/web.php';
         }
       
 
@@ -77,9 +78,10 @@ class BbsServiceProvider extends ServiceProvider {
         
         Log::info(__DIR__.'/Https/Controllers/Bbs/');
         Log::info(app_path('Http/Controllers/Bbs'));
-        $this->publishes([
+        
+        $result = $this->publishes([
             __DIR__.'/Https/Controllers/Bbs/' => app_path('Http/Controllers/Bbs'),
         ]);
-
+      //  var_dump($result);
     }
 }

@@ -11,8 +11,8 @@ class AdminController extends \Pondol\Bbs\AdminController
 
     // BBS Items per Page
     protected $itemsPerPage = 10;
-   // protected $deaultUrlParams = array('blade_extends' =>'bbs.layouts.default');
-    protected $deaultUrlParams = array('blade_extends' =>'admin.layouts.admin');
+    protected $deaultUrlParams = array('blade_extends' =>'bbs.layouts.default');
+   // protected $deaultUrlParams = array('blade_extends' =>'admin.layouts.admin');
     
      /**
      * Create a new controller instance.

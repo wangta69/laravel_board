@@ -22,9 +22,25 @@ Step 1.2) Add Facade to the aliases array in `config/app.php`.
 'Bbs' => Pondol\Bbs\BbsFacade::class,
 ```
 
+Step 2) publish stuff
+```
+ php artisan vendor:publish
+```
+
+Step 3) create storage for bbs
+Step 3.1) make 'app' Directory on your storage and add 'rw'
+```
+#mkdir storage/app
+#chmod 707 storage/app
+```
+Step 3.2) make softLink to your public directory
+```
+#ln -s ../storage/app/public public/storage
+```
+
 ## How to Use
 ### Login To Admin
-After Install, Goto App/Http/Controllers/Bbs/AdminController.php 
+After Install, Goto App/Http/Controllers/Bbs/AdminController.php
 ```
 if(!Auth::user()->hasRole('administrator')) => hasRole('Your Admin Role name')
 ```
@@ -47,9 +63,12 @@ Go to App/Http/Controllers/Bbs/AdminController.php or  BoardController.php
 protected $blade_extends = null; to protected $blade_extends = 'SomeThing you want. example 'admin.layouts.admin';
 ```
 
+### Make Additional Template
+Go to resources/views/bbs/templates And add a template like exist template
+
 
 ### Copied File/Dir Info
 After Install this package make copy to  <br />
-app - Http - Controllers - Bbs
-public - assets - pondol - bbs
-resources - views - bbs
+app - Http - Controllers - Bbs  <br />
+public - assets - pondol - bbs  <br />
+resources - views - bbs  <br />
