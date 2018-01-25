@@ -73,20 +73,36 @@ class BbsController extends \App\Http\Controllers\Controller {
         if ($validator->fails()) return redirect()->back()->withErrors($validator->errors());
         
         
+        $parent_id = $request->get('parent_id');//if this vaule setted it means reply
         
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
         
         $article = new Articles;
+        
         $article->bbs_table_id = $cfg->id;
-        $article->title = $request->get('title');
-        $article->content = $request->get('content');
-
+        
         if (Auth::check()) {
             $article->user_id = Auth::user()->id;
         } else {
             $article->user_id = 0;
         }
+        $article->user_name = $request->get('user_name');
+        $article->order_num = $this->get_order_num(array('parent_id'=>$parent_id));
+        
+        $article->parent_id = 0;//firt fill then update
+        
+        $article->is_comment = 0;
+        
+        $article->order_comment_num = 0;
+        $article->title = $request->get('title');
+        $article->content = $request->get('content');
+        $article->text_type = $request->input('text_type', 'br');
+        
+        $article->save();
+        
+
+        $article->parent_id = $parent_id ? $parent_id : $article->id;
         $article->save();
         
         $date_Ym = date("Ym");
@@ -112,6 +128,16 @@ class BbsController extends \App\Http\Controllers\Controller {
             
         $this->contents_update($article, $cfg->id, $date_Ym);
         return redirect()->route('bbs.show', [$tbl_name, $article->id, 'urlParams='.$urlParams->enc]);
+    }
+
+    /*
+     * 
+     */
+    private function get_order_num($params){
+        //$parent_id = $params["parent_id"];
+        $order_order_num = Articles::min('order_num');
+
+        return $order_order_num ? $order_order_num-1:-1;
     }
 
     /*

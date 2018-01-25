@@ -15,15 +15,15 @@ use Pondol\Bbs\BbsService;
 
 class AdminController extends \App\Http\Controllers\Controller {
 
-	protected $bbsSvc;
+    protected $bbsSvc;
     protected $cfg;
     public function __construct() {}
-	
-	/*
-	 * BBS Tables List
-	 * 
-	 * @return \Illuminate\Http\Response
-	 */
+    
+    /*
+     * BBS Tables List
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function index(Request $request)
     {
         
@@ -34,11 +34,11 @@ class AdminController extends \App\Http\Controllers\Controller {
         return view('bbs.admin.index', ['list' => $list, 'urlParams'=>$urlParams]);
     }
     
-	/*
-	 * BBS CREATE Form
-	 * 
-	 * @return \Illuminate\Http\Response
-	 */
+    /*
+     * BBS CREATE Form
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function createForm(Request $request, $id=null)
     {
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
@@ -55,17 +55,19 @@ class AdminController extends \App\Http\Controllers\Controller {
             $skins[$v] = $v;
         }
         
+        $editors = ['none'=>'None', 'smartEditor'=>'Smart Editor'];
+        
 
         //return view('bbs.admin.create')->with(compact('skins'));
-        return view('bbs.admin.create', ['cfg'=>$cfg, 'skins' => $skins, 'roles' => Role::get(), 'urlParams'=>$urlParams]);
+        return view('bbs.admin.create', ['cfg'=>$cfg, 'skins' => $skins, 'editors' => $editors, 'roles' => Role::get(), 'urlParams'=>$urlParams]);
     }
 
-	/*
-	 * Create BBS
-	 * 
-	 * @param  \Illuminate\Http\Request  $request
+    /*
+     * Create BBS
+     * 
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
-	 */
+     */
     public function store(Request $request)
     {
         
@@ -92,11 +94,14 @@ class AdminController extends \App\Http\Controllers\Controller {
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
         $table = new Tables;
-        $table->name 		= $request->get('name');
-        $table->table_name 	= $request->get('table_name');
-        $table->skin		= $request->get('skin');
+        $table->name        = $request->get('name');
+        $table->table_name  = $request->get('table_name');
+        $table->skin        = $request->get('skin');
+        $table->editor      = $request->get('editor');
+        $table->auth_write  = $request->get('auth_write');
+        $table->auth_read   = $request->get('auth_read');
         $table->save();
-		
+        
         
         //set roles
         $table->roles_read()->detach();
@@ -110,7 +115,7 @@ class AdminController extends \App\Http\Controllers\Controller {
         }
         
         return redirect()->route('bbs.admin', ['urlParams'=>$urlParams->enc]);
-	}
+    }
 
 
     /*
@@ -140,7 +145,10 @@ class AdminController extends \App\Http\Controllers\Controller {
         $table->name        = $request->name;
         $table->table_name  = $request->table_name;
         $table->skin        = $request->skin;
-
+        $table->editor      = $request->get('editor');
+        $table->auth_write  = $request->get('auth_write');
+        $table->auth_read   = $request->get('auth_read');
+        
         $table->save();
         
 
@@ -179,12 +187,12 @@ class AdminController extends \App\Http\Controllers\Controller {
     }
 
 
-	/*
-	 * Show BBS Board
-	 * 
-	 * @param  int  $id
+    /*
+     * Show BBS Board
+     * 
+     * @param  int  $id
      * @return \Illuminate\Http\Response
-	 */
+     */
     public function show(Request $request, $id)
     {
         $cfg = Tables::findOrFail($id);
@@ -202,23 +210,22 @@ class AdminController extends \App\Http\Controllers\Controller {
         //return view('bbs.admin.create')->with(compact('cfg', 'skins'));
     }
 
-	/*
-	 * BBS Edit Form
-	 * 
-	 * @param  int  $id
+    /*
+     * BBS Edit Form
+     * 
+     * @param  int  $id
      * @return \Illuminate\Http\Response
-	 */
+     */
     public function edit($id)
     {
     }
 
-
-	/*
-	 * Delete BBS
-	 * 
-	 * @param  int  $id
+    /*
+     * Delete BBS
+     * 
+     * @param  int  $id
      * @return \Illuminate\Http\Response
-	 */
+     */
     public function destroy(Request $request, $id)
     {
         $cfg = Tables::findOrFail($id);
@@ -227,6 +234,4 @@ class AdminController extends \App\Http\Controllers\Controller {
         $cfg->delete();
         return redirect()->route('bbs.admin', ['urlParams'=>$urlParams->enc]);
     }
-    
-
 }

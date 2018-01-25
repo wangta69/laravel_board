@@ -1,13 +1,15 @@
 @extends($urlParams->dec['blade_extends'])
 @section ('content')
-<h2>게시판 생성/수정</h2>
+
 @if (isset($cfg))
+    <h2>게시판 수정</h2>
     {!! Form::open([
-        'route' => ['bbs.admin.create', $cfg->id, 'urlParams='.$urlParams->enc],
+        'route' => ['bbs.admin.store', $cfg->id, 'urlParams='.$urlParams->enc],
         'class' => 'form-horizontal',
         'method' => 'put'
     ]) !!}
 @else
+    <h2>게시판 생성</h2>
     {!! Form::open([
         'route' => ['bbs.admin.create', 'urlParams='.$urlParams->enc],
         'class' => 'form-horizontal',
@@ -46,15 +48,23 @@
 	<label for='skin' class='col-sm-2 control-label'>게시판 스킨</label>
 	<div class='col-sm-10'>
 		{!! 
-        Form::select('skin', $skins, isset($cfg) ? $cfg->skin : null, ['class' => 'form-control'])
+        Form::select('skin', $skins, isset($cfg) ? $cfg->skin : null, ['class' => 'form-control', 'id' => 'skin'])
         !!}
 	</div>
 </div>
 <div class='form-group'>
-    <label for='skin' class='col-sm-2 control-label'>읽기권한</label>
+    <label for='editor' class='col-sm-2 control-label'>editor</label>
+    <div class='col-sm-10'>
+        {!! 
+        Form::select('editor', $editors, isset($cfg) ? $cfg->editor : null, ['class' => 'form-control', 'id' => 'editor'])
+        !!}
+    </div>
+</div>
+<div class='form-group'>
+    <label for='roles-read' class='col-sm-2 control-label'>읽기권한</label>
 	<div class='col-sm-10'>
-	    <select id="roles" name="roles-read[]" class="form-control" multiple="multiple" style="width: 100%" autocomplete="off">
-	        <option value="" @if(isset($cfg) && $cfg->roles_count('read') == 0) selected="selected" @endif>All</option>
+	    {{ Form::radio('auth_read', 'none')}}<label>비회원</label>    {{ Form::radio('auth_read', 'gen', true)}} <label>일반회원 </label>  {{ Form::radio('auth_read', 'roll')}} <label>특정회원</label> 
+	    <select id="roles-read" name="roles-read[]" class="form-control" multiple="multiple" style="width: 100%; display:none;" autocomplete="off">
             @foreach($roles as $role)
                 <option @if(isset($cfg) && $cfg->roles_read->find($role->id)) selected="selected" @endif value="{{ $role->id }}">{{ $role->name }}</option>
             @endforeach
@@ -62,11 +72,10 @@
 	</div>
 </div>
 <div class='form-group'>
-     <label for='skin' class='col-sm-2 control-label'>쓰기권한</label>
+     <label for='roles-write' class='col-sm-2 control-label'>쓰기권한</label>
     <div class='col-sm-10'>
-        
-        <select id="roles" name="roles-write[]" class="form-control" multiple="multiple" style="width: 100%" autocomplete="off">
-            <option value="" @if(isset($cfg) && $cfg->roles_count('write') == 0) selected="selected" @endif>All</option>
+        {{ Form::radio('auth_write', 'none')}}<label>비회원</label>    {{ Form::radio('auth_write', 'gen', true)}} <label>일반회원 </label>  {{ Form::radio('auth_write', 'roll')}} <label>특정회원</label> 
+        <select id="roles-write" name="roles-write[]" class="form-control" multiple="multiple" style="width: 100%; display:none;" autocomplete="off">
             @foreach($roles as $role)
                 <option @if(isset($cfg) && $cfg->roles_write->find($role->id)) selected="selected" @endif value="{{ $role->id }}">{{ $role->name }}</option>
             @endforeach
@@ -84,4 +93,44 @@
     </div>
 </div>
 {!! Form::close() !!}
+@stop
+
+@section ('styles')
+@parent
+<style>
+    @include ('bbs.admin.css.style')
+</style>
+@stop
+
+@section ('scripts')
+@parent
+<script>
+
+var auth_read = '{{ isset($cfg) ? $cfg->auth_read : 'gen'}}';
+var auth_write = '{{ isset($cfg) ? $cfg->auth_write : 'gen'}}';
+
+$(function(){
+    $("input[name=auth_read]").val([auth_read]);
+    $("input[name=auth_write]").val([auth_write]);
+    
+    if(auth_read == 'roll')
+        $("#roles-read").show();
+    
+    if(auth_write == 'roll')
+        $("#roles-write").show();
+        
+    $("input[name='auth_read']").change(function(){
+        $("#roles-read").hide();
+        if($("input[name='auth_read']:checked").val() == 'roll')
+            $("#roles-read").show();
+    });
+    
+    $("input[name='auth_write']").change(function(){
+        $("#roles-write").hide();
+        if($("input[name='auth_write']:checked").val() == 'roll')
+            $("#roles-write").show();
+    });
+    
+});
+</script>
 @stop

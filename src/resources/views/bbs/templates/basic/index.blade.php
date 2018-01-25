@@ -27,11 +27,7 @@
                 <td class='text-center'>{{ number_format($list->total() - $list->perPage() * ($list->currentPage() - 1) - $index) }}</td>
                 <td>{!! Html::link(route('bbs.show', [$cfg->table_name, $article->id, 'urlParams='.$urlParams->enc]), $article->title) !!}</td>
                 <td class='text-center'>
-                    @if (isset($article->user))
-                        {{ $article->user->domain }}
-                    @else
-                        -
-                    @endif
+                        {{ $article->user_name }}
                 </td>
                 <td class='text-center'>{{ date('Y-m-d', strtotime($article->created_at)) }}</td>
                 <td class='text-center'>{{ number_format($article->hit) }}</td>
