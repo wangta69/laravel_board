@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Kyslik\ColumnSortable\Sortable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Bbs_articles extends Model
+class Bbs_comments extends Model
 {
     use Sortable,
     SoftDeletes;
@@ -15,7 +15,7 @@ class Bbs_articles extends Model
 
     protected $fillable = [];
 
-    protected $table        = 'bbs_articles';
+    protected $table        = 'bbs_comments';
     //protected $dateFormat = 'U';
     protected $primaryKey = 'id';
     
@@ -36,29 +36,13 @@ class Bbs_articles extends Model
         return $this->belongsTo('App\User');
     }
     
-    public function table()
+    public function article()
     {
-        return $this->belongsTo('Pondol\Bbs\Models\Bbs_tables', 'bbs_table_id');
+        return $this->belongsTo('Pondol\Bbs\Models\Bbs_articles', 'bbs_articles_id');
     }
     
     /*
-     * 
-     * @return ArticleFiles Model
-     */
-    public function comments() {
-       return $this->HasMany('Pondol\Bbs\Models\Bbs_comments');
-    }
-    
-    
-    /*
-     * 
-     * @return ArticleFiles Model
-     */
-    public function files() {
-       return $this->HasMany('Pondol\Bbs\Models\Bbs_files');
-    }
-    /*
-     * find owner of a article
+     * 게시글의 소유자인지 확인
      * 
      * @param \App\User $user
      * @return bool

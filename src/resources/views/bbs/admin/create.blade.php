@@ -83,11 +83,18 @@
     </div>
 </div>
 <div class='form-group'>
+     <label for='roles-write' class='col-sm-2 control-label'>옵션</label>
+    <div class='col-sm-10'>
+        {{ Form::checkbox('enable_reply', '1', isset($cfg) ? $cfg->enable_reply == 1 ? true : false : false )}}<label>댓글활성</label>    {{ Form::checkbox('enable_comment', '1', isset($cfg) ? $cfg->enable_comment == 1 ? true : false : false)}} <label>코멘트 활성 </label> 
+        
+    </div>
+</div>
+<div class='form-group'>
     <div class='col-sm-12 text-right'>
         {!! Form::submit('Create', [
             'class' => 'btn btn-primary btn-sm',
         ]) !!}
-        {!! Html::link(route('bbs.admin', ['urlParams='.$urlParams->enc]), 'List', [
+        {!! Html::link(route('bbs.admin.index', ['urlParams='.$urlParams->enc]), 'List', [
             'class' => 'btn btn-default btn-sm',
         ]) !!}
     </div>

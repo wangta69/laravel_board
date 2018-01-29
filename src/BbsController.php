@@ -14,6 +14,7 @@ use Auth;
 
 use Pondol\Bbs\Models\Bbs_tables as Tables;
 use Pondol\Bbs\Models\Bbs_articles as Articles;
+use Pondol\Bbs\Models\Bbs_comments as Comments;
 use Pondol\Bbs\Models\Bbs_files as Files;
 
 
@@ -36,7 +37,7 @@ class BbsController extends \App\Http\Controllers\Controller {
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
-        $list = Articles::where('bbs_table_id', $cfg->id)->orderBy('created_at', 'desc')->paginate($this->itemsPerPage);
+        $list = Articles::where('bbs_table_id', $cfg->id)->orderBy('order_num')->paginate($this->itemsPerPage);
         return view('bbs.templates.'.$cfg->skin.'.index', ['list' => $list, 'cfg'=>$cfg, 'urlParams'=>$urlParams]);
         
     }
@@ -88,13 +89,13 @@ class BbsController extends \App\Http\Controllers\Controller {
             $article->user_id = 0;
         }
         $article->user_name = $request->get('user_name');
-        $article->order_num = $this->get_order_num(array('parent_id'=>$parent_id));
+        $article->order_num = $this->get_order_num();
         
         $article->parent_id = 0;//firt fill then update
         
-        $article->is_comment = 0;
+
         
-        $article->order_comment_num = 0;
+        $article->comment_cnt = 0;
         $article->title = $request->get('title');
         $article->content = $request->get('content');
         $article->text_type = $request->input('text_type', 'br');
@@ -131,17 +132,7 @@ class BbsController extends \App\Http\Controllers\Controller {
     }
 
     /*
-     * 
-     */
-    private function get_order_num($params){
-        //$parent_id = $params["parent_id"];
-        $order_order_num = Articles::min('order_num');
-
-        return $order_order_num ? $order_order_num-1:-1;
-    }
-
-    /*
-     * Modify Article
+     * Modify Article 
      *
      * @param  \Illuminate\Http\Request  $request
      * @param String $tbl_name
@@ -205,6 +196,16 @@ class BbsController extends \App\Http\Controllers\Controller {
         $this->contents_update($article, $cfg->id, $date_Ym);
         return redirect()->route('bbs.show', [$tbl_name, $article->id, 'urlParams='.$urlParams->enc]);
     }
+
+
+    /*
+     * 
+     */
+    private function get_order_num($params=null){
+        $order_num = Articles::min('order_num');
+        return $order_num ? $order_num-1:-1;
+    }
+    
     /**
      * 에디터에 이미지가 포함된 경우 이미지를 현재 아이템에 editor라는 폴더를 만들고 그곳에 모두 복사한다. 
      * 그리고 contents에 포함된 링크 주소고 변경하여 데이타를 업데이트 한다. 

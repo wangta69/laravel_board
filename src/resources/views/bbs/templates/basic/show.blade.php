@@ -5,50 +5,33 @@
         {{ $article->table->name }}
     </h1>
     
-    <table>
-    <colgroup>
-        <col width='120' />
-        <col width='120' />
-        <col width='120' />
-        <col width='120' />
-        <col width='120' />
-        <col width='120' />
-    </colgroup>
-    <thead>
-        <tr>
-            <th>제목</th>
-            <td colspan='5'>{{ $article->title }}</td>
-        </tr>
-        <tr>
-            <th>작성자</th>
-            <td>
-                    {{ $article->user_name }}
-            </td>
-            <th>작성일</th>
-            <td>{{ date('Y-m-d', strtotime($article->created_at)) }}</td>
-            <th>조회수</th>
-            <td>{{ number_format($article->hit) }}</td>
-        </tr>
-        <tr>
-            <th>첨부파일</th>
-            <td colspan='5'>
-                @foreach ($article->files as $file)
-                    <!-- 파일 다운로드 경로 등을 넣으세요.. -->
-                    
-                    {{ link_to_route('bbs.download', $file->file_name, $file->id) }}
+    <article class="bbs-view">
+        <header class="title">{{ $article->title }}</header>
+        <section class="info">
+                    작성자 
+                @if (isset($article->user))
+                    {{ $article->user->name }}
+                @else
+                    -
+                @endif
 
+            <span class="created-at">{{ date('Y-m-d', strtotime($article->created_at)) }}</span>
+            <span class="hit">조회 {{ number_format($article->hit) }} 회</span>
+            
+        </section>
+        <section class="link">
+            <ul>
+            @foreach ($article->files as $file)
+                    <!-- 파일 다운로드 경로 등을 넣으세요.. -->
+                    <li>{{ link_to_route('bbs.download', $file->file_name, $file->id) }}</li>
                 @endforeach
-            </td>
-        </tr>
-    </thead>
-    </table>
-    
-    <div class='content'>
-        {!! nl2br($article->content) !!}
-    </div>
-    
-    <div class='btn-area text-right'>
-        {!! Form::open([
+             </ul> 
+        </section>
+        <section class="body">
+             {!! nl2br($article->content) !!}
+        </section>
+        <section class="act">
+            {!! Form::open([
             'route' => ['bbs.destroy', $cfg->table_name, $article->id, 'urlParams='.$urlParams->enc],
             'method' => 'delete',
         ]) !!}
@@ -65,8 +48,13 @@
                 'class' => 'btn btn-default btn-sm',
             ]) !!}
         {!! Form::close() !!}
-    </div>
+        </section>
+    </article>
 </div>
+    @if ($cfg->enable_comment == 1)
+        @include ('bbs::templates.basic.comment', ['cfg'=>$cfg, 'article'=>$article])
+    @endif
+
 @stop
 
 @section ('styles')

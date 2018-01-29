@@ -94,12 +94,14 @@ class AdminController extends \App\Http\Controllers\Controller {
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
         $table = new Tables;
-        $table->name        = $request->get('name');
-        $table->table_name  = $request->get('table_name');
-        $table->skin        = $request->get('skin');
-        $table->editor      = $request->get('editor');
-        $table->auth_write  = $request->get('auth_write');
-        $table->auth_read   = $request->get('auth_read');
+        $table->name            = $request->get('name');
+        $table->table_name      = $request->get('table_name');
+        $table->skin            = $request->get('skin');
+        $table->editor          = $request->get('editor');
+        $table->auth_write      = $request->get('auth_write');
+        $table->auth_read       = $request->get('auth_read');
+        $table->enable_reply    = $request->input('enable_reply', 0);
+        $table->enable_comment  = $request->input('enable_comment', 0);
         $table->save();
         
         
@@ -114,7 +116,7 @@ class AdminController extends \App\Http\Controllers\Controller {
             $table->roles_write()->attach($request->get('roles-write'));
         }
         
-        return redirect()->route('bbs.admin', ['urlParams'=>$urlParams->enc]);
+        return redirect()->route('bbs.admin.index', ['urlParams'=>$urlParams->enc]);
     }
 
 
@@ -142,13 +144,18 @@ class AdminController extends \App\Http\Controllers\Controller {
         
         if ($validator->fails()) return redirect()->back()->withErrors($validator->errors());
 
-        $table->name        = $request->name;
-        $table->table_name  = $request->table_name;
-        $table->skin        = $request->skin;
-        $table->editor      = $request->get('editor');
-        $table->auth_write  = $request->get('auth_write');
-        $table->auth_read   = $request->get('auth_read');
+        $table->name            = $request->name;
+        $table->table_name      = $request->table_name;
+        $table->skin            = $request->skin;
+        $table->editor          = $request->get('editor');
+        $table->auth_write      = $request->get('auth_write');
+        $table->auth_read       = $request->get('auth_read');
+        $table->enable_reply    = $request->input('enable_reply', 0);
+        $table->enable_comment  = $request->input('enable_comment', 0);
         
+       // print_r($request->all());
+       // echo $request->input('enable_comment', 0);
+       // exit;
         $table->save();
         
 
@@ -165,7 +172,7 @@ class AdminController extends \App\Http\Controllers\Controller {
             $table->roles_write()->attach($request->get('roles-write'));
         }
 
-         return redirect()->route('bbs.admin', ['urlParams'=>$urlParams->enc]);
+         return redirect()->route('bbs.admin.index', ['urlParams'=>$urlParams->enc]);
     }
     
     
@@ -232,6 +239,6 @@ class AdminController extends \App\Http\Controllers\Controller {
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
         
         $cfg->delete();
-        return redirect()->route('bbs.admin', ['urlParams'=>$urlParams->enc]);
+        return redirect()->route('bbs.admin.index', ['urlParams'=>$urlParams->enc]);
     }
 }

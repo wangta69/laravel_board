@@ -61,6 +61,9 @@
         {!! Form::close() !!}
     </div>
 </div>
+    @if ($cfg->enable_comment == 1)
+        @include ('bbs::templates.basic.comment')
+    @endif
 @stop
 
 @section ('styles')
