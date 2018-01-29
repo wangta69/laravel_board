@@ -1,2 +1,2 @@
-src/* linguist-vendored
+src/Https/* linguist-vendored
 *.php linguist-language=Php
