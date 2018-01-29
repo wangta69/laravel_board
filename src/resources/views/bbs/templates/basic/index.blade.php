@@ -41,8 +41,7 @@
     </div>
     
     <div class='btn-area text-right'>
-
-        @if ($cfg->hasRole('write'))
+        @if ($cfg->hasPermission('write'))
             {!! Html::link(route('bbs.create', [$cfg->table_name, 'urlParams='.$urlParams->enc]), '글쓰기', [
                 'role' => 'button',
                 'class' => 'btn btn-sm btn-default',

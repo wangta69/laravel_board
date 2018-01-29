@@ -50,8 +50,15 @@ class BbsController extends \App\Http\Controllers\Controller {
      */
     public function createForm(Request $request, $tbl_name)
     {
+
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+        
+        //check permission
+        $permission_result = $cfg->hasPermission('write');
+        if(!$permission_result)
+            abort(403, 'Unauthorized action.');
+
        // return view('bbs.templates.'.$cfg->skin.'.create')->with(compact('cfg', 'errors'));
         return view('bbs.templates.'.$cfg->skin.'.create', ['cfg'=>$cfg, 'urlParams'=>$urlParams]);
     }
@@ -65,6 +72,7 @@ class BbsController extends \App\Http\Controllers\Controller {
      */
     public function store(Request $request, $tbl_name)
     {
+
         $validator = Validator::make($request->all(), [
             'title' => 'required|min:2|max:100',
             'content' => 'required',
@@ -73,28 +81,34 @@ class BbsController extends \App\Http\Controllers\Controller {
         
         if ($validator->fails()) return redirect()->back()->withErrors($validator->errors());
         
-        
         $parent_id = $request->get('parent_id');//if this vaule setted it means reply
         
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+       // $this->permission('write', $cfg);
+       
+       
+      
+               //check permission
+        $permission_result = $cfg->hasPermission('write');
+        if(!$permission_result)
+            abort(403, 'Unauthorized action.');
+        
         
         $article = new Articles;
         
         $article->bbs_table_id = $cfg->id;
+        $article->user_name = $request->get('user_name');
         
         if (Auth::check()) {
             $article->user_id = Auth::user()->id;
+            $article->user_name = $article->user_name ? $article->user_name : Auth::user()->name;
         } else {
             $article->user_id = 0;
         }
-        $article->user_name = $request->get('user_name');
-        $article->order_num = $this->get_order_num();
-        
-        $article->parent_id = 0;//firt fill then update
-        
 
-        
+        $article->order_num = $this->get_order_num();
+        $article->parent_id = 0;//firt fill then update
         $article->comment_cnt = 0;
         $article->title = $request->get('title');
         $article->content = $request->get('content');
@@ -144,6 +158,12 @@ class BbsController extends \App\Http\Controllers\Controller {
 
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+        
+        //check permission
+        $permission_result = $cfg->hasPermission('write');
+        if(!$permission_result)
+            abort(403, 'Unauthorized action.');
+        
         
         $article = Articles::findOrFail($id);
 
@@ -322,5 +342,45 @@ class BbsController extends \App\Http\Controllers\Controller {
             exit('Requested file does not exist on our server!');
         }
         
+    }
+    
+    /**
+     * check Permission for Read, write
+     * @param String $mode read/write
+     * @param Object $cfg  Bbs Config 
+     * @return Boolean
+     */
+    private function permission($mode, $cfg){
+        $rtn = false;
+        switch($mode){
+            case "read":
+                if($cfg->auth_read == 'none')
+                    return true;
+                else{
+                    
+                }
+            break;
+            case "write":
+                switch($cfg->auth_write){
+                    case "none":
+                        return true;
+                    break;
+                    case "login":
+                        if(Auth::check())
+                            return true;
+                        else
+                            return false;
+                    break;
+                    case "role":
+                        if(!Auth::check())
+                            return false;
+                        else
+                            
+                        break;
+                }
+
+            break;
+        }
+        return $rtn;
     }
 }

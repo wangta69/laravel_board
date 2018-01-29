@@ -9,11 +9,7 @@
         <header class="title">{{ $article->title }}</header>
         <section class="info">
                     작성자 
-                @if (isset($article->user))
-                    {{ $article->user->name }}
-                @else
-                    -
-                @endif
+               {{ $article->user->name }}
 
             <span class="created-at">{{ date('Y-m-d', strtotime($article->created_at)) }}</span>
             <span class="hit">조회 {{ number_format($article->hit) }} 회</span>

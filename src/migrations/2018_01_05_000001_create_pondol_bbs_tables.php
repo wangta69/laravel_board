@@ -24,8 +24,8 @@ class CreatePondolBbsTables extends Migration
 			$table->tinyInteger('enable_reply')->unsigned()->default(0)->comment('reply 기능 활성');
 			$table->tinyInteger('enable_comment')->unsigned()->default(0)->comment('comment 기능 활성');
 
-			$table->string('auth_write', '10')->default('gen')->comment('none: nonmember, gen:logined member, roll:has roll member');
-			$table->string('auth_read', '10')->default('gen')->comment('none: nonmember, gen:logined member, roll:has roll member');
+			$table->string('auth_write', '10')->default('login')->comment('none: nonmember, login:logined member, role:has role member');
+			$table->string('auth_read', '10')->default('login')->comment('none: nonmember, login:logined member, role:has role member');
             $table->timestamps();
             $table->softDeletes();
         });

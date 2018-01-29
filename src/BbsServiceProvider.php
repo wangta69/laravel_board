@@ -1,11 +1,8 @@
 <?php
 namespace Pondol\Bbs;
 
-//use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
-//use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
-//use Route;
 
 class BbsServiceProvider extends ServiceProvider {
 
@@ -37,14 +34,11 @@ class BbsServiceProvider extends ServiceProvider {
     //public function boot(\Illuminate\Routing\Router $router)
 	public function boot()
     {
-
-
          if (!$this->app->routesAreCached()) {
              Log::info(__DIR__ . '/Https/routes/web.php');
             //require __DIR__ . '/Https/routes/web.php';
             require_once __DIR__ . '/Https/routes/web.php';
         }
-      
 
 		//set migrations (automatic)
 		
@@ -76,8 +70,8 @@ class BbsServiceProvider extends ServiceProvider {
         
         //default controller file set
         
-        Log::info(__DIR__.'/Https/Controllers/Bbs/');
-        Log::info(app_path('Http/Controllers/Bbs'));
+       // Log::info(__DIR__.'/Https/Controllers/Bbs/');
+      // Log::info(app_path('Http/Controllers/Bbs'));
         
         $result = $this->publishes([
             __DIR__.'/Https/Controllers/Bbs/' => app_path('Http/Controllers/Bbs'),

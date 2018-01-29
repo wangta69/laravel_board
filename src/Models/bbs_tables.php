@@ -86,12 +86,60 @@ class Bbs_tables extends Model
         return !! $role->intersect($this->roles_read)->count();
     }
 */
-    public function hasRole($flag)
+    /**
+     * 설정된 role정보를 가져온다.
+     * @param String $flag read/write
+     * @return Boolean;
+     */
+    public function hasPermission($mode)
     {
+        switch($mode){
+            case "read":
+                if($this->auth_read == 'none')
+                    return true;
+                else{
+                    
+                }
+            break;
+            case "write":
+                switch($this->auth_write){
+                    case "none":
+                        return true;
+                    break;
+                    case "login":
+                        if(\Auth::check())
+                            return true;
+                        else
+                            return false;
+                    break;
+                    case "role":
+                        if(!\Auth::check())
+                            return false;
+                        else
+                            return $this->hasRole($mode);
+                        break;
+                }
+
+            break;
+        }
+        switch($flag){
+            case "read":
+                
+                break;
+            case "write":
+                
+                break;
+        }
+
+        
+        
+        //$roles = $this->hasMany('Pondol\Bbs\Models\Bbs_roles', 'bbs_tables_id');
+    }
+
+    private function hasRole($mode){
         //먼저 현재 롤을 가져온다.
         $roles = $this->get_roles();
-
-        if(isset($roles[$flag])){//role 이 세팅되어 이으면 체크한다.
+        if(isset($roles[$mode])){//role 이 세팅되어 이으면 체크한다.
         
             if(!\Auth::user())
                 return false;
@@ -101,7 +149,7 @@ class Bbs_tables extends Model
             $user_roles = \Auth::user()->roles;
 
             foreach($user_roles as $v){
-                if(in_array($v->id, $roles[$flag]))
+                if(in_array($v->id, $roles[$mode]))
                     return true;
             }
 
@@ -110,8 +158,6 @@ class Bbs_tables extends Model
         }
         else
             return true;
-        
-        //$roles = $this->hasMany('Pondol\Bbs\Models\Bbs_roles', 'bbs_tables_id');
     }
     
 

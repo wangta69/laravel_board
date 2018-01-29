@@ -38,6 +38,11 @@ Step 3.2) make softLink to your public directory
 #ln -s ../storage/app/public public/storage
 ```
 
+Step 4) copy config file (bbs.php)
+```
+cp ./vendor/wangta69/src/Https/config/bbs.php ./config/bbs.php
+```
+
 ## How to Use
 ### Login To Admin
 After Install, Goto App/Http/Controllers/Bbs/AdminController.php

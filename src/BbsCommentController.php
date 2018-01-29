@@ -45,18 +45,16 @@ class BbsCommentController extends \App\Http\Controllers\Controller {
        // $urlParams = $request->input('urlParams');
         
         $article = Articles::find($parent_id);
-        
 
         $comment = new Comments;
-    
+        $comment->user_name = $request->get('user_name');
         if (Auth::check()) {
             $comment->user_id = Auth::user()->id;
-           // $comment->user_name = Auth::user()->id;
+            $comment->user_name = $comment->user_name ? $comment->user_name : Auth::user()->name;
         } else {
             $comment->user_id = 0;
         }
-        
-        $comment->user_name = $request->get('user_name');
+
         $comment->bbs_articles_id = $article->id;//firt fill then update
         $comment->order_num = $this->get_order_num($article->id);
         $comment->content = $request->get('content');
