@@ -28,7 +28,7 @@ class BbsCommentController extends \App\Http\Controllers\Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $tbl_name, $parent_id)
+    public function store(Request $request, $tbl_name, Articles $article)
     {
         
         if(!$tbl_name || !$parent_id)
@@ -44,7 +44,6 @@ class BbsCommentController extends \App\Http\Controllers\Controller {
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
        // $urlParams = $request->input('urlParams');
         
-        $article = Articles::find($parent_id);
 
         $comment = new Comments;
         $comment->user_name = $request->get('user_name');
@@ -74,9 +73,6 @@ class BbsCommentController extends \App\Http\Controllers\Controller {
         $order_num = Comments::where('bbs_articles_id', $article_id)->min('order_num');
         return $order_num ? $order_num-1:-1;
     }
-    
-
-
     /*
      * Delete Article
      * Step1 : delete files

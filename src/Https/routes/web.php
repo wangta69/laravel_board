@@ -13,10 +13,10 @@
 Route::group(['prefix' => 'bbs/admin', 'as' => 'bbs.admin.', 'namespace' => 'App\Http\Controllers\Bbs', 'middleware' => ['web']], function () {
     Route::get('', 'AdminController@index')->name('index');
     Route::get('create', 'AdminController@createForm')->name('create');
-    Route::get('{tbl_id}/create', 'AdminController@createForm')->name('show');
+    Route::get('{table}/create', 'AdminController@createForm')->name('show');
     Route::post('create', 'AdminController@store')->name('store');
-    Route::put('{tbl_id}/create', 'AdminController@update')->name('store');
-    Route::delete('{tbl_id}/delete', 'AdminController@destroy')->name('destroy');
+    Route::put('{table}/create', 'AdminController@update')->name('store');
+    Route::delete('{table}/delete', 'AdminController@destroy')->name('destroy');
 });
 
 Route::group(['prefix' => 'bbs', 'as' => 'bbs.', 'namespace' => 'App\Http\Controllers\Bbs', 'middleware' => ['web']], function () {
@@ -26,16 +26,17 @@ Route::group(['prefix' => 'bbs', 'as' => 'bbs.', 'namespace' => 'App\Http\Contro
     Route::get('/{file_id}/download', 'BbsController@download')->name('download');
     Route::get('/{tbl_name}/create', 'BbsController@createForm')->name('create');
     Route::post('/{tbl_name}/store', 'BbsController@store')->name('store');
-    Route::put('/{tbl_name}/{article_id}/store', 'BbsController@update')->name('update');
-    Route::get('/{tbl_name}/{article_id}/edit', 'BbsController@editForm')->name('edit');
-    Route::delete('/{tbl_name}/{article_id}/destroy', 'BbsController@destroy')->name('destroy');
-    Route::get('/{tbl_name}/{article_id}/show', 'BbsController@show')->name('show');
+    Route::put('/{tbl_name}/{article}/store', 'BbsController@update')->name('update');
+    Route::get('/{tbl_name}/{article}/edit', 'BbsController@editForm')->name('edit');
+    Route::delete('/{tbl_name}/{article}/destroy', 'BbsController@destroy')->name('destroy');
+    Route::get('/{tbl_name}/{article}/show', 'BbsController@show')->name('show');
     Route::get('/{tbl_name}', 'BbsController@index')->name('index');
-    Route::post('/{tbl_name}/{article_id}/comment/store', 'BbsController@commentStore')->name('comment.store');
+    Route::post('/{tbl_name}/{article}/comment/store', 'BbsController@commentStore')->name('comment.store');
 });
 
 Route::group(['prefix' => 'bbs', 'as' => 'bbs.comment.', 'namespace' => 'Pondol\Bbs', 'middleware' => ['web']], function () {
-    Route::post('/{tbl_name}/{article_id}/comment/store', 'BbsCommentController@store')->name('store');
+    Route::post('/{tbl_name}/{article}/comment/store', 'BbsCommentController@store')->name('store');
+    Route::delete('/{tbl_name}/{article}/comment/{comment}/destroy', 'BbsCommentController@store')->name('destroy');
     
     
 });

@@ -39,15 +39,10 @@ class AdminController extends \App\Http\Controllers\Controller {
      * 
      * @return \Illuminate\Http\Response
      */
-    public function createForm(Request $request, $id=null)
+    public function createForm(Request $request, Tables $table)
     {
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
-        if($id)
-            $cfg = $this->bbsSvc->get_table_info_by_id($id);
-        else 
-            $cfg = null;
-            
         $skin_dir =  resource_path('views/bbs/templates/');
         $tmp_skins = array_map('basename',\File::directories($skin_dir));
         //키를 text로 변경
@@ -59,7 +54,7 @@ class AdminController extends \App\Http\Controllers\Controller {
         
 
         //return view('bbs.admin.create')->with(compact('skins'));
-        return view('bbs.admin.create', ['cfg'=>$cfg, 'skins' => $skins, 'editors' => $editors, 'roles' => Role::get(), 'urlParams'=>$urlParams]);
+        return view('bbs.admin.create', ['cfg'=>$table, 'skins' => $skins, 'editors' => $editors, 'roles' => Role::get(), 'urlParams'=>$urlParams]);
     }
 
     /*
@@ -127,10 +122,8 @@ class AdminController extends \App\Http\Controllers\Controller {
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Tables $table)
     {
-        
-        $table = Tables::findOrFail($id);
         
         $validator = Validator::make($request->all(), [
             'name' => 'required',
@@ -200,9 +193,9 @@ class AdminController extends \App\Http\Controllers\Controller {
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $id)
+    public function show(Request $request, Tables $table)
     {
-        $cfg = Tables::findOrFail($id);
+
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
         
         $skin_dir =  resource_path('views/bbs/templates/');
@@ -213,7 +206,7 @@ class AdminController extends \App\Http\Controllers\Controller {
             $skins[$v] = $v;
         }
         
-        return view('bbs.admin.create', ['cfg'=> $cfg, 'skins' => $skins, 'roles' => Role::get(), 'urlParams'=>$urlParams]);
+        return view('bbs.admin.create', ['cfg'=> $table, 'skins' => $skins, 'roles' => Role::get(), 'urlParams'=>$urlParams]);
         //return view('bbs.admin.create')->with(compact('cfg', 'skins'));
     }
 

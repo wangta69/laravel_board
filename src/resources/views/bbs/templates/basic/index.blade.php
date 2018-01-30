@@ -22,13 +22,12 @@
         </tr>
     </thead>
     <tbody>
-        @foreach ($list as $index => $article)
+        @foreach ($articles as $index => $article)
+       {{-- @foreach($articles as $article) --}} 
             <tr>
-                <td class='text-center'>{{ number_format($list->total() - $list->perPage() * ($list->currentPage() - 1) - $index) }}</td>
+                <td class='text-center'>{{ number_format($articles->total() - $articles->perPage() * ($articles->currentPage() - 1) - $index) }}</td>
                 <td>{!! Html::link(route('bbs.show', [$cfg->table_name, $article->id, 'urlParams='.$urlParams->enc]), $article->title) !!}</td>
-                <td class='text-center'>
-                        {{ $article->user_name }}
-                </td>
+                <td class='text-center'>{{ $article->user_name }}</td>
                 <td class='text-center'>{{ date('Y-m-d', strtotime($article->created_at)) }}</td>
                 <td class='text-center'>{{ number_format($article->hit) }}</td>
             </tr>
@@ -37,7 +36,7 @@
     </table>
     
     <div class='navigation'>
-        {!! $list->render() !!}
+        {!! $articles->render() !!}
     </div>
     
     <div class='btn-area text-right'>

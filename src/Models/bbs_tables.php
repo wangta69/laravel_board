@@ -122,18 +122,6 @@ class Bbs_tables extends Model
 
             break;
         }
-        switch($flag){
-            case "read":
-                
-                break;
-            case "write":
-                
-                break;
-        }
-
-        
-        
-        //$roles = $this->hasMany('Pondol\Bbs\Models\Bbs_roles', 'bbs_tables_id');
     }
 
     private function hasRole($mode){

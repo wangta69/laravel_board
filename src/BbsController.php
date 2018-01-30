@@ -37,8 +37,8 @@ class BbsController extends \App\Http\Controllers\Controller {
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
-        $list = Articles::where('bbs_table_id', $cfg->id)->orderBy('order_num')->paginate($this->itemsPerPage);
-        return view('bbs.templates.'.$cfg->skin.'.index', ['list' => $list, 'cfg'=>$cfg, 'urlParams'=>$urlParams]);
+        $articles = Articles::where('bbs_table_id', $cfg->id)->orderBy('order_num')->paginate($this->itemsPerPage);
+        return view('bbs.templates.'.$cfg->skin.'.index', ['articles' => $articles, 'cfg'=>$cfg, 'urlParams'=>$urlParams]);
         
     }
 
@@ -153,7 +153,7 @@ class BbsController extends \App\Http\Controllers\Controller {
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $tbl_name, $id)
+    public function update(Request $request, $tbl_name, Articles $article)
     {
 
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
@@ -164,8 +164,6 @@ class BbsController extends \App\Http\Controllers\Controller {
         if(!$permission_result)
             abort(403, 'Unauthorized action.');
         
-        
-        $article = Articles::findOrFail($id);
 
         if (!$article->isOwner(Auth::user())) {
             return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
@@ -250,18 +248,17 @@ class BbsController extends \App\Http\Controllers\Controller {
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $tbl_name, $id)
+    public function show(Request $request, $tbl_name, Articles $article)
     {
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
-        $article = Articles::findOrFail($id);
 
-        if ($request->cookie($tbl_name.$id) != '1') {
+        if ($request->cookie($tbl_name.$article->id) != '1') {
             $article->hit ++;
             $article->save();
         }
 
-        Cookie::queue(Cookie::make($tbl_name.$id, '1'));
+        Cookie::queue(Cookie::make($tbl_name.$article->id, '1'));
         //return view('bbs.templates.'.$cfg->skin.'.show')->with(compact('article', 'cfg'));
         return view('bbs.templates.'.$cfg->skin.'.show', ['article' => $article, 'cfg'=>$cfg, 'urlParams'=>$urlParams]);
     }
@@ -273,12 +270,11 @@ class BbsController extends \App\Http\Controllers\Controller {
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function editForm(Request $request, $tbl_name, $id)
+    public function editForm(Request $request, $tbl_name, Articles $article)
     {
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
         
-        $article = Articles::findOrFail($id);
         
         if (!$article->isOwner(Auth::user())) {
             return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
@@ -298,12 +294,11 @@ class BbsController extends \App\Http\Controllers\Controller {
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $tbl_name, $id)
+    public function destroy(Request $request, $tbl_name, Articles $article)
     {
         
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
-        $article = Articles::findOrFail($id);
 
         if (!$article->isOwner(Auth::user())) {
             return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);

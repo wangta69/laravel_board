@@ -1,7 +1,7 @@
 @extends($urlParams->dec['blade_extends'])
 @section ('content')
 
-@if (isset($cfg))
+@if (isset($cfg->id))
     <h2>게시판 수정</h2>
     {!! Form::open([
         'route' => ['bbs.admin.store', $cfg->id, 'urlParams='.$urlParams->enc],
@@ -113,8 +113,8 @@
 @parent
 <script>
 
-var auth_read = '{{ isset($cfg) ? $cfg->auth_read : 'login'}}';
-var auth_write = '{{ isset($cfg) ? $cfg->auth_write : 'login'}}';
+var auth_read = '{{ isset($cfg->auth_read) ? $cfg->auth_read : 'login'}}';
+var auth_write = '{{ isset($cfg->auth_write) ? $cfg->auth_write : 'login'}}';
 
 $(function(){
     $("input[name=auth_read]").val([auth_read]);
