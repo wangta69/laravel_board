@@ -35,7 +35,7 @@ class BbsServiceProvider extends ServiceProvider {
 	public function boot()
     {
          if (!$this->app->routesAreCached()) {
-             Log::info(__DIR__ . '/Https/routes/web.php');
+            // Log::info(__DIR__ . '/Https/routes/web.php');
             //require __DIR__ . '/Https/routes/web.php';
             require_once __DIR__ . '/Https/routes/web.php';
         }
