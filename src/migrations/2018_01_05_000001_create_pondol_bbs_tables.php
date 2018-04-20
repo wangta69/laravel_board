@@ -100,11 +100,11 @@ class CreatePondolBbsTables extends Migration
             $table->dropForeign('bbs_files_bbs_articles_id_foreign');
         });
         
-        Schema::drop('bbs_tables');
-        Schema::drop('bbs_articles');
-        Schema::drop('bbs_files');
-		Schema::drop('bbs_roles');
-		Schema::drop('bbs_comments');
+        Schema::dropIfExists('bbs_tables');
+        Schema::dropIfExists('bbs_articles');
+        Schema::dropIfExists('bbs_files');
+		Schema::dropIfExists('bbs_roles');
+		Schema::dropIfExists('bbs_comments');
 		
     }
 }

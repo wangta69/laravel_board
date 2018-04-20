@@ -4,16 +4,16 @@
     <h1 class='title'>
         {{ $article->table->name }}
     </h1>
-    
+
     <article class="bbs-view">
         <header class="title">{{ $article->title }}</header>
         <section class="info">
-                    작성자 
+                    작성자
                {{ $article->user->name }}
 
             <span class="created-at">{{ date('Y-m-d', strtotime($article->created_at)) }}</span>
             <span class="hit">조회 {{ number_format($article->hit) }} 회</span>
-            
+
         </section>
         <section class="link">
             <ul>
@@ -21,7 +21,7 @@
                     <!-- 파일 다운로드 경로 등을 넣으세요.. -->
                     <li>{{ link_to_route('bbs.download', $file->file_name, $file->id) }}</li>
                 @endforeach
-             </ul> 
+             </ul>
         </section>
         <section class="body">
              {!! nl2br($article->content) !!}
@@ -58,4 +58,12 @@
 <style>
     @include ('bbs::templates.'.$cfg->skin.'.css.style')
 </style>
+@stop
+@section ('scripts')
+@parent
+{{ Html::script('assets/pondol_bbs/js/bbs.js') }}
+<script>
+    BBS.tbl_name    = "{{$cfg->table_name}}";
+    BBS.article_id  = {{$article->id}};
+</script>
 @stop

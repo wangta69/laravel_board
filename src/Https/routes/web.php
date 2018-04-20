@@ -31,12 +31,13 @@ Route::group(['prefix' => 'bbs', 'as' => 'bbs.', 'namespace' => 'App\Http\Contro
     Route::delete('/{tbl_name}/{article}/destroy', 'BbsController@destroy')->name('destroy');
     Route::get('/{tbl_name}/{article}/show', 'BbsController@show')->name('show');
     Route::get('/{tbl_name}', 'BbsController@index')->name('index');
-    Route::post('/{tbl_name}/{article}/comment/store', 'BbsController@commentStore')->name('comment.store');
+    //Route::post('/{tbl_name}/{article}/comment/store', 'BbsCommentController@store')->name('comment.store');
 });
 
 Route::group(['prefix' => 'bbs', 'as' => 'bbs.comment.', 'namespace' => 'Pondol\Bbs', 'middleware' => ['web']], function () {
-    Route::post('/{tbl_name}/{article}/comment/store', 'BbsCommentController@store')->name('store');
-    Route::delete('/{tbl_name}/{article}/comment/{comment}/destroy', 'BbsCommentController@store')->name('destroy');
-    
-    
+    Route::post('/{tbl_name}/{article}/comment/{comment}', 'BbsCommentController@store')->name('store');
+  //  Route::get('/{tbl_name}/{article}/comment/{comment}', 'BbsCommentController@store')->name('store');//for test
+    Route::delete('/{tbl_name}/{article}/comment/{comment}', 'BbsCommentController@destroy')->name('destroy');
+    Route::put('/{tbl_name}/{article}/comment/{comment}', 'BbsCommentController@update')->name('update');
+
 });

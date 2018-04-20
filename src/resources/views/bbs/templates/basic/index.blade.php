@@ -23,7 +23,7 @@
     </thead>
     <tbody>
         @foreach ($articles as $index => $article)
-       {{-- @foreach($articles as $article) --}} 
+       {{-- @foreach($articles as $article) --}}
             <tr>
                 <td class='text-center'>{{ number_format($articles->total() - $articles->perPage() * ($articles->currentPage() - 1) - $index) }}</td>
                 <td>{!! Html::link(route('bbs.show', [$cfg->table_name, $article->id, 'urlParams='.$urlParams->enc]), $article->title) !!}</td>
@@ -34,11 +34,11 @@
         @endforeach
     </tbody>
     </table>
-    
+
     <div class='navigation'>
         {!! $articles->render() !!}
     </div>
-    
+
     <div class='btn-area text-right'>
         @if ($cfg->hasPermission('write'))
             {!! Html::link(route('bbs.create', [$cfg->table_name, 'urlParams='.$urlParams->enc]), '글쓰기', [
@@ -55,4 +55,8 @@
 <style>
     @include ('bbs::templates.'.$cfg->skin.'.css.style')
 </style>
+@stop
+@section ('scripts')
+@parent
+{{ Html::script('assets/pondol_bbs/js/bbs.js') }}
 @stop
