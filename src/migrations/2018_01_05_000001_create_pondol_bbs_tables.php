@@ -71,9 +71,9 @@ class CreatePondolBbsTables extends Migration
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->integer('bbs_articles_id')->unsigned();
-            $table->string('file_name');
-            $table->string('path_to_file');
-            $table->string('name_on_disk');
+            $table->string('file_name')->comment('original file name');
+            $table->string('path_to_file')->comment('saved file path from storage');
+            $table->string('name_on_disk')->comment('saved file name');
             $table->integer('rank')->unsigned();
             $table->timestamps();
 

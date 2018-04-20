@@ -39,7 +39,7 @@ class BbsController extends \App\Http\Controllers\Controller {
 
         $articles = Articles::where('bbs_table_id', $cfg->id)->orderBy('order_num')->paginate($this->itemsPerPage);
         return view('bbs.templates.'.$cfg->skin.'.index', ['articles' => $articles, 'cfg'=>$cfg, 'urlParams'=>$urlParams]);
-        
+
     }
 
     /*
@@ -53,7 +53,7 @@ class BbsController extends \App\Http\Controllers\Controller {
 
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
-        
+
         //check permission
         $permission_result = $cfg->hasPermission('write');
         if(!$permission_result)
@@ -78,28 +78,28 @@ class BbsController extends \App\Http\Controllers\Controller {
             'content' => 'required',
             //'username' => 'required|unique:users|min:2|max:8',
         ]);
-        
+
         if ($validator->fails()) return redirect()->back()->withErrors($validator->errors());
-        
+
         $parent_id = $request->get('parent_id');//if this vaule setted it means reply
-        
+
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
        // $this->permission('write', $cfg);
-       
-       
-      
-               //check permission
+
+
+
+        //check permission
         $permission_result = $cfg->hasPermission('write');
         if(!$permission_result)
             abort(403, 'Unauthorized action.');
-        
-        
+
+
         $article = new Articles;
-        
+
         $article->bbs_table_id = $cfg->id;
         $article->user_name = $request->get('user_name');
-        
+
         if (Auth::check()) {
             $article->user_id = Auth::user()->id;
             $article->user_name = $article->user_name ? $article->user_name : Auth::user()->name;
@@ -113,24 +113,24 @@ class BbsController extends \App\Http\Controllers\Controller {
         $article->title = $request->get('title');
         $article->content = $request->get('content');
         $article->text_type = $request->input('text_type', 'br');
-        
+
         $article->save();
-        
+
 
         $article->parent_id = $parent_id ? $parent_id : $article->id;
         $article->save();
-        
+
         $date_Ym = date("Ym");
         $filepath = 'public/bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;
         if(is_array($request->file('uploads')))
             foreach ($request->file('uploads') as $index => $upload) {
                 if ($upload == null) continue;
-                
+
                 //get file path (bbs/bbs_tables_id/YM/bbs_articles_id)
                 //upload to storage
                 $filename = $upload->getClientOriginalName();
                 $path=Storage::put($filepath,$upload); // //Storage::disk('local')->put($name,$file,'public');
-                
+
                 //save to database
                 $file = new Files;
                 $file->rank = $index;
@@ -140,13 +140,13 @@ class BbsController extends \App\Http\Controllers\Controller {
                 $file->name_on_disk = basename($path);
                 $file->save();
             }//foreach if
-            
+
         $this->contents_update($article, $cfg->id, $date_Ym);
         return redirect()->route('bbs.show', [$tbl_name, $article->id, 'urlParams='.$urlParams->enc]);
     }
 
     /*
-     * Modify Article 
+     * Modify Article
      *
      * @param  \Illuminate\Http\Request  $request
      * @param String $tbl_name
@@ -158,12 +158,12 @@ class BbsController extends \App\Http\Controllers\Controller {
 
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
-        
+
         //check permission
         $permission_result = $cfg->hasPermission('write');
         if(!$permission_result)
             abort(403, 'Unauthorized action.');
-        
+
 
         if (!$article->isOwner(Auth::user())) {
             return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
@@ -174,7 +174,7 @@ class BbsController extends \App\Http\Controllers\Controller {
             'content' => 'required',
             //'username' => 'required|unique:users|min:2|max:8',
         ]);
-        
+
         if ($validator->fails()) return redirect()->back()->withErrors($validator->errors());
 
         $article->title = $request->get('title');
@@ -187,20 +187,20 @@ class BbsController extends \App\Http\Controllers\Controller {
 
         if(is_array($request->file('uploads')))
             foreach ($request->file('uploads') as $index => $upload) {
-                
+
                 echo "index:".$index.PHP_EOL;
-             
+
                 if ($upload == null) continue;
-    
+
                 // Delete exist files
                 if (($file = $article->files->where('rank', $index)->first())) {
                     Storage::delete($file->path_to_file);
                     $file->delete();
                 }
-                
+
                 $filename = $upload->getClientOriginalName();
                $path=Storage::put($filepath,$upload); // //Storage::disk('local')->put($name,$file,'public');
-                
+
                 //save to database
                 $file = new Files;
                 $file->rank = $index;
@@ -217,25 +217,25 @@ class BbsController extends \App\Http\Controllers\Controller {
 
 
     /*
-     * 
+     *
      */
     private function get_order_num($params=null){
         $order_num = Articles::min('order_num');
         return $order_num ? $order_num-1:-1;
     }
-    
+
     /**
-     * 에디터에 이미지가 포함된 경우 이미지를 현재 아이템에 editor라는 폴더를 만들고 그곳에 모두 복사한다. 
-     * 그리고 contents에 포함된 링크 주소고 변경하여 데이타를 업데이트 한다. 
+     * 에디터에 이미지가 포함된 경우 이미지를 현재 아이템에 editor라는 폴더를 만들고 그곳에 모두 복사한다.
+     * 그리고 contents에 포함된 링크 주소고 변경하여 데이타를 업데이트 한다.
      */
     private function contents_update($article, $table_id, $date_Ym){
 
         $sourceDir = storage_path() .'/app/public/bbs/tmp/editor/'. session()->getId();
         $destinationDir = storage_path() .'/app/public/bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor';
-        
-        
+
+
         $article->content = str_replace('/storage/bbs/tmp/editor/'.session()->getId(), '/storage/bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor', $article->content);
-        
+
         $article->save();
 
         $success = File::copyDirectory($sourceDir, $destinationDir);
@@ -274,12 +274,12 @@ class BbsController extends \App\Http\Controllers\Controller {
     {
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
-        
-        
+
+
         if (!$article->isOwner(Auth::user())) {
             return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
         }
-        
+
         //return view('bbs.templates.'.$cfg->skin.'.create')->with(compact('article', 'cfg'));
         return view('bbs.templates.'.$cfg->skin.'.create', ['article'=>$article, 'cfg'=>$cfg,'urlParams'=>$urlParams]);
         //return view('bbs.templates.'.$cfg->skin.'.create')->with(compact('article', 'cfg'));
@@ -296,14 +296,14 @@ class BbsController extends \App\Http\Controllers\Controller {
      */
     public function destroy(Request $request, $tbl_name, Articles $article)
     {
-        
+
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
         if (!$article->isOwner(Auth::user())) {
             return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
         }
-        //1. delete files 
+        //1. delete files
         Storage::deleteDirectory('public/bbs/'.$cfg->id.'/'.date("Ym", strtotime($article->created_at)).'/'.$article->id);
 
         //2. delete files table
@@ -315,14 +315,14 @@ class BbsController extends \App\Http\Controllers\Controller {
 
         return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
     }
-    
+
     /**
      * file download from storage
      */
     public function download($id){
         //get file name
         $file = Files::findOrFail($id);
-        
+
         $file_path = storage_path() .'/app/'. $file->path_to_file;
 
         if (file_exists($file_path))
@@ -336,13 +336,13 @@ class BbsController extends \App\Http\Controllers\Controller {
         {
             exit('Requested file does not exist on our server!');
         }
-        
+
     }
-    
+
     /**
      * check Permission for Read, write
      * @param String $mode read/write
-     * @param Object $cfg  Bbs Config 
+     * @param Object $cfg  Bbs Config
      * @return Boolean
      */
     private function permission($mode, $cfg){
@@ -352,7 +352,7 @@ class BbsController extends \App\Http\Controllers\Controller {
                 if($cfg->auth_read == 'none')
                     return true;
                 else{
-                    
+
                 }
             break;
             case "write":
@@ -370,7 +370,7 @@ class BbsController extends \App\Http\Controllers\Controller {
                         if(!Auth::check())
                             return false;
                         else
-                            
+
                         break;
                 }
 
