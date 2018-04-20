@@ -15,7 +15,7 @@ class CreatePondolBbsTables extends Migration
         // Create BBS Config table
         Schema::create('bbs_tables', function(BluePrint $table) {
             $table->engine = 'InnoDB';
-            
+
             $table->increments('id');
             $table->string('name');
             $table->string('table_name', '20')->unique();
@@ -29,7 +29,7 @@ class CreatePondolBbsTables extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-        
+
 
         // Create Articles Table
         Schema::create('bbs_articles', function(BluePrint $table) {
@@ -57,6 +57,7 @@ class CreatePondolBbsTables extends Migration
 			$table->string('user_name', '20')->nullable();
             $table->integer('bbs_articles_id')->unsigned();
 			$table->integer('order_num')->comment('정렬번호');
+            $table->integer('parent_id')->unsigned()->comment('부모 id');
 			$table->string('reply_depth', '25')->nullable()->comment('reply 일경우 depth A AA B..');
             $table->text('content');
             $table->timestamps();
@@ -64,7 +65,7 @@ class CreatePondolBbsTables extends Migration
 			$table->index('order_num');
         });
 
-        
+
         // Create Files Table
         Schema::create('bbs_files', function(BluePrint $table) {
             $table->engine = 'InnoDB';
@@ -75,14 +76,14 @@ class CreatePondolBbsTables extends Migration
             $table->string('name_on_disk');
             $table->integer('rank')->unsigned();
             $table->timestamps();
-            
+
             $table->foreign('bbs_articles_id')->references('id')->on('bbs_articles');
         });
 
     // Create BBS Roles Table
         Schema::create('bbs_roles', function(BluePrint $table) {
             $table->engine = 'InnoDB';
-            
+
             $table->integer('bbs_tables_id')->unsigned();
             $table->integer('read_role_id')->unsigned()->nullable();
             $table->integer('write_role_id')->unsigned()->nullable();
@@ -99,12 +100,12 @@ class CreatePondolBbsTables extends Migration
         Schema::table('articles_files', function($table) {
             $table->dropForeign('bbs_files_bbs_articles_id_foreign');
         });
-        
+
         Schema::dropIfExists('bbs_tables');
         Schema::dropIfExists('bbs_articles');
         Schema::dropIfExists('bbs_files');
 		Schema::dropIfExists('bbs_roles');
 		Schema::dropIfExists('bbs_comments');
-		
+
     }
 }
