@@ -20,8 +20,9 @@ class CreatePondolBbsTables extends Migration
             $table->string('name');
             $table->string('table_name', '20')->unique();
             $table->string('skin', '20');
+            $table->tinyInteger('lists')->unsigned()->default(10)->comment('reply 기능 활성');
 			$table->string('editor', '20')->comment('none, smartEditor');
-			$table->tinyInteger('enable_reply')->unsigned()->default(0)->comment('reply 기능 활성');
+			$table->tinyInteger('enable_reply')->unsigned()->default(0)->comment('articles count displayed on index');
 			$table->tinyInteger('enable_comment')->unsigned()->default(0)->comment('comment 기능 활성');
 
 			$table->string('auth_write', '10')->default('login')->comment('none: nonmember, login:logined member, role:has role member');

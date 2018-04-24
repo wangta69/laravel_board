@@ -106,7 +106,6 @@ class BbsCommentController extends \App\Http\Controllers\Controller {
 
     }
 
-
     /*
      *
      */
@@ -163,6 +162,4 @@ class BbsCommentController extends \App\Http\Controllers\Controller {
         //return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
         return Response::json(['result'=>true, "code"=>"000", 'comment'=>$comment], 200);
     }
-
-
 }

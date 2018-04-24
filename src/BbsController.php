@@ -17,14 +17,20 @@ use Pondol\Bbs\Models\Bbs_articles as Articles;
 use Pondol\Bbs\Models\Bbs_comments as Comments;
 use Pondol\Bbs\Models\Bbs_files as Files;
 
+use Pondol\Image\GetHttpImage;
+
 
 class BbsController extends \App\Http\Controllers\Controller {
 
     protected $bbsSvc;
     protected $cfg;
+    protected $laravel_ver;
     public function __construct(BbsService $bbsSvc) {
         $this->bbsSvc   = $bbsSvc;
+        $laravel = app();
+        $this->laravel_ver = $laravel::VERSION;
     }
+
 
     /*
      * List Page
@@ -37,7 +43,7 @@ class BbsController extends \App\Http\Controllers\Controller {
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
-        $articles = Articles::where('bbs_table_id', $cfg->id)->orderBy('order_num')->paginate($this->itemsPerPage);
+        $articles = Articles::where('bbs_table_id', $cfg->id)->orderBy('order_num')->paginate($cfg->lists);
         return view('bbs.templates.'.$cfg->skin.'.index', ['articles' => $articles, 'cfg'=>$cfg, 'urlParams'=>$urlParams]);
 
     }
@@ -87,8 +93,6 @@ class BbsController extends \App\Http\Controllers\Controller {
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
        // $this->permission('write', $cfg);
 
-
-
         //check permission
         $permission_result = $cfg->hasPermission('write');
         if(!$permission_result)
@@ -122,6 +126,7 @@ class BbsController extends \App\Http\Controllers\Controller {
 
         $date_Ym = date("Ym");
         $filepath = 'public/bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;
+
         if(is_array($request->file('uploads')))
             foreach ($request->file('uploads') as $index => $upload) {
                 if ($upload == null) continue;
@@ -129,6 +134,8 @@ class BbsController extends \App\Http\Controllers\Controller {
                 //get file path (bbs/bbs_tables_id/YM/bbs_articles_id)
                 //upload to storage
                 $filename = $upload->getClientOriginalName();
+                $fileextension = $upload->getClientOriginalExtension();
+
                 $path=Storage::put($filepath,$upload); // //Storage::disk('local')->put($name,$file,'public');
 
                 //save to database
@@ -142,6 +149,8 @@ class BbsController extends \App\Http\Controllers\Controller {
             }//foreach if
 
         $this->contents_update($article, $cfg->id, $date_Ym);
+        $this->set_representaion($article);
+
         return redirect()->route('bbs.show', [$tbl_name, $article->id, 'urlParams='.$urlParams->enc]);
     }
 
@@ -183,12 +192,11 @@ class BbsController extends \App\Http\Controllers\Controller {
 
         // Upload Attached files
         $date_Ym = date("Ym", strtotime($article->created_at));//수정일경우 기존 데이타의 생성일을 기준으로 가져온다.
-        $filepath = 'public/bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;
 
+        //$filepath = 'bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;////5.6부터는 이렇게 처리하면 storage/app/public 이하로 들어간다.
+        $filepath = 'public/bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;//5.5에서는 5.6버젼을 고려하여 public 을 상단에 더 붙혀 준다.
         if(is_array($request->file('uploads')))
             foreach ($request->file('uploads') as $index => $upload) {
-
-                echo "index:".$index.PHP_EOL;
 
                 if ($upload == null) continue;
 
@@ -212,6 +220,7 @@ class BbsController extends \App\Http\Controllers\Controller {
             }
 
         $this->contents_update($article, $cfg->id, $date_Ym);
+        $this->set_representaion($article);
         return redirect()->route('bbs.show', [$tbl_name, $article->id, 'urlParams='.$urlParams->enc]);
     }
 
@@ -239,7 +248,52 @@ class BbsController extends \App\Http\Controllers\Controller {
         $article->save();
 
         $success = File::copyDirectory($sourceDir, $destinationDir);
-       Storage::deleteDirectory('public/bbs/tmp/editor/'. session()->getId());
+        Storage::deleteDirectory('public/bbs/tmp/editor/'. session()->getId());
+    }
+
+    /**
+     * 대표 이미지 설정
+     */
+    private function set_representaion($article){
+        $article->image = null;
+        //$representaion_image = null;//1순위: 첨부화일에 이미지가 있을 경우, 2순위 : editor에 이미지가 있을 경우
+        $representaion_image_array = ['jpeg', 'jpg', 'png', 'gif'];
+        foreach($article->files as $file) {
+           if($file->path_to_file){
+               $tmp = explode('.', $file->path_to_file);
+                $extension = end($tmp);
+                if(!$article->image && in_array($extension, $representaion_image_array)){
+                    $article->image = $file->path_to_file;
+                    break;
+                }
+           }
+        }
+
+        if(!$article->image && $article->content){
+            //2순위 : editor에 이미지가 있을 경우
+          //  $article->content;
+
+
+            preg_match_all('/<img[^>]+>/i',$article->content, $result);
+            //[0] => Array(
+            //[0] => <img src="/Content/Img/stackoverflow-logo-250.png" width="250" height="70" alt="logo link to homepage" />
+           // [1] => <img class="vote-up" src="/content/img/vote-arrow-up.png" alt="vote up" title="This was helpful (click again to undo)" />
+
+           if($result){
+               preg_match_all('/(src)=("[^"]*")/i',$result[0][0], $i_result);
+               $src = str_replace(["\"", "/storage"], ["", "public"], $i_result[2][0]);
+
+               $date_Ym = date("Ym", strtotime($article->created_at));//수정일경우 기존 데이타의 생성일을 기준으로 가져온다.
+               $filepath = 'public/bbs/'.$article->bbs_table_id.'/'.$date_Ym.'/'.$article->id;//5.5에서는 5.6버젼을 고려하여 public 을 상단에 더 붙혀 준다.
+
+                $contents = Storage::get($src);
+                $name = substr($src, strrpos($src, '/') + 1);
+                Storage::put($filepath."/".$name, $contents);
+                $article->image = $filepath."/".$name;
+               //로컬 경로로 파일 copy
+           }
+        }
+        $article->save();
     }
     /*
      * Show Article
@@ -279,10 +333,7 @@ class BbsController extends \App\Http\Controllers\Controller {
         if (!$article->isOwner(Auth::user())) {
             return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
         }
-
-        //return view('bbs.templates.'.$cfg->skin.'.create')->with(compact('article', 'cfg'));
         return view('bbs.templates.'.$cfg->skin.'.create', ['article'=>$article, 'cfg'=>$cfg,'urlParams'=>$urlParams]);
-        //return view('bbs.templates.'.$cfg->skin.'.create')->with(compact('article', 'cfg'));
     }
 
     /*
@@ -377,5 +428,40 @@ class BbsController extends \App\Http\Controllers\Controller {
             break;
         }
         return $rtn;
+    }
+
+    /**
+     * @param String $file  public/bbs/5/201804/37/filename.jpeg
+     */
+    public static function get_thumb($file, $width=null, $height=null){
+        if($file){
+
+            if($width == null &&  $height == null)
+                return str_replace(["public"], ["/storage"], $file);
+            else if($width == null )
+                $width = $height;
+            else if($height == null)
+                $height = $width;
+
+            $name = substr($file, strrpos($file, '/') + 1);
+            $thum_dir = substr($file, 0, -strlen($name)).$width."_".$height;
+            // return $name;
+            $thum_to_storage = storage_path() .'/app/'.$thum_dir;
+            //home/Web/coinvill-web/storage/app/public/bbs/5/201804/37/205x205/Srrf1axuyM1ZO9NaYM3lStoNLZyVvAfEgWMqWNUU.jpeg
+            //return $file;
+            //return $thum_to_storage."/".$name;
+
+
+            if(!file_exists($thum_to_storage."/".$name)){//thumbnail 이미지를 돌려준다.
+                $file_to_storage = storage_path() .'/app/'.$file;
+                $image = new GetHttpImage();
+                $image->read($file_to_storage)->set_size($width, $height)->copyimage()->save($thum_to_storage);
+            }
+
+            return str_replace(["public"], ["/storage"], $thum_dir)."/".$name;
+        }else
+            return '';
+
+
     }
 }
