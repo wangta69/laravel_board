@@ -232,8 +232,12 @@ class AdminController extends \App\Http\Controllers\Controller {
     {
         $cfg = Tables::findOrFail($id);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
-
         $cfg->delete();
-        return redirect()->route('bbs.admin.index', ['urlParams'=>$urlParams->enc]);
+
+        if($request->ajax()){
+            return Response::json(['result'=>true, "code"=>"000"], 200);
+        }else{
+            return redirect()->route('bbs.admin.index', ['urlParams'=>$urlParams->enc]);
+        }
     }
 }

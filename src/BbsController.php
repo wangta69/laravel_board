@@ -279,7 +279,7 @@ class BbsController extends \App\Http\Controllers\Controller {
             //[0] => <img src="/Content/Img/stackoverflow-logo-250.png" width="250" height="70" alt="logo link to homepage" />
            // [1] => <img class="vote-up" src="/content/img/vote-arrow-up.png" alt="vote up" title="This was helpful (click again to undo)" />
 
-           if($result){
+           if($result && count($result) > 1){
                preg_match_all('/(src)=("[^"]*")/i',$result[0][0], $i_result);
                $src = str_replace(["\"", "/storage"], ["", "public"], $i_result[2][0]);
 

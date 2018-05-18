@@ -41,17 +41,20 @@
 			<td class='text-center'>
 			    {!! Html::link(route('bbs.admin.show', [ $board->id, 'urlParams='.$urlParams->enc]), 'edit', array('class' => 'btn btn-default btn-xs')) !!}
 			    {!! Html::link(route('bbs.index', [$board->table_name, 'urlParams='.$urlParams->enc]), 'view', array('class' => 'btn btn-default btn-xs')) !!}
+				{{ Form::button('Delete', array('class' => 'btn btn-danger btn-xs btn-delete')) }}
 
-				{!! Form::open([
-					'method' => 'delete',
-					'route' => ['bbs.admin.destroy', $board->id],
-					'style'=>'display:inline'
-				]) !!}
-				
-					{!! Form::submit('delete', [
-						'class' => 'btn btn-danger btn-xs',
-					]) !!}
-				{!! Form::close() !!}
+			                   <!--
+			   				{!! Form::open([
+			   					'method' => 'delete',
+			   					'route' => ['bbs.admin.destroy', $board->id],
+			   					'style'=>'display:inline'
+			   				]) !!}
+
+			   					{!! Form::submit('delete', [
+			   						'class' => 'btn btn-danger btn-xs',
+			   					]) !!}
+			   				{!! Form::close() !!}
+			   				-->
 			</td>
 		</tr>
 	@endforeach
@@ -69,3 +72,29 @@
 	]) !!}
 </div>
 @stop
+@section ('scripts')
+@parent
+<script>
+    $(function(){
+       $(".btn-delete").click(function(){
+           $this = $(this).parents(".data-row");
+           var board_id = $this.attr("user-attr-board-id");
+
+           if(confirm('삭제하시겠습니까?')){
+               $.ajax({
+                    url: '/bbs/admin/'+board_id+'/delete',
+                    type: 'POST',
+                    data:{
+                    '_token': $('meta[name=csrf-token]').attr("content"),
+                    '_method': 'DELETE',
+                     },
+                    success: function(result) {
+                        // Do something with the result
+                        $this.remove();
+                    }
+                });
+           }
+       })
+    })
+</script>
+@endsection
