@@ -164,7 +164,7 @@ class BbsController extends \App\Http\Controllers\Controller {
      */
     public function update(Request $request, $tbl_name, Articles $article)
     {
-
+        $isAdmin = BbsService::hasRoles(config('bbs.admin_roles'));
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
@@ -174,7 +174,7 @@ class BbsController extends \App\Http\Controllers\Controller {
             abort(403, 'Unauthorized action.');
 
 
-        if (!$article->isOwner(Auth::user())) {
+        if (!$article->isOwner(Auth::user()) && !$isAdmin) {
             return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
         }
 
@@ -304,6 +304,7 @@ class BbsController extends \App\Http\Controllers\Controller {
      */
     public function show(Request $request, $tbl_name, Articles $article)
     {
+        $isAdmin = BbsService::hasRoles(config('bbs.admin_roles'));
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
@@ -314,7 +315,7 @@ class BbsController extends \App\Http\Controllers\Controller {
 
         Cookie::queue(Cookie::make($tbl_name.$article->id, '1'));
         //return view('bbs.templates.'.$cfg->skin.'.show')->with(compact('article', 'cfg'));
-        return view('bbs.templates.'.$cfg->skin.'.show', ['article' => $article, 'cfg'=>$cfg, 'urlParams'=>$urlParams]);
+        return view('bbs.templates.'.$cfg->skin.'.show', ['article' => $article, 'cfg'=>$cfg, 'isAdmin'=>$isAdmin, 'urlParams'=>$urlParams]);
     }
 
     /*
@@ -330,10 +331,11 @@ class BbsController extends \App\Http\Controllers\Controller {
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
 
-        if (!$article->isOwner(Auth::user())) {
+        if ($article->isOwner(Auth::user()) || $isAdmin) {
+            return view('bbs.templates.'.$cfg->skin.'.create', ['article'=>$article, 'cfg'=>$cfg,'urlParams'=>$urlParams]);
+        } else {
             return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
         }
-        return view('bbs.templates.'.$cfg->skin.'.create', ['article'=>$article, 'cfg'=>$cfg,'urlParams'=>$urlParams]);
     }
 
     /*
@@ -348,10 +350,11 @@ class BbsController extends \App\Http\Controllers\Controller {
     public function destroy(Request $request, $tbl_name, Articles $article)
     {
 
+        $isAdmin = BbsService::hasRoles(config('bbs.admin_roles'));
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
-        if (!$article->isOwner(Auth::user())) {
+        if (!$article->isOwner(Auth::user()) && !$isAdmin) {
             return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
         }
         //1. delete files
@@ -461,7 +464,6 @@ class BbsController extends \App\Http\Controllers\Controller {
             return str_replace(["public"], ["/storage"], $thum_dir)."/".$name;
         }else
             return '';
-
 
     }
 }

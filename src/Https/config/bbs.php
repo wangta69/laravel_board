@@ -6,4 +6,7 @@ return [
 // config('bbs.user')
 'users' => App\User::class,
 'user' => 'App\User',
+'path_from_storage' =>'app/bbs/',
+'path_from_public' => 'storage/bbs',
+'admin_roles' => 'administrator,manager'
 ];

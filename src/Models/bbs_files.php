@@ -1,5 +1,4 @@
 <?php
-
 namespace Pondol\Bbs\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -13,9 +12,7 @@ class Bbs_files extends Model
 
     protected $fillable = [];
 
-    protected $table        = 'bbs_files';
+    protected $table = 'bbs_files';
     //protected $dateFormat = 'U';
     protected $primaryKey = 'id';
-    
-
 }

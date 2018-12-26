@@ -4,7 +4,7 @@
     <h1 class='title'>
         {{ $article->table->name }}
     </h1>
-    
+
     <table>
     <colgroup>
         <col width='120' />
@@ -28,7 +28,7 @@
             <td colspan='3'>
                 @foreach ($article->files as $file)
                     <!-- 파일 다운로드 경로 등을 넣으세요.. -->
-                    
+
                     {{ link_to_route('bbs.download', $file->file_name, $file->id) }}
 
                 @endforeach
@@ -36,17 +36,17 @@
         </tr>
     </thead>
     </table>
-    
+
     <div class='content'>
         {!! nl2br($article->content) !!}
     </div>
-    
+
     <div class='btn-area text-right'>
         {!! Form::open([
             'route' => ['bbs.destroy', $cfg->table_name, $article->id, 'urlParams='.$urlParams->enc],
             'method' => 'delete',
         ]) !!}
-            @if ($article->isOwner(Auth::user()))
+            @if ($article->isOwner(Auth::user()) || $isAdmin)
                 {!! Html::link(route('bbs.edit', [$cfg->table_name, $article->id, 'urlParams='.$urlParams->enc]), '수정', [
                     'role' => 'button',
                     'class' => 'btn btn-primary btn-sm',

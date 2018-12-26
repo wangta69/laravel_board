@@ -31,7 +31,7 @@
             'route' => ['bbs.destroy', $cfg->table_name, $article->id, 'urlParams='.$urlParams->enc],
             'method' => 'delete',
         ]) !!}
-            @if ($article->isOwner(Auth::user()))
+            @if ($article->isOwner(Auth::user()) || $isAdmin)
                 {!! Html::link(route('bbs.edit', [$cfg->table_name, $article->id, 'urlParams='.$urlParams->enc]), '수정', [
                     'role' => 'button',
                     'class' => 'btn btn-primary btn-sm',
