@@ -43,7 +43,7 @@ class BbsController extends \App\Http\Controllers\Controller {
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
-        $articles = Articles::where('bbs_table_id', $cfg->id)->orderBy('order_num')->paginate($cfg->lists);
+        $articles = Articles::where('bbs_table_id', $cfg->id)->orderBy('order_num')->paginate($cfg->lists)->appends(request()->query());
         return view('bbs.templates.'.$cfg->skin.'.index', ['articles' => $articles, 'cfg'=>$cfg, 'urlParams'=>$urlParams]);
 
     }
