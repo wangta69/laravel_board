@@ -437,8 +437,7 @@ class BbsController extends \App\Http\Controllers\Controller {
      * @param String $file  public/bbs/5/201804/37/filename.jpeg
      */
     public static function get_thumb($file, $width=null, $height=null){
-        if($file){
-
+        if ($file) {
             if($width == null &&  $height == null)
                 return str_replace(["public"], ["/storage"], $file);
             else if($width == null )
