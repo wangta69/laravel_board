@@ -36,8 +36,8 @@ class BbsCommentController extends \App\Http\Controllers\Controller {
             abort(404, "Exception Message");
 
         $validator = Validator::make($request->all(), [
-            'content' => 'required|min:2|max:255',
-        ]);
+            'content' => 'required|min:2',
+        ]); // |max:255
 
         if ($validator->fails()) return redirect()->back()->withErrors($validator->errors());
 
@@ -90,8 +90,9 @@ class BbsCommentController extends \App\Http\Controllers\Controller {
             return Response::json(['result'=>false, "code"=>"001", 'message'=>'필요값이 충분하지 않습니다.'], 203);
 
         $validator = Validator::make($request->all(), [
-            'content' => 'required|min:2|max:255',
+            'content' => 'required|min:2',
         ]);
+        // |max:255
 
         if ($validator->fails())
             return Response::json(['result'=>false, "code"=>"002", 'message'=>$validator->errors()], 203);

@@ -22,7 +22,7 @@ class CreatePondolBbsCategoryTable extends Migration
             $table->timestamps();
             $table->index('bbs_table_id');
             $table->foreign('bbs_table_id')->references('id')->on('bbs_tables')
-            ->onDelete('cascade');;
+            ->onDelete('cascade');
         });
     }
 

@@ -69,6 +69,8 @@ class CreatePondolBbsTables extends Migration
                 $table->timestamps();
                 $table->softDeletes();
                 $table->index('order_num');
+                $table->foreign('bbs_articles_id')->references('id')->on('bbs_articles')
+                ->onDelete('cascade');
             });
         }
 
@@ -89,7 +91,7 @@ class CreatePondolBbsTables extends Migration
             });
         }
     // Create BBS Roles Table
-        if (!Schema::hasTable('bbs_roles')) { 
+        if (!Schema::hasTable('bbs_roles')) {
             Schema::create('bbs_roles', function(BluePrint $table) {
                 $table->engine = 'InnoDB';
 

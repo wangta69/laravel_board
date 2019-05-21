@@ -324,8 +324,10 @@ class BbsController extends \App\Http\Controllers\Controller {
 
     public function comment(Request $request, $tbl_name, Articles $article)
     {
+        $comment = $article->comment[0];
+        $comment->content = htmlentities($comment->content);
         if($request->ajax()){
-            return response()->json([$article->comment], 200);//500, 203
+            return response()->json([$comment], 200);//500, 203
         }
     }
 

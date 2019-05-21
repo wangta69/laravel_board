@@ -45,6 +45,13 @@
 @section ('scripts')
 @parent
 <script>
+function nl2br (str, is_xhtml) {
+    if (typeof str === 'undefined' || str === null) {
+        return '';
+    }
+    var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br />' : '<br>';
+    return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
+}
 $(function(){
     $('.faq-title.view').click(function(){
         var $answer = $(this).find('.answer');
@@ -62,8 +69,8 @@ $(function(){
                 },
                 success: function(res){
                     console.log(res);
-                    console.log(res[0][0].content);
-                    $answer.html(res[0][0].content);
+                    console.log(res[0].content);
+                    $answer.html(nl2br(res[0].content));
                 }
             });
             $(this).find('.answer').addClass('on');
