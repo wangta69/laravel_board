@@ -314,8 +314,19 @@ class BbsController extends \App\Http\Controllers\Controller {
         }
 
         Cookie::queue(Cookie::make($tbl_name.$article->id, '1'));
+        if($request->ajax()){
+            return response()->json([$article], 200);//500, 203
+        }
         //return view('bbs.templates.'.$cfg->skin.'.show')->with(compact('article', 'cfg'));
         return view('bbs.templates.'.$cfg->skin.'.show', ['article' => $article, 'cfg'=>$cfg, 'isAdmin'=>$isAdmin, 'urlParams'=>$urlParams]);
+    }
+
+
+    public function comment(Request $request, $tbl_name, Articles $article)
+    {
+        if($request->ajax()){
+            return response()->json([$article->comment], 200);//500, 203
+        }
     }
 
     /*

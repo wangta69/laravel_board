@@ -19,7 +19,7 @@ class Bbs_tables extends Model
     protected $table        = 'bbs_tables';
     //protected $dateFormat = 'U';
     protected $primaryKey = 'id';
-    
+
    
     public function get_config_by_tablename($tbl_name){
        // return $tbl_name;
@@ -39,14 +39,14 @@ class Bbs_tables extends Model
         //select `roles`.*, `bbs_roles`.`bbs_tables_id` as `pivot_bbs_tables_id`, `bbs_roles`.`read_role_id` as `pivot_read_role_id` from `roles` inner join `bbs_roles` on `roles`.`id` = `bbs_roles`.`read_role_id` where `bbs_roles`.`bbs_tables_id` = 2
         return $this->belongsToMany(Role::class, 'bbs_roles', 'bbs_tables_id', 'read_role_id');
     }
-    
+
     public function roles_write()
     {
         //select `roles`.*, `bbs_roles`.`bbs_tables_id` as `pivot_bbs_tables_id`, `bbs_roles`.`read_role_id` as `pivot_read_role_id` from `roles` inner join `bbs_roles` on `roles`.`id` = `bbs_roles`.`read_role_id` where `bbs_roles`.`bbs_tables_id` = 2
         return $this->belongsToMany(Role::class, 'bbs_roles', 'bbs_tables_id', 'write_role_id');
     }
 
-    
+
     private function get_roles(){
 
             $roles = $this->hasMany('Pondol\Bbs\Models\Bbs_roles', 'bbs_tables_id');
@@ -56,19 +56,19 @@ class Bbs_tables extends Model
                 if($v->read_role_id) $rtn["read"][] = $v->read_role_id;
                 if($v->write_role_id) $rtn["write"][] = $v->write_role_id;
             }
-            
+
             return $rtn;
     }
-        
+
     public function roles_count($flag){
         $roles = $this->get_roles();
-        
+
         if(isset($roles[$flag]))
             return count($roles[$flag]);
         else
             return 0;
     }
-    
+
 
     /*
     public function hasWriteRole($role)
@@ -98,7 +98,7 @@ class Bbs_tables extends Model
                 if($this->auth_read == 'none')
                     return true;
                 else{
-                    
+
                 }
             break;
             case "write":
@@ -128,11 +128,11 @@ class Bbs_tables extends Model
         //먼저 현재 롤을 가져온다.
         $roles = $this->get_roles();
         if(isset($roles[$mode])){//role 이 세팅되어 이으면 체크한다.
-        
+
             if(!\Auth::user())
                 return false;
 
-            
+
             //$user_roles = \Auth::user()->roles->toArray();
             $user_roles = \Auth::user()->roles;
 
@@ -141,12 +141,12 @@ class Bbs_tables extends Model
                     return true;
             }
 
-            
+
             return false;
         }
         else
             return true;
     }
-    
+
 
 }

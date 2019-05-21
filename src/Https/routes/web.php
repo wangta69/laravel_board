@@ -30,6 +30,7 @@ Route::group(['prefix' => 'bbs', 'as' => 'bbs.', 'namespace' => 'App\Http\Contro
     Route::get('/{tbl_name}/{article}/edit', 'BbsController@editForm')->name('edit');
     Route::delete('/{tbl_name}/{article}/destroy', 'BbsController@destroy')->name('destroy');
     Route::get('/{tbl_name}/{article}/show', 'BbsController@show')->name('show');
+    Route::get('/{tbl_name}/{article}/first-comment', 'BbsController@comment')->name('firstcomment'); // for faq board
     Route::get('/{tbl_name}', 'BbsController@index')->name('index');
     //Route::post('/{tbl_name}/{article}/comment/store', 'BbsCommentController@store')->name('comment.store');
 });

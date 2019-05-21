@@ -103,12 +103,21 @@
 </div>
 <div class='form-group'>
     <div class='col-sm-12 text-right'>
+        @if (isset($cfg->id))
+        {!! Form::submit('Update', [
+            'class' => 'btn btn-primary btn-sm',
+        ]) !!}
+        @else
         {!! Form::submit('Create', [
             'class' => 'btn btn-primary btn-sm',
         ]) !!}
+        @endif
+<!--
         {!! Html::link(route('bbs.admin.index', ['urlParams='.$urlParams->enc]), 'List', [
             'class' => 'btn btn-default btn-sm',
         ]) !!}
+    -->
+        <a href="{{ url()->previous()}}" class="btn btn-default btn-sm">List</a>
     </div>
 </div>
 {!! Form::close() !!}

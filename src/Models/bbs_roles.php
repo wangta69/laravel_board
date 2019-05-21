@@ -12,9 +12,9 @@ class Bbs_roles extends Model
 
     //protected $fillable = [];
 
-    protected $table        = 'bbs_roles';
+    protected $table = 'bbs_roles';
     //protected $dateFormat = 'U';
     //protected $primaryKey = 'id';
-    
+
 
 }
