@@ -28,7 +28,7 @@ Step 2) publish stuff
 ```
 
 Step 3) create storage for bbs
-Step 3.1) make 'app' Directory on your storage and add 'rw'
+Step 3.1) make 'app' Directory on your storage and add 'rw' (if directory exist skip)
 ```
 #mkdir storage/app
 #chmod 707 storage/app
@@ -40,7 +40,7 @@ Step 3.2) make softLink to your public directory
 
 Step 4) copy config file (bbs.php)
 ```
-cp ./vendor/wangta69/src/Https/config/bbs.php ./config/bbs.php
+cp ./vendor/wangta69/laravel_board/src/Https/config/bbs.php ./config/bbs.php
 ```
 
 ## How to Use
