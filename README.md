@@ -75,6 +75,12 @@ public function Anything()
 Go to App/Http/Controllers/Bbs/AdminController.php or  BoardController.php
 ```
 protected $blade_extends = null; to protected $blade_extends = 'SomeThing you want. example 'admin.layouts.admin';
+
+or
+[controllers]
+$bbsparams = BbsService::create_params(array('blade_extends' =>'vendor.layouts.vendor'));
+[blade]
+{!! Html::link(route('bbs.show', ['notice', $notice->id, 'urlParams='.$bbsparams->enc]), $notice->title) !!}
 ```
 
 ### Make Additional Template

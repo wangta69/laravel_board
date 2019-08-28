@@ -3,9 +3,14 @@
 @else
         @php
             if(isset($attr)){
-                $class = isset($attr['class']) ? $attr['class']:null;
+                $class = isset($attr['class']) ? $attr['class'] : null;
+                $placeholder = isset($attr['placeholder']) ? $attr['placeholder'] : null;
             }
         @endphp
-        {!! Form::textarea('content', isset($article) ? $article->content : old('content'), ['id' => 'content' ,'class' => isset($class) ?$class:null]) !!}
+        {!! Form::textarea('content', isset($article) ? $article->content : old('content'),
+        [
+            'id' => 'content',
+            'class' => isset($class)? $class : null,
+            'placeholder' => isset($placeholder)? $placeholder : null
+        ]) !!}
 @endif
-
