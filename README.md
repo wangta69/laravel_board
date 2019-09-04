@@ -62,7 +62,7 @@ public function user() {
 ```
 
 
-### Extract datas only
+### Extract data only
 ```
 use Pondol\Bbs\BbsService;
 public function Anything()

@@ -10,7 +10,7 @@ class BbsController extends \Pondol\Bbs\BbsController
 {
     // Article Items per Page
     protected $itemsPerPage = 10;
-    protected $deaultUrlParams = array('blade_extends' =>'bbs::layouts.default');
+    protected $deaultUrlParams = array('blade_extends' =>'bbs::layouts.default', 'class' =>'');
     // 파일 업로드 경로
     protected $uploadPath = '../storage/app/board/';
 }

@@ -1,5 +1,5 @@
 @extends($urlParams->dec['blade_extends'])
-@section ('content')
+@section ('bbs-content')
 <div class='basic-table index'>
     <h1 class='title'>
         {{ $cfg->name }}
@@ -21,7 +21,7 @@
     </thead>
     <tbody>
         @foreach ($articles as $index => $article)
-       {{-- @foreach($articles as $article) --}} 
+       {{-- @foreach($articles as $article) --}}
             <tr>
                 <td class='text-center'>{{ number_format($articles->total() - $articles->perPage() * ($articles->currentPage() - 1) - $index) }}</td>
                 <td>{!! Html::link(route('bbs.show', [$cfg->table_name, $article->id, 'urlParams='.$urlParams->enc]), $article->title) !!}</td>
@@ -31,11 +31,11 @@
         @endforeach
     </tbody>
     </table>
-    
+
     <div class='navigation'>
         {!! $articles->render() !!}
     </div>
-    
+
     <div class='btn-area text-right'>
 
         @if ($cfg->hasPermission('write'))

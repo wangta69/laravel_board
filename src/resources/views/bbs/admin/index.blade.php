@@ -7,8 +7,8 @@
 	<col width='' />
 	<col width='120' />
 	<col width='120' />
-	<col width='100' />
-	<col width='180' />
+	<col width='120' />
+	<col width='200' />
 </colgroup>
 <thead>
 	<tr>
@@ -39,9 +39,9 @@
 				{{ date('Y-m-d', strtotime($board->created_at)) }}
 			</td>
 			<td class='text-center'>
-			    {!! Html::link(route('bbs.admin.show', [ $board->id, 'urlParams='.$urlParams->enc]), 'edit', array('class' => 'btn btn-default btn-xs')) !!}
-			    {!! Html::link(route('bbs.index', [$board->table_name, 'urlParams='.$urlParams->enc]), 'view', array('class' => 'btn btn-default btn-xs')) !!}
-				{{ Form::button('Delete', array('class' => 'btn btn-danger btn-xs btn-delete')) }}
+			    {!! Html::link(route('bbs.admin.show', [ $board->id, 'urlParams='.$urlParams->enc]), 'edit', array('class' => 'btn btn-secondary btn-sm')) !!}
+			    {!! Html::link(route('bbs.index', [$board->table_name, 'urlParams='.$urlParams->enc]), 'view', array('class' => 'btn btn-secondary btn-sm')) !!}
+				{{ Form::button('Delete', array('class' => 'btn btn-danger btn-sm btn-delete')) }}
 
 			                   <!--
 			   				{!! Form::open([

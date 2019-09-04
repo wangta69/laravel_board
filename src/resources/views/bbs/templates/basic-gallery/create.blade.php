@@ -1,6 +1,6 @@
 @extends($urlParams->dec['blade_extends'])
 
-@section ('content')
+@section ('bbs-content')
 <div class='basic-table create'>
     @if (isset($article))
         {!! Form::open([
@@ -16,10 +16,10 @@
             'enctype' => 'multipart/form-data',
         ]) !!}
     @endif
-    
+
     {{ Form::hidden('text_type', $cfg->editor == 'none' ? 'br' : 'html') }}
     {{ Form::hidden('parent_id', isset($article) ? $article->id : '') }}
-                
+
     <h1 class='title'>
         {{ $cfg->name }}
     </h1>
@@ -70,7 +70,7 @@
         </tr>
     </thead>
     </table>
-    
+
     <div class='form-group'>
         <div class='col-sm-12 text-right'>
             {!! Form::submit('작성완료', [
@@ -102,7 +102,7 @@ $('.file-control-btn').click(function() {
 
 $('.file-controls').change(function() {
     var $btnControl = $(this).closest('li').find('.file-control-btn');
-    
+
     if ($(this).val() != '') {
         $btnControl.removeClass('btn-default');
         $btnControl.addClass('btn-primary');

@@ -1,5 +1,5 @@
 @extends($urlParams->dec['blade_extends'])
-@section ('content')
+@section ('bbs-content')
 <div class='basic-table show'>
     <h1 class='title'>
         {{ $article->table->name }}

@@ -22,7 +22,7 @@
     </div>
 @endif
 
-<div class='form-group'>
+<div class='form-group row'>
     <label for='name' class='col-sm-2 control-label'>게시판 이름</label>
     <div class='col-sm-10'>
         {!! Form::text('name', isset($cfg) ? $cfg->name : old('name'), [
@@ -32,7 +32,7 @@
         ]) !!}
     </div>
 </div>
-<div class='form-group'>
+<div class='form-group row'>
     <label for='table_name' class='col-sm-2 control-label'>DB 테이블</label>
     <div class='col-sm-10'>
         {!! Form::text('table_name', isset($cfg) ? $cfg->table_name : old('table_name'), [
@@ -44,7 +44,7 @@
 
     </div>
 </div>
-<div class='form-group'>
+<div class='form-group row'>
     <label for='skin' class='col-sm-2 control-label'>게시판 스킨</label>
     <div class='col-sm-10'>
         {!!
@@ -52,7 +52,7 @@
         !!}
     </div>
 </div>
-<div class='form-group'>
+<div class='form-group row'>
     <label for='editor' class='col-sm-2 control-label'>editor</label>
     <div class='col-sm-10'>
         {!!
@@ -60,7 +60,7 @@
         !!}
     </div>
 </div>
-<div class='form-group'>
+<div class='form-group row'>
     <label for='roles-read' class='col-sm-2 control-label'>읽기권한</label>
     <div class='col-sm-10'>
         {{ Form::radio('auth_read', 'none')}}<label>비회원</label>    {{ Form::radio('auth_read', 'login', true)}} <label>일반회원 </label>  {{ Form::radio('auth_read', 'role')}} <label>특정회원</label>
@@ -71,7 +71,7 @@
         </select>
     </div>
 </div>
-<div class='form-group'>
+<div class='form-group row'>
      <label for='roles-write' class='col-sm-2 control-label'>쓰기권한</label>
     <div class='col-sm-10'>
         {{ Form::radio('auth_write', 'none')}}<label>비회원</label>    {{ Form::radio('auth_write', 'login', true)}} <label>일반회원 </label>  {{ Form::radio('auth_write', 'role')}} <label>특정회원</label>
@@ -82,14 +82,16 @@
         </select>
     </div>
 </div>
-<div class='form-group'>
+<div class='form-group row'>
      <label for='roles-write' class='col-sm-2 control-label'>옵션</label>
     <div class='col-sm-10'>
-        {{ Form::checkbox('enable_reply', '1', isset($cfg) ? $cfg->enable_reply == 1 ? true : false : false )}}<label>댓글활성</label>    {{ Form::checkbox('enable_comment', '1', isset($cfg) ? $cfg->enable_comment == 1 ? true : false : false)}} <label>코멘트 활성 </label>
+        {{ Form::checkbox('enable_reply', '1', isset($cfg) ? $cfg->enable_reply == 1 ? true : false : false )}}<label>댓글활성</label>
+        {{ Form::checkbox('enable_comment', '1', isset($cfg) ? $cfg->enable_comment == 1 ? true : false : false)}}<label>코멘트 활성 </label>
+        {{ Form::checkbox('enable_qna', '1', isset($cfg) ? $cfg->enable_qna == 1 ? true : false : false)}}<label>1:1 활성 </label>
 
     </div>
 </div>
-<div class='form-group'>
+<div class='form-group row'>
      <label for='lists' class='col-sm-2 control-label'>페이지당 게시물 수</label>
     <div class='col-sm-10'>
         {!! Form::text('lists', isset($cfg) ? $cfg->lists : old('lists'), [
@@ -117,7 +119,7 @@
             'class' => 'btn btn-default btn-sm',
         ]) !!}
     -->
-        <a href="{{ url()->previous()}}" class="btn btn-default btn-sm">List</a>
+        <a href="{{ url()->previous()}}" class="btn btn-secondary btn-sm">List</a>
     </div>
 </div>
 {!! Form::close() !!}

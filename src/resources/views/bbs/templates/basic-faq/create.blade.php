@@ -1,6 +1,6 @@
 @extends($urlParams->dec['blade_extends'])
 
-@section ('content')
+@section ('bbs-content')
 <div class='basic-table create'>
     @if (isset($article))
         {!! Form::open([
