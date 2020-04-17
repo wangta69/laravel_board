@@ -34,11 +34,12 @@ class BbsServiceProvider extends ServiceProvider {
     //public function boot(\Illuminate\Routing\Router $router)
 	public function boot()
     {
-        // if (!$this->app->routesAreCached()) {
+        if (!$this->app->routesAreCached()) {
             // Log::info(__DIR__ . '/Https/routes/web.php');
             //require __DIR__ . '/Https/routes/web.php';
-        //    require_once __DIR__ . '/Https/routes/web.php';
-        //}
+            require_once __DIR__ . '/Https/routes/web.php';
+            require_once __DIR__ . '/Https/routes/api.php';
+        }
 
 		//set migrations (automatic)
 

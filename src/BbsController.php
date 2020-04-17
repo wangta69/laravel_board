@@ -48,6 +48,16 @@ class BbsController extends \App\Http\Controllers\Controller {
 
     }
 
+    public function indexApi(Request $request, $tbl_name)
+    {
+        $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+
+        $articles = Articles::where('bbs_table_id', $cfg->id)->orderBy('order_num')->paginate($cfg->lists)->appends(request()->query());
+        return response()->json(['articles' => $articles, 'cfg'=>$cfg, 'urlParams'=>$urlParams], 200);//500, 203
+
+    }
+
     /*
      * Write Form Page
      *
@@ -321,6 +331,24 @@ class BbsController extends \App\Http\Controllers\Controller {
         return view('bbs.templates.'.$cfg->skin.'.show', ['article' => $article, 'cfg'=>$cfg, 'isAdmin'=>$isAdmin, 'urlParams'=>$urlParams]);
     }
 
+    public function viewApi($tbl_name, $article, Request $request)
+    {
+        $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+
+        $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+
+        $content = Articles::find($article);
+
+        if ($request->cookie($tbl_name.$content->id) != '1') {
+            $content->hit ++;
+            $content->save();
+        }
+
+        Cookie::queue(Cookie::make($tbl_name.$content->id, '1'));
+        return response()->json(['article' => $content], 200);//500, 203
+    }
 
     public function comment(Request $request, $tbl_name, Articles $article)
     {
