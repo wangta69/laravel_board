@@ -40,14 +40,29 @@ class BbsController extends \App\Http\Controllers\Controller {
      */
     public function index(Request $request, $tbl_name)
     {
+
+        $f = $request->input('f', null); // Searching Field ex) title, content
+        $s = $request->input('s', null); // Searching text
+
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
-        $articles = Articles::where('bbs_table_id', $cfg->id)->orderBy('order_num')->paginate($cfg->lists)->appends(request()->query());
+        $articles = Articles::where('bbs_table_id', $cfg->id)
+                    ->orderBy('order_num');
+
+        if ($f && $s) {
+            $articles = $articles->where($f, 'like', '%'.$s.'%');
+        }
+
+        $articles = $articles->paginate($cfg->lists)
+                    ->appends(request()->query());
         return view('bbs.templates.'.$cfg->skin.'.index', ['articles' => $articles, 'cfg'=>$cfg, 'urlParams'=>$urlParams]);
 
     }
 
+    /**
+    * API 호출시 직접 데이타 처리
+    */
     public function indexApi(Request $request, $tbl_name)
     {
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);

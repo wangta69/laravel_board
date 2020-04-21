@@ -4,6 +4,17 @@
     <h1 class='title'>
         {{ $cfg->name }}
     </h1>
+    <form method='get' action="{{url()->current()}}">
+        <input type="hidden" name="urlParams" value="{{request()->get('urlParams')}}">
+        <div class="right-search">
+            <select name="f" id="">
+                <option value="title" @if (request()->get('t') == 'title') selected @endif>Title</option>
+                <option value="content" @if (request()->get('t') == 'content') selected @endif>Contents</option>
+            </select>
+            <input type="text" name="s" placeholder="Keyword Search" value="{{request()->get('s')}}" />
+            <input  type="submit" />
+        </div>
+    </form>
     <table>
     <colgroup>
         <col width='50' />
@@ -22,8 +33,8 @@
         </tr>
     </thead>
     <tbody>
-        @foreach ($articles as $index => $article)
-       {{-- @foreach($articles as $article) --}}
+
+        @forelse ($articles as $index => $article)
             <tr>
                 <td class='text-center'>{{ number_format($articles->total() - $articles->perPage() * ($articles->currentPage() - 1) - $index) }}</td>
                 <td>{!! Html::link(route('bbs.show', [$cfg->table_name, $article->id, 'urlParams='.$urlParams->enc]), $article->title) !!}</td>
@@ -31,7 +42,13 @@
                 <td class='text-center'>{{ date('Y-m-d', strtotime($article->created_at)) }}</td>
                 <td class='text-center'>{{ number_format($article->hit) }}</td>
             </tr>
-        @endforeach
+        @empty
+            <tr>
+                <td colspan="5">
+                    No contents
+                </td>
+            </tr>
+        @endforelse
     </tbody>
     </table>
 

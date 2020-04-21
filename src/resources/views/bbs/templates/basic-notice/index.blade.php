@@ -20,7 +20,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach ($articles as $index => $article)
+        @forelse ($articles as $index => $article)
        {{-- @foreach($articles as $article) --}}
             <tr>
                 <td class='text-center'>{{ number_format($articles->total() - $articles->perPage() * ($articles->currentPage() - 1) - $index) }}</td>
@@ -28,7 +28,13 @@
                 <td class='text-center'>{{ date('Y-m-d', strtotime($article->created_at)) }}</td>
                 <td class='text-center'>{{ number_format($article->hit) }}</td>
             </tr>
-        @endforeach
+            @empty
+                <tr>
+                    <td colspan="4">
+                        No contents
+                    </td>
+                </tr>
+            @endforelse
     </tbody>
     </table>
 
