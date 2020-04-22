@@ -18,6 +18,7 @@ use Pondol\Bbs\Models\Bbs_comments as Comments;
 use Pondol\Bbs\Models\Bbs_files as Files;
 
 use Pondol\Image\GetHttpImage;
+// use Pondol\Bbs\BbsService;
 
 
 class BbsController extends \App\Http\Controllers\Controller {
@@ -26,7 +27,7 @@ class BbsController extends \App\Http\Controllers\Controller {
     protected $cfg;
     protected $laravel_ver;
     public function __construct(BbsService $bbsSvc) {
-        $this->bbsSvc   = $bbsSvc;
+        $this->bbsSvc = $bbsSvc;
         $laravel = app();
         $this->laravel_ver = $laravel::VERSION;
     }
@@ -44,6 +45,9 @@ class BbsController extends \App\Http\Controllers\Controller {
         $f = $request->input('f', null); // Searching Field ex) title, content
         $s = $request->input('s', null); // Searching text
 
+        $user = $request->user();
+
+
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
@@ -52,6 +56,21 @@ class BbsController extends \App\Http\Controllers\Controller {
 
         if ($f && $s) {
             $articles = $articles->where($f, 'like', '%'.$s.'%');
+        }
+
+        $adminrole = config('bbs.admin_roles'); // administrator
+
+        // 관리자 권한 및 본인에게만 데이타를 보여 준다.
+        if ($cfg->enable_qna == '1') {
+            $adminrole = config('bbs.admin_roles'); // administrator
+            $hasrole = BbsService::hasRoles($adminrole);
+            if (!$hasrole) { // admin 권한을 가지고 있지 않은 경우 본인 글만 디스플레이 한다.
+                if (!$user) { // 로그인 페이지로 이동
+                    return redirect(route('login')); // 이부분은 변경될 수도 있음
+                } else {
+                    $articles = $articles->where('user_id', $user->id);
+                }
+            }
         }
 
         $articles = $articles->paginate($cfg->lists)
@@ -383,6 +402,7 @@ class BbsController extends \App\Http\Controllers\Controller {
      */
     public function editForm(Request $request, $tbl_name, Articles $article)
     {
+        $isAdmin = BbsService::hasRoles(config('bbs.admin_roles'));
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 

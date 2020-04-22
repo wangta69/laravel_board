@@ -86,12 +86,16 @@ class BbsService
         $roles = !is_array($roles) ? explode(",", $roles) : $roles;
 
         $hasRoles = 0;
-
-        foreach ($roles as $role) {
-            if (Auth::user()->roles->contains('id', null, $role) || Auth::user()->roles->contains('name', null, $role)) $hasRoles++;
+        if (!Auth::user()) {
+            return 0;
+        } else {
+            foreach ($roles as $role) {
+                if (Auth::user()->roles->contains('id', null, $role) || Auth::user()->roles->contains('name', null, $role)) $hasRoles++;
+            }
+            return ($all) ? ($hasRoles == count($roles)) : ($hasRoles);
         }
 
-        return ($all) ? ($hasRoles == count($roles)) : ($hasRoles);
+
     }
 
 

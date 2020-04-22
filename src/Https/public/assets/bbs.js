@@ -52,11 +52,11 @@ $(".comment-update-form").click(function(){
     //기존 열린창은 모두 닫기
     $(".comment-list .comment-article > ul > li.update").hide();
 
+    $("li.view").show();
     //현재 창 열기
-
     $("li.view", $this).hide();
     $("li.update", $this).show();
-    console.log($("li.view .comment-content", $this).html());
+//     console.log($("li.view .comment-content", $this).html());
     $("li.update .comment-update-content", $this).val($("li.view .comment-content", $this).html());
 });
 //comment update
@@ -117,5 +117,4 @@ $( ".re_comment" ).on( "click", ".comment-reply-create", function() {
             alert(resp.message);
         }
     });
-
 });
