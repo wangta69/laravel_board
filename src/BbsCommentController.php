@@ -151,7 +151,7 @@ class BbsCommentController extends \App\Http\Controllers\Controller {
     {
 
         if (!$comment->isOwner(Auth::user())) {
-            return Response::json(['result'=>false, "code"=>"001", 'message'=>'본인이 작성한 글만 삭제가능합니다.'], 200);
+            return Response::json(['error'=>'본인이 작성한 글만 삭제가능합니다.', "code"=>"001"], 200);
         }
 
         //1. delete comment
@@ -161,6 +161,6 @@ class BbsCommentController extends \App\Http\Controllers\Controller {
         $article->save();
 
         //return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
-        return Response::json(['result'=>true, "code"=>"000", 'comment'=>$comment], 200);
+        return Response::json(['error'=>false, "code"=>"000", 'comment'=>$comment], 200);
     }
 }
