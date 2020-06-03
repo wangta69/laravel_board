@@ -22,7 +22,7 @@
 </thead>
 <tbody>
 	@foreach ($list as $index => $board)
-		<tr>
+		<tr class="data-row" user-attr-board-id="{{$board->id}}">
 			<td class='text-center'>
 				{{ number_format($list->total() - $list->perPage() * ($list->currentPage() - 1) - $index) }}
 			</td>
