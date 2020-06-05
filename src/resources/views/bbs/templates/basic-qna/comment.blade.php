@@ -1,3 +1,4 @@
+@if ($isAdmin)
 {!! Form::open([
     'route' => ['bbs.comment.store', $cfg->table_name, $article->id, 0, 'urlParams='.$urlParams->enc],
     'class' => 'form-horizontal',
@@ -17,6 +18,7 @@
         </div>
     </section>
 {!! Form::close() !!}
+@endif
 <section class="comment-list">
     <h3>댓글목록</h3>
 
