@@ -5,11 +5,13 @@ namespace Pondol\Bbs\Models;
 use Illuminate\Database\Eloquent\Model;
 use Kyslik\ColumnSortable\Sortable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
 
 class Bbs_articles extends Model
 {
     use Sortable,
-    SoftDeletes;
+    SoftDeletes,
+    Notifiable;
 
     public $sortable = [];
 
