@@ -8,8 +8,8 @@
         <input type="hidden" name="urlParams" value="{{request()->get('urlParams')}}">
         <div class="right-search">
             <select name="f" id="">
-                <option value="title" @if (request()->get('t') == 'title') selected @endif>Title</option>
-                <option value="content" @if (request()->get('t') == 'content') selected @endif>Contents</option>
+                <option value="title" @if (request()->get('f') == 'title') selected @endif>Title</option>
+                <option value="content" @if (request()->get('f') == 'content') selected @endif>Contents</option>
             </select>
             <input type="text" name="s" placeholder="Keyword Search" value="{{request()->get('s')}}" />
             <input  type="submit" />
