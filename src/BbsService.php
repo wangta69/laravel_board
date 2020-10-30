@@ -2,9 +2,9 @@
 namespace Wangta69\Bbs;
 
 
-use Wangta69\Bbs\Models\Bbs_tables as Tables;
-use Wangta69\Bbs\Models\Bbs_articles as Articles;
-use Wangta69\Bbs\Models\Bbs_files as Files;
+use Wangta69\Bbs\Models\BbsTables as Tables;
+use Wangta69\Bbs\Models\BbsArticles as Articles;
+use Wangta69\Bbs\Models\BbsFiles as Files;
 use Auth;
 class BbsService
 {

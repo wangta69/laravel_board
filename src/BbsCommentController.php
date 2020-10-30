@@ -8,9 +8,9 @@ use Validator;
 use Response;
 use Auth;
 
-use Wangta69\Bbs\Models\Bbs_tables as Tables;
-use Wangta69\Bbs\Models\Bbs_articles as Articles;
-use Wangta69\Bbs\Models\Bbs_comments as Comments;
+use Wangta69\Bbs\Models\BbsTables as Tables;
+use Wangta69\Bbs\Models\BbsArticles as Articles;
+use Wangta69\Bbs\Models\BbsComments as Comments;
 
 class BbsCommentController extends \App\Http\Controllers\Controller {
 

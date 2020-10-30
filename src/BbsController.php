@@ -12,10 +12,10 @@ use Storage;
 use Response;
 use Auth;
 
-use Wangta69\Bbs\Models\Bbs_tables as Tables;
-use Wangta69\Bbs\Models\Bbs_articles as Articles;
-use Wangta69\Bbs\Models\Bbs_comments as Comments;
-use Wangta69\Bbs\Models\Bbs_files as Files;
+use Wangta69\Bbs\Models\BbsTables as Tables;
+use Wangta69\Bbs\Models\BbsArticles as Articles;
+use Wangta69\Bbs\Models\BbsComments as Comments;
+use Wangta69\Bbs\Models\BbsFiles as Files;
 
 use Wangta69\Image\GetHttpImage;
 // use Wangta69\Bbs\BbsService;
