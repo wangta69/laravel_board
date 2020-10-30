@@ -10,7 +10,7 @@ use Validator;
 use Wangta69\Bbs\Models\BbsTables as Tables;
 use Wangta69\Bbs\Models\Role;
 use Wangta69\Bbs\BbsService;
-//use Wangta69\Bbs\Models\Bbs_roles as Roles;
+
 
 
 class AdminController extends \App\Http\Controllers\Controller {

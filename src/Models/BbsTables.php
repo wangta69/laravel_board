@@ -49,7 +49,7 @@ class BbsTables extends Model
 
     private function get_roles(){
 
-            $roles = $this->hasMany('Wangta69\Bbs\Models\Bbs_roles', 'bbs_tables_id');
+            $roles = $this->hasMany('Wangta69\Bbs\Models\BbsRoles', 'bbs_tables_id');
             $rtn = [];
 
             foreach($roles->get() as $k => $v){
