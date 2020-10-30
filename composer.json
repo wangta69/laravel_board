@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Pondol\\Bbs\\": "src/"
+            "Wangta69\\Bbs\\": "src/"
         }
     }
 }

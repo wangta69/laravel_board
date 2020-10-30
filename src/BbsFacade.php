@@ -1,11 +1,11 @@
 <?php
-namespace Pondol\Bbs;
+namespace Wangta69\Bbs;
 
 use Illuminate\Support\Facades\Facade;
 
 class BbsFacade extends Facade
 {
-    protected static function getFacadeAccessor() { 
+    protected static function getFacadeAccessor() {
         return 'bbs';
     }
 }

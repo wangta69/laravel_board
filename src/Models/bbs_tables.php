@@ -1,12 +1,12 @@
 <?php
 
-namespace Pondol\Bbs\Models;
+namespace Wangta69\Bbs\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Kyslik\ColumnSortable\Sortable;
 
 
-use Pondol\Bbs\Models\Role;
+use Wangta69\Bbs\Models\Role;
 
 class Bbs_tables extends Model
 {
@@ -20,7 +20,7 @@ class Bbs_tables extends Model
     //protected $dateFormat = 'U';
     protected $primaryKey = 'id';
 
-   
+
     public function get_config_by_tablename($tbl_name){
        // return $tbl_name;
         return $this->where('table_name', $tbl_name)->first();
@@ -49,7 +49,7 @@ class Bbs_tables extends Model
 
     private function get_roles(){
 
-            $roles = $this->hasMany('Pondol\Bbs\Models\Bbs_roles', 'bbs_tables_id');
+            $roles = $this->hasMany('Wangta69\Bbs\Models\Bbs_roles', 'bbs_tables_id');
             $rtn = [];
 
             foreach($roles->get() as $k => $v){

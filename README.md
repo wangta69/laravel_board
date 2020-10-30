@@ -15,11 +15,11 @@ composer require wangta69/laravel_board
 ## Setup
 Step 1.1) Add ServiceProvider to the providers array in `config/app.php`.
 ```
-Pondol\Bbs\BbsServiceProvider::class,
+Wangta69\Bbs\BbsServiceProvider::class,
 ```
 Step 1.2) Add Facade to the aliases array in `config/app.php`.
 ```
-'Bbs' => Pondol\Bbs\BbsFacade::class,
+'Bbs' => Wangta69\Bbs\BbsFacade::class,
 ```
 
 Step 2) publish stuff
@@ -64,7 +64,7 @@ public function user() {
 
 ### Extract data only
 ```
-use Pondol\Bbs\BbsService;
+use Wangta69\Bbs\BbsService;
 public function Anything()
 {
 	$pds = BbsService::get_latest(array('id'=>3, 'cnt'=>4));

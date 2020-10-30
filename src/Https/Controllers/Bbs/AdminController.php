@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Bbs;
 
 use Illuminate\Http\Request;
 use Auth;
-use Pondol\Bbs\BbsService;
+use Wangta69\Bbs\BbsService;
 
-class AdminController extends \Pondol\Bbs\AdminController
+class AdminController extends \Wangta69\Bbs\AdminController
 {
 
     // BBS Items per Page

@@ -1,6 +1,6 @@
 <?php
 
-namespace Pondol\Bbs\Models;
+namespace Wangta69\Bbs\Models;
 
 use Illuminate\Database\Eloquent\Model;
 //use App\Models\Auth\Role\Traits\Scopes\RoleScopes;
@@ -48,8 +48,8 @@ class Role extends Model
      * @var array
      */
     protected $fillable = ['name'];
-    
-    
-    
+
+
+
 
 }

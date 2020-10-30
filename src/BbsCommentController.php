@@ -1,5 +1,5 @@
 <?php
-namespace Pondol\Bbs;
+namespace Wangta69\Bbs;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -8,9 +8,9 @@ use Validator;
 use Response;
 use Auth;
 
-use Pondol\Bbs\Models\Bbs_tables as Tables;
-use Pondol\Bbs\Models\Bbs_articles as Articles;
-use Pondol\Bbs\Models\Bbs_comments as Comments;
+use Wangta69\Bbs\Models\Bbs_tables as Tables;
+use Wangta69\Bbs\Models\Bbs_articles as Articles;
+use Wangta69\Bbs\Models\Bbs_comments as Comments;
 
 class BbsCommentController extends \App\Http\Controllers\Controller {
 

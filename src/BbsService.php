@@ -1,10 +1,10 @@
 <?php
-namespace Pondol\Bbs;
+namespace Wangta69\Bbs;
 
 
-use Pondol\Bbs\Models\Bbs_tables as Tables;
-use Pondol\Bbs\Models\Bbs_articles as Articles;
-use Pondol\Bbs\Models\Bbs_files as Files;
+use Wangta69\Bbs\Models\Bbs_tables as Tables;
+use Wangta69\Bbs\Models\Bbs_articles as Articles;
+use Wangta69\Bbs\Models\Bbs_files as Files;
 use Auth;
 class BbsService
 {

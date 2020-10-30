@@ -1,5 +1,5 @@
 <?php
-namespace Pondol\Bbs;
+namespace Wangta69\Bbs;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -12,13 +12,13 @@ use Storage;
 use Response;
 use Auth;
 
-use Pondol\Bbs\Models\Bbs_tables as Tables;
-use Pondol\Bbs\Models\Bbs_articles as Articles;
-use Pondol\Bbs\Models\Bbs_comments as Comments;
-use Pondol\Bbs\Models\Bbs_files as Files;
+use Wangta69\Bbs\Models\Bbs_tables as Tables;
+use Wangta69\Bbs\Models\Bbs_articles as Articles;
+use Wangta69\Bbs\Models\Bbs_comments as Comments;
+use Wangta69\Bbs\Models\Bbs_files as Files;
 
-use Pondol\Image\GetHttpImage;
-// use Pondol\Bbs\BbsService;
+use Wangta69\Image\GetHttpImage;
+// use Wangta69\Bbs\BbsService;
 
 
 class BbsController extends \App\Http\Controllers\Controller {

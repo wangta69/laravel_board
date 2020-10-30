@@ -1,5 +1,5 @@
 <?php
-namespace Pondol\Bbs;
+namespace Wangta69\Bbs;
 
 use Illuminate\Http\Request;
 
@@ -7,10 +7,10 @@ use Route;
 use View;
 use Validator;
 
-use Pondol\Bbs\Models\Bbs_tables as Tables;
-use Pondol\Bbs\Models\Role;
-use Pondol\Bbs\BbsService;
-//use Pondol\Bbs\Models\Bbs_roles as Roles;
+use Wangta69\Bbs\Models\Bbs_tables as Tables;
+use Wangta69\Bbs\Models\Role;
+use Wangta69\Bbs\BbsService;
+//use Wangta69\Bbs\Models\Bbs_roles as Roles;
 
 
 class AdminController extends \App\Http\Controllers\Controller {

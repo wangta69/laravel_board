@@ -1,6 +1,6 @@
 @extends($urlParams->dec['blade_extends'])
 @section ('bbs-content')
-<?php use Pondol\Bbs\BbsController;?>
+<?php use Wangta69\Bbs\BbsController;?>
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Home</a></li>

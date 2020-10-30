@@ -1,5 +1,5 @@
 <?php
-namespace Pondol\Bbs;
+namespace Wangta69\Bbs;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Log;

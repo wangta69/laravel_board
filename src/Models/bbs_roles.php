@@ -1,6 +1,6 @@
 <?php
 
-namespace Pondol\Bbs\Models;
+namespace Wangta69\Bbs\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

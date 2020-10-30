@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Bbs;
 
 use Illuminate\Http\Request;
-use \Pondol\Bbs\PluginsSmartEditorService as SmartEditor;
+use \Wangta69\Bbs\PluginsSmartEditorService as SmartEditor;
 
 class PluginsController
 {
 
     protected $uploadPath = "../storage/app/editor/";
-    
+
     public function index($plugins, $action=null){
 
         switch($plugins){
@@ -29,15 +29,15 @@ class PluginsController
                         return $smartEditor->getSmartEditorSkin();
                     break;
                 }
-                
+
                 break;
         }
     }
-    
+
     public function fileUpload(Request $request, $plugins){
         $smartEditor =  new SmartEditor;
         $url = $smartEditor->postFileUpload($request);
-        
+
         return redirect($url);
     }
 }
