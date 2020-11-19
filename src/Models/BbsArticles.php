@@ -40,7 +40,7 @@ class BbsArticles extends Model
 
     public function table()
     {
-        return $this->belongsTo('Wangta69\Bbs\Models\Bbs_tables', 'bbs_table_id');
+        return $this->belongsTo('Wangta69\Bbs\Models\BbsTables', 'bbs_table_id');
     }
 
     /*
@@ -48,7 +48,7 @@ class BbsArticles extends Model
      * @return ArticleFiles Model
      */
     public function comments() {
-       return $this->HasMany('Wangta69\Bbs\Models\Bbs_comments');
+       return $this->HasMany('Wangta69\Bbs\Models\BbsComments');
     }
 
     public function comment() {
@@ -59,7 +59,7 @@ class BbsArticles extends Model
      * @return ArticleFiles Model
      */
     public function files() {
-       return $this->HasMany('Wangta69\Bbs\Models\Bbs_files');
+       return $this->HasMany('Wangta69\Bbs\Models\BbsFiles');
     }
     /*
      * find owner of a article

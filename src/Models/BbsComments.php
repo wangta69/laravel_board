@@ -38,7 +38,7 @@ class BbsComments extends Model
 
     public function article()
     {
-        return $this->belongsTo('Wangta69\Bbs\Models\Bbs_articles', 'bbs_articles_id');
+        return $this->belongsTo('Wangta69\Bbs\Models\BbsArticles', 'bbs_articles_id');
     }
 
     /*
