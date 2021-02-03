@@ -25,5 +25,6 @@ Route::group(['middleware' => ['api','cors']], function () {
 
 */
 Route::group(['prefix' => 'api/v1/bbs', 'as' => 'bbs.', 'namespace' => 'App\Http\Controllers\Bbs'], function () {
+    Route::get('/{tbl_name}/{article}/view', 'BbsController@viewApi');
     Route::get('/{tbl_name}', 'BbsController@indexApi');
 });
