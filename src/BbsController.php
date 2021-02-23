@@ -352,6 +352,12 @@ class BbsController extends \App\Http\Controllers\Controller {
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
+        // 시간되면 이 부분은 좀더 고도화 필요
+        $user = $request->user();
+        if ($cfg->auth_read === 'login' &&  !$user) {
+            return redirect()->route('login');
+        }
+
         if ($request->cookie($tbl_name.$article->id) != '1') {
             $article->hit ++;
             $article->save();
@@ -361,7 +367,6 @@ class BbsController extends \App\Http\Controllers\Controller {
         if($request->ajax()){
             return response()->json([$article], 200);//500, 203
         }
-        //return view('bbs.templates.'.$cfg->skin.'.show')->with(compact('article', 'cfg'));
         return view('bbs.templates.'.$cfg->skin.'.show', ['article' => $article, 'cfg'=>$cfg, 'isAdmin'=>$isAdmin, 'urlParams'=>$urlParams]);
     }
 
