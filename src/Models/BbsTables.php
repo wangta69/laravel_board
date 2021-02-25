@@ -16,7 +16,7 @@ class BbsTables extends Model
 
     protected $fillable = ['name', 'table_name', 'skin'];//
 
-    protected $table        = 'bbs_tables';
+    protected $table = 'bbs_tables';
     //protected $dateFormat = 'U';
     protected $primaryKey = 'id';
 
