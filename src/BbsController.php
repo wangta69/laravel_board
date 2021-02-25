@@ -272,7 +272,7 @@ class BbsController extends \App\Http\Controllers\Controller {
     /*
      *
      */
-    private function get_order_num($params=null){
+    protected function get_order_num($params=null){
         $order_num = Articles::min('order_num');
         return $order_num ? $order_num-1:-1;
     }
@@ -281,7 +281,7 @@ class BbsController extends \App\Http\Controllers\Controller {
      * 에디터에 이미지가 포함된 경우 이미지를 현재 아이템에 editor라는 폴더를 만들고 그곳에 모두 복사한다.
      * 그리고 contents에 포함된 링크 주소고 변경하여 데이타를 업데이트 한다.
      */
-    private function contents_update($article, $table_id, $date_Ym){
+    protected function contents_update($article, $table_id, $date_Ym){
 
         $sourceDir = storage_path() .'/app/public/bbs/tmp/editor/'. session()->getId();
         $destinationDir = storage_path() .'/app/public/bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor';
@@ -298,7 +298,7 @@ class BbsController extends \App\Http\Controllers\Controller {
     /**
      * 대표 이미지 설정
      */
-    private function set_representaion($article){
+    protected function set_representaion($article){
         $article->image = null;
         //$representaion_image = null;//1순위: 첨부화일에 이미지가 있을 경우, 2순위 : editor에 이미지가 있을 경우
         $representaion_image_array = ['jpeg', 'jpg', 'png', 'gif'];
