@@ -44,11 +44,13 @@ class BbsController extends \App\Http\Controllers\Controller {
 
         $f = $request->input('f', null); // Searching Field ex) title, content
         $s = $request->input('s', null); // Searching text
-
-        $user = $request->user();
-
-
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+        $user = $request->user();
+        if ($cfg->auth_list === 'login' &&  !$user) {
+            return redirect()->route('login');
+        }
+
+
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
         $articles = Articles::where('bbs_table_id', $cfg->id)
