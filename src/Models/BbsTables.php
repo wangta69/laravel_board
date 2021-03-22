@@ -34,6 +34,15 @@ class BbsTables extends Model
     /**
      * roles_read : 읽기 권한
      */
+    public function roles_list()
+    {
+        //select `roles`.*, `bbs_roles`.`bbs_tables_id` as `pivot_bbs_tables_id`, `bbs_roles`.`read_role_id` as `pivot_read_role_id` from `roles` inner join `bbs_roles` on `roles`.`id` = `bbs_roles`.`read_role_id` where `bbs_roles`.`bbs_tables_id` = 2
+        return $this->belongsToMany(Role::class, 'bbs_roles', 'bbs_tables_id', 'read_role_id');
+    }
+
+    /**
+     * roles_read : 읽기 권한
+     */
     public function roles_read()
     {
         //select `roles`.*, `bbs_roles`.`bbs_tables_id` as `pivot_bbs_tables_id`, `bbs_roles`.`read_role_id` as `pivot_read_role_id` from `roles` inner join `bbs_roles` on `roles`.`id` = `bbs_roles`.`read_role_id` where `bbs_roles`.`bbs_tables_id` = 2
@@ -46,7 +55,6 @@ class BbsTables extends Model
         return $this->belongsToMany(Role::class, 'bbs_roles', 'bbs_tables_id', 'write_role_id');
     }
 
-
     private function get_roles(){
 
             $roles = $this->hasMany('Wangta69\Bbs\Models\BbsRoles', 'bbs_tables_id');
@@ -58,6 +66,15 @@ class BbsTables extends Model
             }
 
             return $rtn;
+    }
+
+    public function category() {
+        $roles = $this->hasMany('Wangta69\Bbs\Models\BbsCategories', 'bbs_table_id')->orderBy('order');
+        return $roles;
+
+        // if ($roles->count() === 0) {
+        //     $p = new \Wangta69\Bbs\Models\BbsCategories;
+        // }
     }
 
     public function roles_count($flag){

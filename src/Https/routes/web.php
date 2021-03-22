@@ -15,8 +15,13 @@ Route::group(['prefix' => 'bbs/admin', 'as' => 'bbs.admin.', 'namespace' => 'App
     Route::get('create', 'AdminController@createForm')->name('create');
     Route::get('{table}/create', 'AdminController@createForm')->name('show');
     Route::post('create', 'AdminController@store')->name('store');
-    Route::put('{table}/create', 'AdminController@update')->name('store');
+    Route::put('{table}/create', 'AdminController@update')->name('update');
     Route::delete('{table}/delete', 'AdminController@destroy')->name('destroy');
+
+    // 캬테고리 관련
+    Route::post('category/add/{table}', 'CategoryController@addCategory');
+    Route::put('category/update/{category}/{direction}', 'CategoryController@updateOrder');
+    Route::delete('category/delete/{category}', 'CategoryController@deleteCategory');
 });
 
 Route::group(['prefix' => 'bbs', 'as' => 'bbs.', 'namespace' => 'App\Http\Controllers\Bbs', 'middleware' => ['web']], function () {

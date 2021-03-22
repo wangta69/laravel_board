@@ -19,6 +19,7 @@ class CreatePondolBbsCategoryTable extends Migration
             $table->increments('id');
             $table->integer('bbs_table_id')->unsigned();
             $table->string('name', '20');
+            $table->tinyInteger('order')->unsigned()->default(0)->comment('카테고리 출력 순서');
             $table->timestamps();
             $table->index('bbs_table_id');
             $table->foreign('bbs_table_id')->references('id')->on('bbs_tables')

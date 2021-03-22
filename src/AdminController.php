@@ -35,7 +35,7 @@ class AdminController extends \App\Http\Controllers\Controller {
     }
 
     /*
-     * BBS CREATE Form
+     * BBS CREATE | EDIT Form
      *
      * @return \Illuminate\Http\Response
      */
@@ -52,9 +52,19 @@ class AdminController extends \App\Http\Controllers\Controller {
 
         $editors = ['none'=>'None', 'smartEditor'=>'Smart Editor'];
 
+        $categoris = [];
+        if ($table) { // 카테고리를 가져온다.
+
+        }
 
         //return view('bbs.admin.create')->with(compact('skins'));
-        return view('bbs.admin.create', ['cfg'=>$table, 'skins' => $skins, 'editors' => $editors, 'roles' => Role::get(), 'urlParams'=>$urlParams]);
+        return view('bbs.admin.create', [
+            'cfg'=>$table,
+            'skins' => $skins,
+            'editors' => $editors,
+            'roles' => Role::get(),
+            'urlParams'=>$urlParams
+        ]);
     }
 
     /*
@@ -65,7 +75,6 @@ class AdminController extends \App\Http\Controllers\Controller {
      */
     public function store(Request $request)
     {
-
         $reserved_table_name = ['admin', 'root'];
 
         $validator = Validator::make($request->all(), [
@@ -94,6 +103,7 @@ class AdminController extends \App\Http\Controllers\Controller {
         $table->skin = $request->get('skin');
         $table->lists = $request->input('lists', 10);
         $table->editor = $request->get('editor');
+        $table->auth_list = $request->get('auth_list');
         $table->auth_write = $request->get('auth_write');
         $table->auth_read = $request->get('auth_read');
         $table->enable_reply = $request->input('enable_reply', 0);
@@ -144,6 +154,7 @@ class AdminController extends \App\Http\Controllers\Controller {
         $table->skin = $request->skin;
         $table->lists = $request->input('lists', 10);
         $table->editor = $request->get('editor');
+        $table->auth_list= $request->get('auth_list');
         $table->auth_write = $request->get('auth_write');
         $table->auth_read = $request->get('auth_read');
         $table->enable_reply = $request->input('enable_reply', 0);

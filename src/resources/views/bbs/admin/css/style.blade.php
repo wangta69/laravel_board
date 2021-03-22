@@ -69,3 +69,9 @@
 .basic-table.create table tr.file-control td ul li button span {
 	top: 2px;
 }
+
+.order-btn > span {
+    display: block;
+    line-height: 12px;
+    cursor: pointer;
+}
