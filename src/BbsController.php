@@ -42,6 +42,10 @@ class BbsController extends \App\Http\Controllers\Controller {
     public function index(Request $request, $tbl_name)
     {
 
+        if (!$tbl_name) {
+            return;
+        }
+
         $f = $request->input('f', null); // Searching Field ex) title, content
         $s = $request->input('s', null); // Searching text
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
