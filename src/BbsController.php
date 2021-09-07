@@ -373,9 +373,11 @@ class BbsController extends \App\Http\Controllers\Controller {
         if($request->ajax()){
             return response()->json([$article], 200);//500, 203
         }
+
         $article->content =  preg_replace('#<script(.*?)>(.*?)</script>#is', '', $article->content) ? : $article->content;
         $article->content = preg_replace('/script.*?\/script/ius', '', $article->content) ? preg_replace('/script.*?\/script/ius', '', $article->content): $article->content;
-        
+        // $article->content = strip_tags($article->content);
+
         return view('bbs.templates.'.$cfg->skin.'.show', ['article' => $article, 'cfg'=>$cfg, 'isAdmin'=>$isAdmin, 'urlParams'=>$urlParams]);
     }
 
