@@ -79,9 +79,15 @@ class BbsController extends \App\Http\Controllers\Controller {
             }
         }
 
+        // 별도의 스킨정보가 제공되면
+        $skin = $cfg->skin;
+        if (isset($urlParams->dec['skin'])) {
+            $skin = $urlParams->dec['skin'];
+        }
+
         $articles = $articles->paginate($cfg->lists)
                     ->appends(request()->query());
-        return view('bbs.templates.'.$cfg->skin.'.index', ['articles' => $articles, 'cfg'=>$cfg, 'urlParams'=>$urlParams]);
+        return view('bbs.templates.'.$skin.'.index', ['articles' => $articles, 'cfg'=>$cfg, 'urlParams'=>$urlParams]);
 
     }
 
@@ -115,8 +121,14 @@ class BbsController extends \App\Http\Controllers\Controller {
         if(!$permission_result)
             abort(403, 'Unauthorized action.');
 
+        // 별도의 스킨정보가 제공되면
+        $skin = $cfg->skin;
+        if (isset($urlParams->dec['skin'])) {
+            $skin = $urlParams->dec['skin'];
+        }
+
        // return view('bbs.templates.'.$cfg->skin.'.create')->with(compact('cfg', 'errors'));
-        return view('bbs.templates.'.$cfg->skin.'.create', ['cfg'=>$cfg, 'urlParams'=>$urlParams]);
+        return view('bbs.templates.'.$skin.'.create', ['cfg'=>$cfg, 'urlParams'=>$urlParams]);
     }
 
     /*
@@ -378,7 +390,13 @@ class BbsController extends \App\Http\Controllers\Controller {
         $article->content = preg_replace('/script.*?\/script/ius', '', $article->content) ? preg_replace('/script.*?\/script/ius', '', $article->content): $article->content;
         // $article->content = strip_tags($article->content);
 
-        return view('bbs.templates.'.$cfg->skin.'.show', ['article' => $article, 'cfg'=>$cfg, 'isAdmin'=>$isAdmin, 'urlParams'=>$urlParams]);
+        // 별도의 스킨정보가 제공되면
+        $skin = $cfg->skin;
+        if (isset($urlParams->dec['skin'])) {
+            $skin = $urlParams->dec['skin'];
+        }
+
+        return view('bbs.templates.'.$skin.'.show', ['article' => $article, 'cfg'=>$cfg, 'isAdmin'=>$isAdmin, 'urlParams'=>$urlParams]);
     }
 
     public function viewApi($tbl_name, $article, Request $request)
@@ -422,9 +440,14 @@ class BbsController extends \App\Http\Controllers\Controller {
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
+        // 별도의 스킨정보가 제공되면
+        $skin = $cfg->skin;
+        if (isset($urlParams->dec['skin'])) {
+            $skin = $urlParams->dec['skin'];
+        }
 
         if ($article->isOwner(Auth::user()) || $isAdmin) {
-            return view('bbs.templates.'.$cfg->skin.'.create', ['article'=>$article, 'cfg'=>$cfg,'urlParams'=>$urlParams]);
+            return view('bbs.templates.'.$skin.'.create', ['article'=>$article, 'cfg'=>$cfg,'urlParams'=>$urlParams]);
         } else {
             return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
         }
