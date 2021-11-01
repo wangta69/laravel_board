@@ -87,6 +87,12 @@ class BbsController extends \App\Http\Controllers\Controller {
 
         $articles = $articles->paginate($cfg->lists)
                     ->appends(request()->query());
+
+        foreach($articles as $v) {
+            $v->content =  preg_replace('#<script(.*?)>(.*?)</script>#is', '', $v->content) ? : $v->content;
+            $v->content = preg_replace('/script.*?\/script/ius', '', $v->content) ? preg_replace('/script.*?\/script/ius', '', $v->content): $v->content;
+        }
+
         return view('bbs.templates.'.$skin.'.index', ['articles' => $articles, 'cfg'=>$cfg, 'urlParams'=>$urlParams]);
 
     }
