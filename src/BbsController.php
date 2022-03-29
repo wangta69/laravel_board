@@ -310,16 +310,19 @@ class BbsController extends \App\Http\Controllers\Controller {
      */
     protected function contents_update($article, $table_id, $date_Ym){
 
-        $sourceDir = storage_path() .'/app/public/bbs/tmp/editor/'. session()->getId();
-        $destinationDir = storage_path() .'/app/public/bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor';
+        // $sourceDir = storage_path() .'/app/public/bbs/tmp/editor/'. session()->getId();
+        // $destinationDir = storage_path() .'/app/public/bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor';
+        $sourceDir = public_path('bbs/tmp/editor/'. session()->getId());
+        $destinationDir = public_path('bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor');
 
 
-        $article->content = str_replace('/storage/bbs/tmp/editor/'.session()->getId(), '/storage/bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor', $article->content);
+        $article->content = str_replace('bbs/tmp/editor/'.session()->getId(), 'bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor', $article->content);
 
         $article->save();
 
         $success = File::copyDirectory($sourceDir, $destinationDir);
-        Storage::deleteDirectory('public/bbs/tmp/editor/'. session()->getId());
+        // Storage::deleteDirectory('public/bbs/tmp/editor/'. session()->getId());
+        File::deleteDirectory(public_path($sourceDir));
     }
 
     /**

@@ -54,10 +54,11 @@ class PluginsSmartEditorService {
 			//	$filename ++;
 			//}
 
-            $filepath = 'public/bbs/tmp/editor/'.session()->getId();
+            $filepath = 'bbs/tmp/editor/'.session()->getId();
             //upload to storage
             $filename = $file->getClientOriginalName();
-            $path=Storage::put($filepath,$file); // //Storage::disk('local')->put($name,$file,'public');
+			$path = $file->move(public_path($filepath), $filename);
+            // $path=Storage::put($filepath,$file); // //Storage::disk('local')->put($name,$file,'public');
 
 
            // $uploadPath = session()->getId();
@@ -65,7 +66,7 @@ class PluginsSmartEditorService {
 
 			$url .= '&bNewLine=true';
 			$url .= '&sFilename='.basename($path);;
-			$url .= '&sFileURL=/storage/bbs/tmp/editor/'.session()->getId().'/'.basename($path);
+			$url .= '&sFileURL=bbs/tmp/editor/'.session()->getId().'/'.basename($path);
 		} else {
 			$url .= '&errstr=not_exist_file';
 		}
