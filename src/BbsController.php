@@ -193,7 +193,7 @@ class BbsController extends \App\Http\Controllers\Controller {
         $article->save();
 
         $date_Ym = date("Ym");
-        $filepath = 'public/bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;
+        $filepath = 'bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;
 
         if(is_array($request->file('uploads')))
             foreach ($request->file('uploads') as $index => $upload) {
@@ -204,14 +204,15 @@ class BbsController extends \App\Http\Controllers\Controller {
                 $filename = $upload->getClientOriginalName();
                 $fileextension = $upload->getClientOriginalExtension();
 
-                $path=Storage::put($filepath,$upload); // //Storage::disk('local')->put($name,$file,'public');
+                // $path=Storage::put($filepath,$upload); // //Storage::disk('local')->put($name,$file,'public');
+                $path = $upload->move(public_path($filepath), $filename);
 
                 //save to database
                 $file = new Files;
                 $file->rank = $index;
                 $file->bbs_articles_id = $article->id;
                 $file->file_name = $filename;
-                $file->path_to_file = $path;
+                $file->path_to_file = $filepath.'/'.basename($path);
                 $file->name_on_disk = basename($path);
                 $file->save();
             }//foreach if
@@ -262,7 +263,7 @@ class BbsController extends \App\Http\Controllers\Controller {
         $date_Ym = date("Ym", strtotime($article->created_at));//수정일경우 기존 데이타의 생성일을 기준으로 가져온다.
 
         //$filepath = 'bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;////5.6부터는 이렇게 처리하면 storage/app/public 이하로 들어간다.
-        $filepath = 'public/bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;//5.5에서는 5.6버젼을 고려하여 public 을 상단에 더 붙혀 준다.
+        $filepath = 'bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;//5.5에서는 5.6버젼을 고려하여 public 을 상단에 더 붙혀 준다.
         if(is_array($request->file('uploads')))
             foreach ($request->file('uploads') as $index => $upload) {
 
@@ -270,19 +271,21 @@ class BbsController extends \App\Http\Controllers\Controller {
 
                 // Delete exist files
                 if (($file = $article->files->where('rank', $index)->first())) {
-                    Storage::delete($file->path_to_file);
+                    // Storage::delete($file->path_to_file);
+                    File::delete($file->path_to_file);
                     $file->delete();
                 }
 
                 $filename = $upload->getClientOriginalName();
-               $path=Storage::put($filepath,$upload); // //Storage::disk('local')->put($name,$file,'public');
+                // $path=Storage::put($filepath,$upload); // //Storage::disk('local')->put($name,$file,'public');
+                $path = $upload->move(public_path($filepath), $filename);
 
                 //save to database
                 $file = new Files;
                 $file->rank = $index;
                 $file->bbs_articles_id = $article->id;
                 $file->file_name = $filename;
-                $file->path_to_file = $path;
+                $file->path_to_file = $filepath.'/'.basename($path);
                 $file->name_on_disk = basename($path);
                 $file->save();
             }
