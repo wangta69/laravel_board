@@ -27,7 +27,7 @@ Route::group(['prefix' => 'bbs/admin', 'as' => 'bbs.admin.', 'namespace' => 'App
 Route::group(['prefix' => 'bbs', 'as' => 'bbs.', 'namespace' => 'App\Http\Controllers\Bbs', 'middleware' => ['web']], function () {
     Route::post('/plugins/{plugins}/file-upload', 'PluginsController@fileUpload')->name('plugin.fileupload');
     Route::get('/plugins/{plugins}/{action}', 'PluginsController@index')->name('plugin.index');
-    Route::get('/plugins/{plugins}', 'PluginsController@index')->name('plugin.index');
+    Route::get('/plugins/{plugins}', 'PluginsController@index');
     Route::get('/{file_id}/download', 'BbsController@download')->name('download');
     Route::get('/{tbl_name}/create', 'BbsController@createForm')->name('create');
     Route::post('/{tbl_name}/store', 'BbsController@store')->name('store');
