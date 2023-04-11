@@ -1,5 +1,5 @@
 @if($cfg->editor == 'smartEditor')
-        @include ('bbs::plugins.smart_editor.editor', ['name' => 'content', 'value' => isset($article) ? $article->content : old('content')])
+        @include ('bbs::plugins.smart_editor.editor', ['id' => 'bbs-content', 'name' => 'content', 'value' => isset($article) ? $article->content : old('content')])
 @else
         @php
             if(isset($attr)){

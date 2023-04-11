@@ -1,5 +1,5 @@
 @extends($urlParams->dec['blade_extends'])
-@section ('content')
+@section ('bbs-content')
 
 @if (isset($cfg->id))
     <h2>게시판 수정</h2>

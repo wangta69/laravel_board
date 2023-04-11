@@ -21,7 +21,7 @@ use Pondol\Image\GetHttpImage;
 // use Wangta69\Bbs\BbsService;
 
 
-class BbsController extends \App\Http\Controllers\Controller {
+class BbsExtendsController extends \App\Http\Controllers\Controller {
 
     protected $bbsSvc;
     protected $cfg;
@@ -41,21 +41,20 @@ class BbsController extends \App\Http\Controllers\Controller {
      */
     public function index(Request $request, $tbl_name)
     {
-
-        if (!$tbl_name) {
-            return;
-        }
-
+     
         $f = $request->input('f', null); // Searching Field ex) title, content
         $s = $request->input('s', null); // Searching text
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+
+
         $user = $request->user();
         if ($cfg->auth_list === 'login' &&  !$user) {
-            return redirect()->route('login');
+            return ['error'=>'login'];
         }
 
-
-        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+   
+        // echo "-----";
+        // $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
         $articles = Articles::where('bbs_table_id', $cfg->id)
                     ->orderBy('order_num');
@@ -72,28 +71,20 @@ class BbsController extends \App\Http\Controllers\Controller {
             $hasrole = BbsService::hasRoles($adminrole);
             if (!$hasrole) { // admin 권한을 가지고 있지 않은 경우 본인 글만 디스플레이 한다.
                 if (!$user) { // 로그인 페이지로 이동
-                    return redirect(route('login')); // 이부분은 변경될 수도 있음
+                    // return redirect(route('login')); // 이부분은 변경될 수도 있음
+                    return ['error'=>'login'];
                 } else {
                     $articles = $articles->where('user_id', $user->id);
                 }
             }
         }
 
-        // 별도의 스킨정보가 제공되면
-        $skin = $cfg->skin;
-        if (isset($urlParams->dec['skin'])) {
-            $skin = $urlParams->dec['skin'];
-        }
-
         $articles = $articles->paginate($cfg->lists)
                     ->appends(request()->query());
 
-        foreach($articles as $v) {
-            $v->content =  preg_replace('#<script(.*?)>(.*?)</script>#is', '', $v->content) ? : $v->content;
-            $v->content = preg_replace('/script.*?\/script/ius', '', $v->content) ? preg_replace('/script.*?\/script/ius', '', $v->content): $v->content;
-        }
 
-        return view('bbs.templates.'.$skin.'.index', ['articles' => $articles, 'cfg'=>$cfg, 'urlParams'=>$urlParams]);
+        return ['articles' => $articles, 'cfg'=>$cfg];
+        // return view('bbs.templates.'.$cfg->skin.'.index', ['articles' => $articles, 'cfg'=>$cfg, 'urlParams'=>$urlParams]);
 
     }
 
@@ -103,10 +94,10 @@ class BbsController extends \App\Http\Controllers\Controller {
     public function indexApi(Request $request, $tbl_name)
     {
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
-        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+        // $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
         $articles = Articles::where('bbs_table_id', $cfg->id)->orderBy('order_num')->paginate($cfg->lists)->appends(request()->query());
-        return response()->json(['articles' => $articles, 'cfg'=>$cfg, 'urlParams'=>$urlParams], 200);//500, 203
+        return response()->json(['articles' => $articles, 'cfg'=>$cfg], 200);//500, 203
 
     }
 
@@ -116,25 +107,19 @@ class BbsController extends \App\Http\Controllers\Controller {
      * @param String $tbl_name
      * @return \Illuminate\Http\Response
      */
-    public function createForm(Request $request, $tbl_name)
+    public function create(Request $request, $tbl_name)
     {
 
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
-        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
         //check permission
         $permission_result = $cfg->hasPermission('write');
         if(!$permission_result)
             abort(403, 'Unauthorized action.');
 
-        // 별도의 스킨정보가 제공되면
-        $skin = $cfg->skin;
-        if (isset($urlParams->dec['skin'])) {
-            $skin = $urlParams->dec['skin'];
-        }
-
        // return view('bbs.templates.'.$cfg->skin.'.create')->with(compact('cfg', 'errors'));
-        return view('bbs.templates.'.$skin.'.create', ['cfg'=>$cfg, 'urlParams'=>$urlParams]);
+
+        return ['cfg'=>$cfg];
     }
 
     /*
@@ -158,7 +143,7 @@ class BbsController extends \App\Http\Controllers\Controller {
         $parent_id = $request->get('parent_id');//if this vaule setted it means reply
 
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
-        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+        // $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
        // $this->permission('write', $cfg);
 
         //check permission
@@ -193,8 +178,8 @@ class BbsController extends \App\Http\Controllers\Controller {
         $article->save();
 
         $date_Ym = date("Ym");
-        $filepath = 'bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;
-
+        $filepath = 'public/bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;
+        // $filepath = base_path().'/public/bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;
         if(is_array($request->file('uploads')))
             foreach ($request->file('uploads') as $index => $upload) {
                 if ($upload == null) continue;
@@ -204,15 +189,14 @@ class BbsController extends \App\Http\Controllers\Controller {
                 $filename = $upload->getClientOriginalName();
                 $fileextension = $upload->getClientOriginalExtension();
 
-                // $path=Storage::put($filepath,$upload); // //Storage::disk('local')->put($name,$file,'public');
-                $path = $upload->move(public_path($filepath), $filename);
-
+                $path=Storage::put($filepath,$upload); // //Storage::disk('local')->put($name,$file,'public');
+                // $path = File::put($filepath , $upload);
                 //save to database
                 $file = new Files;
                 $file->rank = $index;
                 $file->bbs_articles_id = $article->id;
                 $file->file_name = $filename;
-                $file->path_to_file = $filepath.'/'.basename($path);
+                $file->path_to_file = $path;
                 $file->name_on_disk = basename($path);
                 $file->save();
             }//foreach if
@@ -220,7 +204,9 @@ class BbsController extends \App\Http\Controllers\Controller {
         $this->contents_update($article, $cfg->id, $date_Ym);
         $this->set_representaion($article);
 
-        return redirect()->route('bbs.show', [$tbl_name, $article->id, 'urlParams='.$urlParams->enc]);
+        return [$tbl_name, $article->id];
+
+        
     }
 
     /*
@@ -235,7 +221,7 @@ class BbsController extends \App\Http\Controllers\Controller {
     {
         $isAdmin = BbsService::hasRoles(config('bbs.admin_roles'));
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
-        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+
 
         //check permission
         $permission_result = $cfg->hasPermission('write');
@@ -244,7 +230,7 @@ class BbsController extends \App\Http\Controllers\Controller {
 
 
         if (!$article->isOwner(Auth::user()) && !$isAdmin) {
-            return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
+            return redirect()->route('bbs.index', [$tbl_name]);
         }
 
         $validator = Validator::make($request->all(), [
@@ -263,36 +249,39 @@ class BbsController extends \App\Http\Controllers\Controller {
         $date_Ym = date("Ym", strtotime($article->created_at));//수정일경우 기존 데이타의 생성일을 기준으로 가져온다.
 
         //$filepath = 'bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;////5.6부터는 이렇게 처리하면 storage/app/public 이하로 들어간다.
-        $filepath = 'bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;//5.5에서는 5.6버젼을 고려하여 public 을 상단에 더 붙혀 준다.
-        if(is_array($request->file('uploads')))
+        $filepath = 'public/bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;//5.5에서는 5.6버젼을 고려하여 public 을 상단에 더 붙혀 준다.
+        if(is_array($request->file('uploads'))) {
             foreach ($request->file('uploads') as $index => $upload) {
 
-                if ($upload == null) continue;
+                if ($upload == null) {
+                    continue;
+                }
 
                 // Delete exist files
                 if (($file = $article->files->where('rank', $index)->first())) {
-                    // Storage::delete($file->path_to_file);
-                    File::delete($file->path_to_file);
+                    Storage::delete($file->path_to_file);
                     $file->delete();
                 }
 
                 $filename = $upload->getClientOriginalName();
-                // $path=Storage::put($filepath,$upload); // //Storage::disk('local')->put($name,$file,'public');
-                $path = $upload->move(public_path($filepath), $filename);
+                $path=Storage::put($filepath, $upload); // //Storage::disk('local')->put($name,$file,'public');
 
                 //save to database
-                $file = new Files;
+                $file = new Files();
                 $file->rank = $index;
                 $file->bbs_articles_id = $article->id;
                 $file->file_name = $filename;
-                $file->path_to_file = $filepath.'/'.basename($path);
+                $file->path_to_file = $path;
                 $file->name_on_disk = basename($path);
                 $file->save();
             }
+        }
 
+        
         $this->contents_update($article, $cfg->id, $date_Ym);
         $this->set_representaion($article);
-        return redirect()->route('bbs.show', [$tbl_name, $article->id, 'urlParams='.$urlParams->enc]);
+        return [$tbl_name, $article->id];
+        // return redirect()->route('bbs.show', [$tbl_name, $article->id, 'urlParams='.$urlParams->enc]);
     }
 
 
@@ -310,25 +299,24 @@ class BbsController extends \App\Http\Controllers\Controller {
      */
     protected function contents_update($article, $table_id, $date_Ym){
 
-        // $sourceDir = storage_path() .'/app/public/bbs/tmp/editor/'. session()->getId();
-        // $destinationDir = storage_path() .'/app/public/bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor';
-        $sourceDir = public_path('bbs/tmp/editor/'. session()->getId());
-        $destinationDir = public_path('bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor');
+        $sourceDir = storage_path() .'/app/public/bbs/tmp/editor/'. session()->getId();
+        $destinationDir = storage_path() .'/app/public/bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor';
 
 
-        $article->content = str_replace('bbs/tmp/editor/'.session()->getId(), 'bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor', $article->content);
+        $article->content = str_replace('/storage/bbs/tmp/editor/'.session()->getId(), '/storage/bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor', $article->content);
 
         $article->save();
 
         $success = File::copyDirectory($sourceDir, $destinationDir);
-        // Storage::deleteDirectory('public/bbs/tmp/editor/'. session()->getId());
-        File::deleteDirectory(public_path($sourceDir));
+        Storage::deleteDirectory('public/bbs/tmp/editor/'. session()->getId());
     }
 
     /**
      * 대표 이미지 설정
      */
     protected function set_representaion($article){
+        // echo 'set_representaion';
+
         $article->image = null;
         //$representaion_image = null;//1순위: 첨부화일에 이미지가 있을 경우, 2순위 : editor에 이미지가 있을 경우
         $representaion_image_array = ['jpeg', 'jpg', 'png', 'gif'];
@@ -337,11 +325,17 @@ class BbsController extends \App\Http\Controllers\Controller {
                $tmp = explode('.', $file->path_to_file);
                 $extension = end($tmp);
                 if(!$article->image && in_array($extension, $representaion_image_array)){
+
+                    // echo '===================================';
                     $article->image = $file->path_to_file;
                     break;
                 }
            }
         }
+
+
+       
+
 
         if(!$article->image && $article->content){
             //2순위 : editor에 이미지가 있을 경우
@@ -364,9 +358,13 @@ class BbsController extends \App\Http\Controllers\Controller {
                 $name = substr($src, strrpos($src, '/') + 1);
                 Storage::put($filepath."/".$name, $contents);
                 $article->image = $filepath."/".$name;
+                // echo "+++++++++++++++++++++++++++++++++++++++++++++++++++";
                //로컬 경로로 파일 copy
            }
         }
+
+        // print_r( $article);
+        // return;
         $article->save();
     }
     /*
@@ -380,7 +378,7 @@ class BbsController extends \App\Http\Controllers\Controller {
     {
         $isAdmin = BbsService::hasRoles(config('bbs.admin_roles'));
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
-        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+        // $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
         // 시간되면 이 부분은 좀더 고도화 필요
         $user = $request->user();
@@ -398,26 +396,17 @@ class BbsController extends \App\Http\Controllers\Controller {
             return response()->json([$article], 200);//500, 203
         }
 
-        $article->content =  preg_replace('#<script(.*?)>(.*?)</script>#is', '', $article->content) ? : $article->content;
-        $article->content = preg_replace('/script.*?\/script/ius', '', $article->content) ? preg_replace('/script.*?\/script/ius', '', $article->content): $article->content;
-        // $article->content = strip_tags($article->content);
-
-        // 별도의 스킨정보가 제공되면
-        $skin = $cfg->skin;
-        if (isset($urlParams->dec['skin'])) {
-            $skin = $urlParams->dec['skin'];
-        }
-
-        return view('bbs.templates.'.$skin.'.show', ['article' => $article, 'cfg'=>$cfg, 'isAdmin'=>$isAdmin, 'urlParams'=>$urlParams]);
+        return  ['article' => $article, 'cfg'=>$cfg, 'isAdmin'=>$isAdmin];
+        // return view('bbs.templates.'.$cfg->skin.'.show', ['article' => $article, 'cfg'=>$cfg, 'isAdmin'=>$isAdmin, 'urlParams'=>$urlParams]);
     }
 
     public function viewApi($tbl_name, $article, Request $request)
     {
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
-        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+        // $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
-        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+        // $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
         $content = Articles::find($article);
 
@@ -446,22 +435,18 @@ class BbsController extends \App\Http\Controllers\Controller {
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function editForm(Request $request, $tbl_name, Articles $article)
+    public function edit(Request $request, $tbl_name, Articles $article)
     {
         $isAdmin = BbsService::hasRoles(config('bbs.admin_roles'));
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
-        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+        // $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
-        // 별도의 스킨정보가 제공되면
-        $skin = $cfg->skin;
-        if (isset($urlParams->dec['skin'])) {
-            $skin = $urlParams->dec['skin'];
-        }
 
         if ($article->isOwner(Auth::user()) || $isAdmin) {
-            return view('bbs.templates.'.$skin.'.create', ['article'=>$article, 'cfg'=>$cfg,'urlParams'=>$urlParams]);
+            // return view('bbs.templates.'.$cfg->skin.'.create', ['article'=>$article, 'cfg'=>$cfg,'urlParams'=>$urlParams]);
+            return ['article'=>$article, 'cfg'=>$cfg];
         } else {
-            return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
+            return redirect()->route('bbs.index', [$tbl_name]);
         }
     }
 
@@ -479,10 +464,10 @@ class BbsController extends \App\Http\Controllers\Controller {
 
         $isAdmin = BbsService::hasRoles(config('bbs.admin_roles'));
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
-        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+        // $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
         if (!$article->isOwner(Auth::user()) && !$isAdmin) {
-            return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
+            return redirect()->route('bbs.index', [$tbl_name]);
         }
         //1. delete files
         Storage::deleteDirectory('public/bbs/'.$cfg->id.'/'.date("Ym", strtotime($article->created_at)).'/'.$article->id);
@@ -493,8 +478,8 @@ class BbsController extends \App\Http\Controllers\Controller {
 
         //3. delete article
         $article->delete();
-
-        return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
+        return ['error'=>false];
+        // return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
     }
 
     /**
@@ -563,7 +548,7 @@ class BbsController extends \App\Http\Controllers\Controller {
     /**
      * @param String $file  public/bbs/5/201804/37/filename.jpeg
      */
-    public static function get_thumb($file, $width=null, $height=null){
+    public static function get_thumb($file, $width=null, $height=null) {
         if ($file) {
             if($width == null &&  $height == null)
                 return str_replace(["public"], ["/storage"], $file);
@@ -584,8 +569,20 @@ class BbsController extends \App\Http\Controllers\Controller {
             if(!file_exists($thum_to_storage."/".$name)){//thumbnail 이미지를 돌려준다.
                 $file_to_storage = storage_path() .'/app/'.$file;
                 $image = new GetHttpImage();
-                $image->read($file_to_storage)->set_size($width, $height)->copyimage()->save($thum_to_storage);
+
+                try {
+                    // $image->read($file_to_storage)->set_size($width, $height)->copyimage()->save($thum_to_storage);
+                    $result = $image->read($file_to_storage)->set_size($width, $height)->copyimage();
+                    if ($result) {
+                        $result->save($thum_to_storage);
+                    }
+                } catch (\Exception $e) {
+                }
             }
+
+            // echo 'n:'.$name.'====<br>';
+            // echo 'file_to_storage:'.$file_to_storage.'====<br>';
+            // echo 'thum_to_storage:'.$thum_to_storage.'====<br>';
 
             return str_replace(["public"], ["/storage"], $thum_dir)."/".$name;
         }else

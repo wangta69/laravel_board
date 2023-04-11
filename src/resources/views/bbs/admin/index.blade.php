@@ -1,5 +1,5 @@
 @extends($urlParams->dec['blade_extends'])
-@section ('content')
+@section ('bbs-content')
 <h2>게시판 리스트</h2>
 <table class='table table-striped'>
 <colgroup>

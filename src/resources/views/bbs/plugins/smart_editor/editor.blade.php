@@ -1,5 +1,5 @@
 {!! Form::textarea($name, $value, [
-	'id' => $name,
+	'id' => $id,
 	'style' => 'display: none;',
 ]) !!}
 
@@ -11,7 +11,7 @@ var oEditors = [];
 
 nhn.husky.EZCreator.createInIFrame({
 	oAppRef: oEditors,
-	elPlaceHolder: "{{ $name }}",
+	elPlaceHolder: "{{ $id }}",
 	sSkinURI: "/bbs/plugins/smart-editor",
 	sCSSBaseURI: "/assets/pondol/bbs/smart_editor/css",
 	htParams : {
@@ -31,8 +31,8 @@ nhn.husky.EZCreator.createInIFrame({
 });
 
 // 폼 submit 하기 전 에디터의 내용을 textarea에 넣음. 
-$('#{{ $name }}').closest('form').on('submit', function() {
-	oEditors.getById["{{ $name }}"].exec("UPDATE_CONTENTS_FIELD", []); // 에디터의 내용이 textarea에 적용됩니다.
+$('#{{ $id }}').closest('form').on('submit', function() {
+	oEditors.getById["{{ $id }}"].exec("UPDATE_CONTENTS_FIELD", []); // 에디터의 내용이 textarea에 적용됩니다.
 });
 </script>
 @append
