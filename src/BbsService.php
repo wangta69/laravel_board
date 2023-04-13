@@ -94,8 +94,19 @@ class BbsService
             }
             return ($all) ? ($hasRoles == count($roles)) : ($hasRoles);
         }
+    }
 
-
+    /**
+     * 이전 다음 찾기
+     * use Wangta69\Bbs\BbsService;
+     * $prev = BbsService::next(2, $article->id);
+     * $next = BbsService::previous(2, $article->id);
+     */
+    public static function next($bbs_table_id,  $item_id){
+        return Articles::where('bbs_table_id', $bbs_table_id)->where('id', '>', $item_id)->orderBy('id','asc')->first();    
+    }
+    public static  function previous($bbs_table_id, $item_id){
+        return Articles::where('bbs_table_id', $bbs_table_id)->where('id', '<', $item_id)->orderBy('id','desc')->first();
     }
 
 

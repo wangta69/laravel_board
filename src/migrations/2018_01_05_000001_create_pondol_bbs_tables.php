@@ -26,6 +26,7 @@ class CreatePondolBbsTables extends Migration
                 $table->tinyInteger('enable_reply')->unsigned()->default(0)->comment('articles count displayed on index');
                 $table->tinyInteger('enable_comment')->unsigned()->default(0)->comment('comment 기능 활성');
                 $table->tinyInteger('enable_qna')->unsigned()->default(0)->comment('1대1 기능 활성(관리자 및 글쓴이만 확인)');
+                $table->tinyInteger('enable_password')->unsigned()->default(0)->comment('비회원 운영시 패스워드 입력');
                 $table->string('auth_list', '10')->default('none')->comment('none: nonmember, login:logined member, role:has role member');
                 $table->string('auth_write', '10')->default('none')->comment('none: nonmember, login:logined member, role:has role member');
                 $table->string('auth_read', '10')->default('none')->comment('none: nonmember, login:logined member, role:has role member');

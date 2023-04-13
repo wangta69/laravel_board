@@ -109,6 +109,7 @@ class AdminController extends \App\Http\Controllers\Controller {
         $table->enable_reply = $request->input('enable_reply', 0);
         $table->enable_comment = $request->input('enable_comment', 0);
         $table->enable_qna = $request->input('enable_qna', 0);
+        $table->enable_password = $request->input('enable_password', 0);
         $table->save();
 
 
@@ -160,6 +161,7 @@ class AdminController extends \App\Http\Controllers\Controller {
         $table->enable_reply = $request->input('enable_reply', 0);
         $table->enable_comment = $request->input('enable_comment', 0);
         $table->enable_qna = $request->input('enable_qna', 0);
+        $table->enable_password = $request->input('enable_password', 0);
 
        // print_r($request->all());
        // echo $request->input('enable_comment', 0);

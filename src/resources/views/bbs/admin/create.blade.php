@@ -100,6 +100,7 @@
         {{ Form::checkbox('enable_reply', '1', isset($cfg) ? $cfg->enable_reply == 1 ? true : false : false )}}<label>댓글활성</label>
         {{ Form::checkbox('enable_comment', '1', isset($cfg) ? $cfg->enable_comment == 1 ? true : false : false)}}<label>코멘트 활성 </label>
         {{ Form::checkbox('enable_qna', '1', isset($cfg) ? $cfg->enable_qna == 1 ? true : false : false)}}<label>1:1 활성 </label>
+        {{ Form::checkbox('enable_password', '1', isset($cfg) ? $cfg->enable_password == 1 ? true : false : false)}}<label>패스워드 활성 </label> <!-- 비회원 운영시 패스워드로 처리 -->
 
     </div>
 </div>
