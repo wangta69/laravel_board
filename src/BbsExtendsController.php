@@ -18,7 +18,7 @@ use Wangta69\Bbs\Models\BbsComments as Comments;
 use Wangta69\Bbs\Models\BbsFiles as Files;
 
 use Pondol\Image\GetHttpImage;
-// use Wangta69\Bbs\BbsService;
+use Wangta69\Bbs\BbsService;
 
 
 class BbsExtendsController extends \App\Http\Controllers\Controller {
@@ -26,12 +26,11 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
     protected $bbsSvc;
     protected $cfg;
     protected $laravel_ver;
-    public function __construct(BbsService $bbsSvc) {
-        $this->bbsSvc = $bbsSvc;
+    public function __construct() {
+        $this->bbsSvc = \App::make('Wangta69\Bbs\BbsService');
         $laravel = app();
         $this->laravel_ver = $laravel::VERSION;
     }
-
 
     /*
      * List Page
@@ -96,7 +95,10 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         // $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
-        $articles = Articles::where('bbs_table_id', $cfg->id)->orderBy('order_num')->paginate($cfg->lists)->appends(request()->query());
+        $articles = Articles::where('bbs_table_id', $cfg->id)
+            ->orderBy('order_num')
+            ->paginate($cfg->lists)
+            ->appends(request()->query());
         return response()->json(['articles' => $articles, 'cfg'=>$cfg], 200);//500, 203
 
     }
@@ -117,8 +119,6 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
         if(!$permission_result)
             abort(403, 'Unauthorized action.');
 
-       // return view('bbs.templates.'.$cfg->skin.'.create')->with(compact('cfg', 'errors'));
-
         return ['cfg'=>$cfg];
     }
 
@@ -132,22 +132,36 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
     public function store(Request $request, $tbl_name)
     {
 
+        $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+
         $validator = Validator::make($request->all(), [
             'title' => 'required|min:2|max:100',
             'content' => 'required',
             //'username' => 'required|unique:users|min:2|max:8',
+        ], [
+            'title.*' => '2글자 이상의 제목을 입력해 주세요',
+            'content.required' => '내용을 입력해 주세요',
+            'password.required' => '패스워드를 입력해 주세요'
         ]);
 
-        if ($validator->fails()) return redirect()->back()->withErrors($validator->errors());
+        $validator->sometimes('password', 'required', function ($input) use ($cfg) {
+            return $cfg->enable_password = 1;
+        });
+
+
+        // if ($validator->fails()) return redirect()->back()->withInput()->withErrors($validator->errors());
+
+        if ($validator->fails()) 
+            return ['error'=>'validation', 'errors'=>$validator->errors()];
 
         $parent_id = $request->get('parent_id');//if this vaule setted it means reply
 
-        $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         // $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
        // $this->permission('write', $cfg);
 
         //check permission
         $permission_result = $cfg->hasPermission('write');
+
         if(!$permission_result)
             abort(403, 'Unauthorized action.');
 
@@ -168,12 +182,11 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
         $article->parent_id = 0;//firt fill then update
         $article->comment_cnt = 0;
         $article->title = $request->get('title');
+        $article->password = $request->get('password');
         $article->content = $request->get('content');
         $article->text_type = $request->input('text_type', 'br');
 
         $article->save();
-
-
         $article->parent_id = $parent_id ? $parent_id : $article->id;
         $article->save();
 
@@ -203,10 +216,7 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
 
         $this->contents_update($article, $cfg->id, $date_Ym);
         $this->set_representaion($article);
-
         return [$tbl_name, $article->id];
-
-        
     }
 
     /*
@@ -228,7 +238,6 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
         if(!$permission_result)
             abort(403, 'Unauthorized action.');
 
-
         if (!$article->isOwner(Auth::user()) && !$isAdmin) {
             return redirect()->route('bbs.index', [$tbl_name]);
         }
@@ -239,7 +248,8 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
             //'username' => 'required|unique:users|min:2|max:8',
         ]);
 
-        if ($validator->fails()) return redirect()->back()->withErrors($validator->errors());
+        if ($validator->fails()) 
+            return redirect()->back()->withErrors($validator->errors());
 
         $article->title = $request->get('title');
         $article->content = $request->get('content');
@@ -302,7 +312,6 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
         $sourceDir = storage_path() .'/app/public/bbs/tmp/editor/'. session()->getId();
         $destinationDir = storage_path() .'/app/public/bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor';
 
-
         $article->content = str_replace('/storage/bbs/tmp/editor/'.session()->getId(), '/storage/bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor', $article->content);
 
         $article->save();
@@ -333,19 +342,12 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
            }
         }
 
-
-       
-
-
         if(!$article->image && $article->content){
             //2순위 : editor에 이미지가 있을 경우
-          //  $article->content;
-
-
             preg_match_all('/<img[^>]+>/i',$article->content, $result);
-            //[0] => Array(
-            //[0] => <img src="/Content/Img/stackoverflow-logo-250.png" width="250" height="70" alt="logo link to homepage" />
-           // [1] => <img class="vote-up" src="/content/img/vote-arrow-up.png" alt="vote up" title="This was helpful (click again to undo)" />
+            // [0] => Array(
+            // [0] => <img src="/Content/Img/stackoverflow-logo-250.png" width="250" height="70" alt="logo link to homepage" />
+            // [1] => <img class="vote-up" src="/content/img/vote-arrow-up.png" alt="vote up" title="This was helpful (click again to undo)" />
 
            if($result && count($result) > 1){
                preg_match_all('/(src)=("[^"]*")/i',$result[0][0], $i_result);
@@ -358,13 +360,10 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
                 $name = substr($src, strrpos($src, '/') + 1);
                 Storage::put($filepath."/".$name, $contents);
                 $article->image = $filepath."/".$name;
-                // echo "+++++++++++++++++++++++++++++++++++++++++++++++++++";
                //로컬 경로로 파일 copy
            }
         }
 
-        // print_r( $article);
-        // return;
         $article->save();
     }
     /*
@@ -383,7 +382,12 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
         // 시간되면 이 부분은 좀더 고도화 필요
         $user = $request->user();
         if ($cfg->auth_read === 'login' &&  !$user) {
-            return redirect()->route('login');
+            // return redirect()->route('login');
+            return ['error'=>'login'];
+        }
+
+        if (!$isAdmin && $cfg->enable_password == 1 && $request->cookie('pass-'.$tbl_name.$article->id) != '1') {
+            return ['error'=>'password'];
         }
 
         if ($request->cookie($tbl_name.$article->id) != '1') {
@@ -398,6 +402,30 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
 
         return  ['article' => $article, 'cfg'=>$cfg, 'isAdmin'=>$isAdmin];
         // return view('bbs.templates.'.$cfg->skin.'.show', ['article' => $article, 'cfg'=>$cfg, 'isAdmin'=>$isAdmin, 'urlParams'=>$urlParams]);
+    }
+
+    public function passwordConfirm(Request $request, $tbl_name, Articles $article)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'password' => 'required',
+        ], [
+            'password.required' => '패스워드를 입력해 주세요'
+        ]);
+
+        
+        if (trim($request->password) !== trim($article->password)) {
+            $validator->after(function($validator)
+            {
+                $validator->errors()->add('password', '일치하지 않은 패스워드입니다.');
+            });
+
+            if ($validator->fails()) 
+                return ['error'=>'validation', 'errors'=>$validator->errors()];
+        } else {
+            Cookie::queue(Cookie::make('pass-'.$tbl_name.$article->id, '1'));
+            return;
+        }
     }
 
     public function viewApi($tbl_name, $article, Request $request)
@@ -461,7 +489,6 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
      */
     public function destroy(Request $request, $tbl_name, Articles $article)
     {
-
         $isAdmin = BbsService::hasRoles(config('bbs.admin_roles'));
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         // $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
@@ -493,16 +520,12 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
 
         if (file_exists($file_path))
         {
-            // Send Download
-            return Response::download($file_path, $file->file_name, [
-                'Content-Length: '. filesize($file_path)
-            ]);
+            return ['error'=> false, 'file_path'=>$file_path, 'file' => $file];
         }
         else
         {
-            exit('Requested file does not exist on our server!');
+            return ['error'=>'Requested file does not exist on our server!'];
         }
-
     }
 
     /**
@@ -561,10 +584,6 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
             $thum_dir = substr($file, 0, -strlen($name)).$width."_".$height;
             // return $name;
             $thum_to_storage = storage_path() .'/app/'.$thum_dir;
-            //home/Web/coinvill-web/storage/app/public/bbs/5/201804/37/205x205/Srrf1axuyM1ZO9NaYM3lStoNLZyVvAfEgWMqWNUU.jpeg
-            //return $file;
-            //return $thum_to_storage."/".$name;
-
 
             if(!file_exists($thum_to_storage."/".$name)){//thumbnail 이미지를 돌려준다.
                 $file_to_storage = storage_path() .'/app/'.$file;
@@ -579,10 +598,6 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
                 } catch (\Exception $e) {
                 }
             }
-
-            // echo 'n:'.$name.'====<br>';
-            // echo 'file_to_storage:'.$file_to_storage.'====<br>';
-            // echo 'thum_to_storage:'.$thum_to_storage.'====<br>';
 
             return str_replace(["public"], ["/storage"], $thum_dir)."/".$name;
         }else
