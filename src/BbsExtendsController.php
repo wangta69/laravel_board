@@ -216,7 +216,7 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
 
         $this->contents_update($article, $cfg->id, $date_Ym);
         $this->set_representaion($article);
-        return [$tbl_name, $article->id];
+        return [$tbl_name, $article->id, $cfg];
     }
 
     /*
