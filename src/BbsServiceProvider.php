@@ -21,9 +21,13 @@ class BbsServiceProvider extends ServiceProvider {
      */
     public function register()
     {
-        $this->app->bind('bbs', function($app) {
-            return new Bbs;
+        $this->app->bind('bbs', function() {
+            return new Bbs();
         });
+
+        // $this->app->bind('bbs', function($app) {
+        //     return new Bbs;
+        // });
     }
 
 	/**
@@ -79,4 +83,5 @@ class BbsServiceProvider extends ServiceProvider {
         ]);
       //  var_dump($result);
     }
+
 }
