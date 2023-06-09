@@ -12,7 +12,8 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.3.0",
-		"kyslik/column-sortable": "^6.0"
+		"kyslik/column-sortable": "^6.0",
+        "wangta69/php-thumbnail": "^1"
     },
     "autoload": {
         "psr-4": {
