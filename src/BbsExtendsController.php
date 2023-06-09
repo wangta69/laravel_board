@@ -145,7 +145,7 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
         ]);
 
         $validator->sometimes('password', 'required', function ($input) use ($cfg) {
-            return $cfg->enable_password = 1;
+            return $cfg->enable_password == 1;
         });
 
 
