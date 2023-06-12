@@ -21,13 +21,9 @@ class BbsServiceProvider extends ServiceProvider {
      */
     public function register()
     {
-        $this->app->bind('bbs', function() {
-            return new Bbs();
+        $this->app->bind('bbs', function($app) {
+            return new Bbs;
         });
-
-        // $this->app->bind('bbs', function($app) {
-        //     return new Bbs;
-        // });
     }
 
 	/**
@@ -64,6 +60,11 @@ class BbsServiceProvider extends ServiceProvider {
         	__DIR__.'/Https/public/assets/' => public_path('assets/pondol/bbs'),
         ], 'public');
 
+        // copy config
+        $this->publishes([
+        	__DIR__.'/Https/config/bbs.php' => config_path('bbs.php'),
+        ], 'public');
+
 
         // LOAD THE VIEWS
         // - first the published views (in case they have any changes)
@@ -73,15 +74,10 @@ class BbsServiceProvider extends ServiceProvider {
         // - loadViews  : 상기와 다른 점음  resources/views/bbs 에 없을 경우 아래 것에서 처리한다. for user modify
          $this->loadViewsFrom(__DIR__.'/resources/views/bbs', 'bbs');
 
-        //default controller file set
 
-       // Log::info(__DIR__.'/Https/Controllers/Bbs/');
-      // Log::info(app_path('Http/Controllers/Bbs'));
-
-        $result = $this->publishes([
+        $this->publishes([
             __DIR__.'/Https/Controllers/Bbs/' => app_path('Http/Controllers/Bbs'),
         ]);
       //  var_dump($result);
     }
-
 }

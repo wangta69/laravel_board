@@ -1,4 +1,4 @@
-@extends($urlParams->dec['blade_extends'])
+@extends($cfg->extends)
 @section ('bbs-content')
 <div class='basic-table index'>
     <h1 class='title'>
@@ -24,7 +24,7 @@
        {{-- @foreach($articles as $article) --}}
             <tr>
                 <td class='text-center'>{{ number_format($articles->total() - $articles->perPage() * ($articles->currentPage() - 1) - $index) }}</td>
-                <td>{!! Html::link(route('bbs.show', [$cfg->table_name, $article->id, 'urlParams='.$urlParams->enc]), $article->title) !!}</td>
+                <td>{!! Html::link(route('bbs.show', [$cfg->table_name, $article->id]), $article->title) !!}</td>
                 <td class='text-center'>{{ date('Y-m-d', strtotime($article->created_at)) }}</td>
                 <td class='text-center'>{{ number_format($article->hit) }}</td>
             </tr>
@@ -45,7 +45,7 @@
     <div class='btn-area text-right'>
 
         @if ($cfg->hasPermission('write'))
-            {!! Html::link(route('bbs.create', [$cfg->table_name, 'urlParams='.$urlParams->enc]), '글쓰기', [
+            {!! Html::link(route('bbs.create', [$cfg->table_name]), '글쓰기', [
                 'role' => 'button',
                 'class' => 'btn btn-sm btn-default',
             ]) !!}

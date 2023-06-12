@@ -9,7 +9,7 @@
 
 {!! Form::open([
     'method' => '',
-    'route' => ['bbs.comment.update', $cfg->table_name, $article->id, $comment->id, 'urlParams='.$urlParams->enc],
+    'route' => ['bbs.comment.update', $cfg->table_name, $article->id, $comment->id],
     'class' => 'form-horizontal',
     'id' => 'comment-form',
     'enctype' => 'multipart/form-data',
@@ -32,10 +32,10 @@
 @parent
 <script>
 @if($comment->id === 0)
-var url = '{!! route("bbs.comment.store", [$cfg->table_name, $article->id, 0, "urlParams=".$urlParams->enc]) !!}';
+var url = '{!! route("bbs.comment.store", [$cfg->table_name, $article->id, 0]) !!}';
 var method = 'POST';
 @else
-var url = '{!! route("bbs.comment.update", [$cfg->table_name, $article->id, $comment->id, "urlParams=".$urlParams->enc]) !!}';
+var url = '{!! route("bbs.comment.update", [$cfg->table_name, $article->id, $comment->id]) !!}';
 var method = 'PUT';
 @endif
 

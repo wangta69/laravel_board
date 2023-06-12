@@ -1,6 +1,6 @@
 @if ($isAdmin)
 {!! Form::open([
-    'route' => ['bbs.comment.store', $cfg->table_name, $article->id, 0, 'urlParams='.$urlParams->enc],
+    'route' => ['bbs.comment.store', $cfg->table_name, $article->id, 0],
     'class' => 'form-horizontal',
     'enctype' => 'multipart/form-data',
 ]) !!}

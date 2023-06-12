@@ -22,7 +22,6 @@ class BbsTables extends Model
 
 
     public function get_config_by_tablename($tbl_name){
-       // return $tbl_name;
         return $this->where('table_name', $tbl_name)->first();
     }
 

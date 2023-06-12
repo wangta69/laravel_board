@@ -23,39 +23,35 @@ use Wangta69\Bbs\BbsService;
 
 class BbsExtendsController extends \App\Http\Controllers\Controller {
 
-    protected $bbsSvc;
-    protected $cfg;
-    protected $laravel_ver;
-    public function __construct() {
-        $this->bbsSvc = \App::make('Wangta69\Bbs\BbsService');
-        $laravel = app();
-        $this->laravel_ver = $laravel::VERSION;
+  protected $bbsSvc;
+  protected $cfg;
+  protected $laravel_ver;
+  public function __construct() {
+    $this->bbsSvc = \App::make('Wangta69\Bbs\BbsService');
+    $laravel = app();
+    $this->laravel_ver = $laravel::VERSION;
+  }
+
+  /*
+   * List Page
+   *
+   * @param String $tbl_name
+   * @return \Illuminate\Http\Response
+   */
+  public function index(Request $request, $tbl_name)
+  {
+     
+    $f = $request->input('f', null); // Searching Field ex) title, content
+    $s = $request->input('s', null); // Searching text
+    $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+
+    
+    $user = $request->user();
+    if ($cfg->auth_list === 'login' &&  !$user) {
+      return ['error'=>'login'];
     }
 
-    /*
-     * List Page
-     *
-     * @param String $tbl_name
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request, $tbl_name)
-    {
-     
-        $f = $request->input('f', null); // Searching Field ex) title, content
-        $s = $request->input('s', null); // Searching text
-        $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
-
-
-        $user = $request->user();
-        if ($cfg->auth_list === 'login' &&  !$user) {
-            return ['error'=>'login'];
-        }
-
-   
-        // echo "-----";
-        // $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
-
-        $articles = Articles::where('bbs_table_id', $cfg->id)
+    $articles = Articles::where('bbs_table_id', $cfg->id)
                     ->orderBy('order_num');
 
         if ($f && $s) {
@@ -290,7 +286,8 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
         
         $this->contents_update($article, $cfg->id, $date_Ym);
         $this->set_representaion($article);
-        return [$tbl_name, $article->id];
+        // return [$tbl_name, $article->id];
+        return [$tbl_name, $article->id, $cfg];
         // return redirect()->route('bbs.show', [$tbl_name, $article->id, 'urlParams='.$urlParams->enc]);
     }
 

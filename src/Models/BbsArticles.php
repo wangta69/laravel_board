@@ -35,7 +35,9 @@ class BbsArticles extends Model
      * If you have Defferent UserTable, OverWrite This.
      */
     public function user() {
-       return $this->belongsTo(config('bbs.user'));
+        $auth = config('auth.providers.users.model');
+        return $this->belongsTo($auth);
+    //    return $this->belongsTo(config('bbs.user'));
     }
 
     public function table()

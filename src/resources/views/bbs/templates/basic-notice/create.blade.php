@@ -1,17 +1,17 @@
-@extends($urlParams->dec['blade_extends'])
+@extends($cfg->extends)
 
 @section ('bbs-content')
 <div class='basic-table create'>
     @if (isset($article))
         {!! Form::open([
-            'route' => ['bbs.update', $cfg->table_name, $article->id, 'urlParams='.$urlParams->enc],
+            'route' => ['bbs.update', $cfg->table_name, $article->id],
             'class' => 'form-horizontal',
             'method' => 'put',
             'enctype' => 'multipart/form-data',
         ]) !!}
     @else
         {!! Form::open([
-            'route' => ['bbs.store', $cfg->table_name, 'urlParams='.$urlParams->enc],
+            'route' => ['bbs.store', $cfg->table_name],
             'class' => 'form-horizontal',
             'enctype' => 'multipart/form-data',
         ]) !!}
@@ -75,7 +75,7 @@
             {!! Form::submit('작성완료', [
                 'class' => 'btn btn-primary btn-sm',
             ]) !!}
-            {!! Html::link(route('bbs.index', [$cfg->table_name, 'urlParams='.$urlParams->enc]), '목록', [
+            {!! Html::link(route('bbs.index', [$cfg->table_name]), '목록', [
                 'class' => 'btn btn-default btn-sm',
             ]) !!}
         </div>

@@ -1,4 +1,4 @@
-@extends($urlParams->dec['blade_extends'])
+@extends($cfg->extends)
 @section ('bbs-content')
 <?php use Wangta69\Bbs\BbsController;?>
 <nav aria-label="breadcrumb">
@@ -17,7 +17,7 @@
 
         <div class='btn-area text-right'>
             @if ($cfg->hasPermission('write'))
-                {!! Html::link(route('bbs.create', [$cfg->table_name, 'urlParams='.$urlParams->enc]), '글쓰기', [
+                {!! Html::link(route('bbs.create', [$cfg->table_name]), '글쓰기', [
                     'role' => 'button',
                     'class' => 'btn btn-sm btn-default',
                 ]) !!}
@@ -28,11 +28,11 @@
 
         @foreach ($articles as $index => $article)
         <div class="gallery">
-          <a href="{{ route('bbs.show', [$cfg->table_name, $article->id, 'urlParams='.$urlParams->enc]) }}">
+          <a href="{{ route('bbs.show', [$cfg->table_name, $article->id]) }}">
               <img src="{{ BbsController::get_thumb($article->image, 205)  }}" width="300" height="200">
           </a>
           <div class="desc">
-              <span class="title">{!! Html::link(route('bbs.show', [$cfg->table_name, $article->id, 'urlParams='.$urlParams->enc]), $article->title) !!}</span>
+              <span class="title">{!! Html::link(route('bbs.show', [$cfg->table_name, $article->id]), $article->title) !!}</span>
               <span class="info">{{ $article->user_name }}</span>
 
           </div>
@@ -47,7 +47,7 @@
 
         <div class='btn-area text-right'>
             @if ($cfg->hasPermission('write'))
-                {!! Html::link(route('bbs.create', [$cfg->table_name, 'urlParams='.$urlParams->enc]), '글쓰기', [
+                {!! Html::link(route('bbs.create', [$cfg->table_name]), '글쓰기', [
                     'role' => 'button',
                     'class' => 'btn btn-sm btn-default',
                 ]) !!}

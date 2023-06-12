@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Kyslik\ColumnSortable\Sortable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+
 class BbsComments extends Model
 {
     use Sortable,
@@ -33,7 +34,9 @@ class BbsComments extends Model
      * If you have Defferent UserTable, OverWrite This.
      */
     public function user() {
-        return $this->belongsTo('App\User');
+        $auth = config('auth.providers.users.model');
+        return $this->belongsTo($auth);
+        // return $this->belongsTo('App\User');
     }
 
     public function article()

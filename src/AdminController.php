@@ -2,6 +2,7 @@
 namespace Wangta69\Bbs;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 use Route;
 use View;
@@ -9,63 +10,72 @@ use Validator;
 
 use Wangta69\Bbs\Models\BbsTables as Tables;
 use Wangta69\Bbs\Models\Role;
+use Wangta69\Bbs\Models\BbsConfig;
 use Wangta69\Bbs\BbsService;
-
-
 
 class AdminController extends \App\Http\Controllers\Controller {
 
-    protected $bbsSvc;
-    protected $cfg;
-    public function __construct() {}
+  protected $bbsSvc;
+  protected $cfg;
+  public function __construct() {}
 
-    /*
-     * BBS Tables List
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request)
-    {
+  /*
+   * BBS Tables List
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index(Request $request)
+  {
 
-        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+    // $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+    // 등록된 게시판 리스트 불러오기
+    $list = Tables::orderBy('created_at', 'desc')->paginate($this->itemsPerPage);
 
-        $list = Tables::orderBy('created_at', 'desc')->paginate($this->itemsPerPage);
-        //return view('bbs.admin.index')->with(compact('list', $this->blade_extends));
-        return view('bbs.admin.index', ['list' => $list, 'urlParams'=>$urlParams]);
+    $cfg = $this->admin_extends();
+    return view('bbs.admin.index', ['list' => $list, 'cfg' => $cfg]);
+  }
+
+  /*
+   * BBS CREATE | EDIT Form
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function createForm(Request $request, Tables $table)
+  {
+    // $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+    // front 용
+    $skin_dir =  resource_path('views/bbs/templates/');
+    $tmp_skins = array_map('basename',\File::directories($skin_dir));
+    //키를 text로 변경
+    foreach($tmp_skins as $v){
+      $skins[$v] = $v;
     }
 
-    /*
-     * BBS CREATE | EDIT Form
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function createForm(Request $request, Tables $table)
-    {
-        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
-
-        $skin_dir =  resource_path('views/bbs/templates/');
-        $tmp_skins = array_map('basename',\File::directories($skin_dir));
-        //키를 text로 변경
-        foreach($tmp_skins as $v){
-            $skins[$v] = $v;
-        }
-
-        $editors = ['none'=>'None', 'smartEditor'=>'Smart Editor'];
-
-        $categoris = [];
-        if ($table) { // 카테고리를 가져온다.
-
-        }
-
-        //return view('bbs.admin.create')->with(compact('skins'));
-        return view('bbs.admin.create', [
-            'cfg'=>$table,
-            'skins' => $skins,
-            'editors' => $editors,
-            'roles' => Role::get(),
-            'urlParams'=>$urlParams
-        ]);
+    // 관리자용
+    $skin_dir =  resource_path('views/bbs/admin/templates/');
+    $tmp_skins = array_map('basename',\File::directories($skin_dir));
+    //키를 text로 변경
+    foreach($tmp_skins as $v){
+      $skins_admin[$v] = $v;
     }
+
+    $editors = ['none'=>'None', 'smartEditor'=>'Smart Editor'];
+    $categoris = [];
+    if ($table) { // 카테고리를 가져온다.
+    }
+
+    //return view('bbs.admin.create')->with(compact('skins'));
+
+    $cfg = $this->admin_extends();
+    return view('bbs.admin.create', [
+      'table'=>$table,
+      'cfg'=>$cfg,
+      'skins' => $skins,
+      'skins_admin' => $skins_admin,
+      'editors' => $editors,
+      'roles' => Role::get(),
+      ]);
+  }
 
     /*
      * Create BBS
@@ -81,6 +91,7 @@ class AdminController extends \App\Http\Controllers\Controller {
             'name' => 'required',
             'table_name' => 'required|unique:bbs_tables',
             'skin' => 'required',
+            'lists' => 'required'
             //'username' => 'required|unique:users|min:2|max:8',
         ]);
 
@@ -95,12 +106,14 @@ class AdminController extends \App\Http\Controllers\Controller {
         if ($validator->fails()) return redirect()->back()->withErrors($validator->errors());
 
 
-        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+        // $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
         $table = new Tables;
         $table->name = $request->get('name');
         $table->table_name = $request->get('table_name');
         $table->skin = $request->get('skin');
+        $table->skin_admin = $request->skin_admin;
+        $table->extends = $request->get('extends');
         $table->lists = $request->input('lists', 10);
         $table->editor = $request->get('editor');
         $table->auth_list = $request->get('auth_list');
@@ -124,7 +137,7 @@ class AdminController extends \App\Http\Controllers\Controller {
             $table->roles_write()->attach($request->get('roles-write'));
         }
 
-        return redirect()->route('bbs.admin.index', ['urlParams'=>$urlParams->enc]);
+        return redirect()->route('bbs.admin.index');
     }
 
 
@@ -153,6 +166,8 @@ class AdminController extends \App\Http\Controllers\Controller {
         $table->name = $request->name;
         $table->table_name = $request->table_name;
         $table->skin = $request->skin;
+        $table->skin_admin = $request->skin_admin;
+        $table->extends = $request->extends;
         $table->lists = $request->input('lists', 10);
         $table->editor = $request->get('editor');
         $table->auth_list= $request->get('auth_list');
@@ -169,7 +184,7 @@ class AdminController extends \App\Http\Controllers\Controller {
         $table->save();
 
 
-        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+        // $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
         //set roles
         $table->roles_read()->detach();
@@ -182,8 +197,15 @@ class AdminController extends \App\Http\Controllers\Controller {
             $table->roles_write()->attach($request->get('roles-write'));
         }
 
-         return redirect()->route('bbs.admin.index', ['urlParams'=>$urlParams->enc]);
+         return redirect()->route('bbs.admin.index', []);
     }
+
+
+  public function configUpdate(Request $request) {
+    BbsConfig::where('k', 'admin_blade_extend')->update(['v'=>$request->admin_blade_extend]);
+    BbsConfig::where('k', 'admin_blade_contents_section')->update(['v'=>$request->admin_blade_contents_section]);
+    return redirect()->route('bbs.admin.index', []);
+  }
 
 
     /**
@@ -213,7 +235,7 @@ class AdminController extends \App\Http\Controllers\Controller {
     public function show(Request $request, Tables $table)
     {
 
-        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+        // $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
         $skin_dir =  resource_path('views/bbs/templates/');
         $tmp_skins = array_map('basename',\File::directories($skin_dir));
@@ -223,7 +245,7 @@ class AdminController extends \App\Http\Controllers\Controller {
             $skins[$v] = $v;
         }
 
-        return view('bbs.admin.create', ['cfg'=> $table, 'skins' => $skins, 'roles' => Role::get(), 'urlParams'=>$urlParams]);
+        return view('bbs.admin.create', ['cfg'=> $table, 'skins' => $skins, 'roles' => Role::get()]);
         //return view('bbs.admin.create')->with(compact('cfg', 'skins'));
     }
 
@@ -246,13 +268,23 @@ class AdminController extends \App\Http\Controllers\Controller {
     public function destroy(Request $request, $id)
     {
         $cfg = Tables::findOrFail($id);
-        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+        // $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
         $cfg->delete();
 
         if($request->ajax()){
-            return Response::json(['result'=>true, "code"=>"000"], 200);
+            return response()->json(['result'=>true, "code"=>"000"], 200);
         }else{
-            return redirect()->route('bbs.admin.index', ['urlParams'=>$urlParams->enc]);
+            return redirect()->route('bbs.admin.index', []);
         }
+    }
+
+    private function admin_extends() {
+        $config = BbsConfig::get();
+        $cfg = new \stdclass;
+        foreach($config as $v) {
+          $cfg->{$v->k} = $v->v;
+        }
+
+        return $cfg;
     }
 }
