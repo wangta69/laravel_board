@@ -1,5 +1,5 @@
 @extends($cfg->extends)
-@section ('bbs-content')
+@section ($cfg->section)
 <div class="bbs-view">
     <div class="form-group row title">
         <div class='col-sm-8'>
@@ -77,10 +77,9 @@
         @empty
         @endforelse
     </section>
-    @if ($cfg->enable_comment == 1)
-        {{-- @include ('bbs::templates.basic-qna.comment') --}}
-        @include ('bbs.templates.basic-qna.comment')
-    @endif
+@if ($cfg->enable_comment == 1)
+@include ('bbs.templates.'.$cfg->skin.'.comment')
+@endif
 @stop
 </div>
 @section ('styles')

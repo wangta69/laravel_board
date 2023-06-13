@@ -1,5 +1,5 @@
 @extends($cfg->extends)
-@section ('bbs-content')
+@section ($cfg->section)
 <?php use Wangta69\Bbs\BbsController;?>
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">

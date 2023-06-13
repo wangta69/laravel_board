@@ -1,179 +1,110 @@
-<!-- @import url('//cdn.jsdelivr.net/font-nanum/1.0/nanumbarungothic/nanumbarungothic.css');
-
-.bbs {}
-.bbs a:link{color:#fff}
-.bbs a:visited{color:#fff}
-.bbs a:hover{color:#fff}
-.bbs a:active{color:#fff}
-
-.bbs .index {content: "";
-    display: table;
-    clear: both;}
-div.gallery {
-    padding: 5px;
-    border: 1px solid #ccc;
-    float: left;
-    width: 25%;
+/** index css */
+index {
+  width:100%;
+  max-width:1400px;
+  margin:0 auto;
+  overflow:hidden;
 }
 
-div.gallery:hover {
-    border: 1px solid #777;
+.index .gallery{
+  margin:50px -20px;
+  box-sizing:border-box;
+}
+.index .gallery:after{
+  content:"";
+  display:block;
+  clear:both;
+  visibility: hidden;
+}
+.index .gallery > div{
+  width:20%;
+  float:left;
+  box-sizing:border-box;
+  padding:0 20px;
+  margin:0 0 50px 0;
+}
+.index .gallery > div img{
+  width:100%;height:auto;}
+
+.index .gallery .desc {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 15px;
+  background-color: #fff;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  border: 1px solid #dfdfdf;
+
 }
 
-div.gallery img {
-    width: 100%;
-    height: auto;
+.index .image-link {
+  /*width: 100%;
+  height: 200px;
+  */
+  position: relative;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  overflow: hidden;
+  display: block;
 }
 
-div.desc {
-    padding: 15px;
-    text-align: center;
+@media (max-width:1200px){
+  .index .gallery > div{width:25%;}
+}
+@media (max-width:768px){
+  .index .gallery > div{width:33.33333%;}
+}
+@media (max-width:560px){
+  .index .gallery > div{width:50%;}
+}
+@media (max-width:480px){
+  .index .gallery > div{width:100%;}
 }
 
-div.desc span {
-    display:block;
-}
-
-
-
-/* pagination */
-.bbs-bottom-nav {display:flex; justify-content: space-between;  }
-.bbs ul.pagination {
-    margin-top: .5rem;
-    margin-bottom: .5rem;
-    isplay: flex;
-    padding-left: 0;
-    list-style: none;
-    border-radius: .25rem;
-}
-
-.bbs ul.pagination li {
-    position: relative;
-    display: block;
-    padding: .5rem .75rem;
-    margin-left: -1px;
-    line-height: 1.25;
-    /*
-    color: #007bff;
-    background-color: #fff;
-    */
-    border: 1px solid #000;
-    flex:1;
-}
-
-
-
-/*
-.page-link:not(:disabled):not(.disabled) {
-    cursor: pointer;
-}
-.page-link:hover {
-    color: #0056b3;
-    text-decoration: none;
-    background-color: #e9ecef;
-    border-color: #dee2e6;
-}
-a:hover {
-    color: #0056b3;
-    tex
-    t-decoration: underline;
-}
-*/
-
-
-
-/* 게시판 리스트 */
-.basic-table.index table tbody tr:hover {
-	background: #fafafa;
-}
-
-/* 게시판 뷰 */
-
-.basic-table.show .content {
-	margin-bottom: 20px;
-	border-bottom: 1px solid #efefef;
-	padding-bottom: 10px;
-}
-
-.basic-table.show .bbs-view .title {
-    color:#fff;
-    font-weight: bold;
-    font-size: 2em;
-    text-align: center;
-}
-
-.basic-table.show .bbs-view .info {
-    text-align: right;
-    padding:3px;
-}
-
-.basic-table.show .bbs-view .body {
-    padding:10px;
-}
-
-.basic-table.show .bbs-view .body img {max-width:100%}
-
-.basic-table.show .bbs-view .act {
-    text-align: right;
-    padding:10px;
-}
-
-.comment-input {
-    padding-top:10px;
-}
-
-section.comment-list {
-    padding-top:10px;
-}
-
-
-/* 게시글 등록 */
-.basic-table.create table tr.file-control td ul, .basic-table.create table tr.file-control td ul li label {
+/** show css */
+.show ul.link {
 	margin: 0px;
 }
 
-.basic-table.create table tr.file-control td ul li {
-	padding-left: 0px;
-	position: relative;
+.show .body {
+  padding: 20px;
+}
+.show .body img {
+  max-width: 90%;
 }
 
-.basic-table.create table tr.file-control td ul li input[type=file] {
-	position: absolute;
-	opacity: 0;
-	filter: alpha(opacity=0);
-	width: 85px;
-	height: 30px;
-	top: 6px;
+.show .body .content {
+  padding: 10px;
 }
 
-.basic-table.create table tr.file-control td ul li button[type=button] {
-	margin-top: 6px;
+/** bbs-comments */
+.bbs-comments {
+	margin-top : 30px;
 }
 
-.basic-table.create table tr.file-control td ul li button span {
-	top: 2px;
+.bbs-comments .comment-list{
+	margin-top : 30px;
 }
 
-
-/* 댓글 부분 */
-.comment-list {
-    
+.bbs-comments .comment-list ul, .bbs-comments .comment-list li{
+  margin:0;
+  padding:0;
+  list-style:none;
 }
-.comment-list .comment-article {background-color:#111111; color:#fff; padding:10px;}
-.comment-list .comment-article > ul {list-style-type: none; padding-left: 0;}
-.comment-list .comment-article > ul .view.depth-1{padding-left: 50px;}
-.comment-list .comment-article > ul .view.depth-2{padding-left: 100px;}
-.comment-list .comment-article > ul .view.depth-3{padding-left: 150px;}
-.comment-list .comment-article > ul .view.depth-4{padding-left: 200px;}
-.comment-list .comment-article > ul .info {text-align:right;}
+/*
+.bbs-comments .comment-list li{
+	padding-bottom: 20px;
+}
+*/
+.bbs-comments .comment-list .comment-article {
+	border: 1px solid #ccc;
+  margin-left: 20px;
+  padding: 10px;
+	margin-bottom: 10px;
+}
 
-.comment-list .comment-article > ul .footer {    padding-top: 5px;
-    text-align: right;
-    position: initial;
-    background-color: inherit;
-    color: inherit;
-    height: inherit;}
-
-.comment-list .comment-article > ul > li.update{display:none;}
-#re_comment, .re_comment {display:none;}
- -->
+.comment-article .comment-content {
+	padding: 20px;
+}

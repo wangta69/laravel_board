@@ -1,5 +1,5 @@
 @extends($cfg->extends)
-@section ('bbs-content')
+@section ($cfg->section)
 <div class='basic-table show'>
     <h1 class='title'>
         {{ $article->table->name }}
@@ -47,16 +47,16 @@
         </section>
     </article>
 </div>
-    @if ($cfg->enable_comment == 1)
-        @include ('bbs.templates.basic.comment', ['cfg'=>$cfg, 'article'=>$article])
-    @endif
+@if ($cfg->enable_comment == 1)
+@include ('bbs.templates.'.$cfg->skin.'.comment')
+@endif
 
 @stop
 
 @section ('styles')
 @parent
 <style>
-    @include ('bbs::templates.'.$cfg->skin.'.css.style')
+    @include ('bbs.templates.'.$cfg->skin.'.css.style')
 </style>
 @stop
 @section ('scripts')

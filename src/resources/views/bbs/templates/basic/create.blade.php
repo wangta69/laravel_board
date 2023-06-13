@@ -1,6 +1,5 @@
 @extends($cfg->extends)
-
-@section ('bbs-content')
+@section ($cfg->section)
 <div class='basic-table create'>
     @if (isset($article))
         {!! Form::open([

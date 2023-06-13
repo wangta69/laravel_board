@@ -15,6 +15,7 @@ class UpdatePondolBbsArticles extends Migration
         // Update BBS Articles table
         Schema::table('bbs_tables', function(BluePrint $table) {
             $table->string('extends')->nullable()->after('skin');
+            $table->string('section')->nullable()->after('skin');
             $table->string('skin_admin')->nullable()->after('skin');
         });
     }

@@ -2,6 +2,9 @@
 @section ($cfg->section)
 <div class="bbs-admin">
     <div class='basic-notice create'>
+        <h2 class='title'>
+            {{ $cfg->name }}
+        </h2>
         @if (isset($article))
         {!! Form::open([
         'route' => ['bbs.admin.tbl.update', $cfg->table_name, $article->id],
@@ -19,9 +22,7 @@
 
         {{ Form::hidden('text_type', $cfg->editor == 'none' ? 'br' : 'html') }}
         {{ Form::hidden('parent_id', isset($article) ? $article->id : '') }}
-        <h2 class='title'>
-            {{ $cfg->name }}
-        </h2>
+        
         @if (!$errors->isEmpty())
         <div class="alert alert-danger" role="alert">
             {!! $errors->first() !!}

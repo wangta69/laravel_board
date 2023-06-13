@@ -69,6 +69,16 @@
         </div>
     </div>
     <div class='form-group row'>
+        <label for='skin' class='col-sm-2 control-label'>Blade Section</label>
+        <div class='col-sm-10'>
+            {!! Form::text('section', isset($table) ? $table->section : old('section'), [
+            'class' => 'form-control',
+            'id' => 'section',
+            'placeholder' => 'section',
+            ]) !!}
+        </div>
+    </div>
+    <div class='form-group row'>
         <label for='editor' class='col-sm-2 control-label'>editor</label>
         <div class='col-sm-10'>
             {!!

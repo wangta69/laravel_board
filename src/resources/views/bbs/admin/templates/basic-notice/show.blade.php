@@ -2,7 +2,7 @@
 @section ($cfg->section)
 <div class="bbs-admin">
     <div class='basic-notice show'>
-        <h1 class='title'>
+        <h1>
             {{ $article->table->name }}
         </h1>
 
@@ -19,27 +19,29 @@
                     <td colspan='3'>{{ $article->title }}</td>
                 </tr>
                 <tr>
-                    <th>작성일</th>
-                    <td>{{ date('Y-m-d', strtotime($article->created_at)) }}</td>
+                    <th>작성자</th>
+                    <td>{{ $article->user->name }} ({{ date('Y-m-d H:i', strtotime($article->created_at)) }})</td>
                     <th>조회수</th>
                     <td>{{ number_format($article->hit) }}</td>
                 </tr>
                 <tr>
                     <th>첨부파일</th>
                     <td colspan='3'>
-                        @foreach ($article->files as $file)
-                        <!-- 파일 다운로드 경로 등을 넣으세요.. -->
-
-                        {{ link_to_route('bbs.admin.tbl.download', $file->file_name, $file->id) }}
-
-                        @endforeach
+                        <ul class="link">
+                            @foreach ($article->files as $file)
+                            <!-- 파일 다운로드 경로 등을 넣으세요.. -->
+                            <li>{{ link_to_route('bbs.download', $file->file_name, $file->id) }}</li>
+                            @endforeach
+                        </ul>
                     </td>
                 </tr>
             </thead>
         </table>
 
-        <div class='content mb-5'>
+        <div class='body'>
+            <div class="content">
             {!! nl2br($article->content) !!}
+            </div>
         </div>
 
         <div class='btn-area text-right'>
@@ -63,7 +65,7 @@
         </div>
     </div>
     @if ($cfg->enable_comment == 1)
-    @include ('bbs::templates.basic.comment')
+    @include ('bbs.admin.templates.'.$cfg->skin.'.comment')
     @endif
 </div>
 @stop
@@ -71,8 +73,15 @@
 @section ('styles')
 @parent
 <style>
-    @include ('bbs.admin.css.style')
+    @include ('bbs.admin.css.style') 
     @include ('bbs.admin.templates.'.$cfg->skin.'.css.style')
-
 </style>
+@stop
+@section ('scripts')
+@parent
+{{ Html::script('assets/pondol/bbs/bbs.js') }}
+<script>
+    BBS.tbl_name = "{{$cfg->table_name}}";
+    BBS.article_id = {{$article-> id}};
+</script>
 @stop

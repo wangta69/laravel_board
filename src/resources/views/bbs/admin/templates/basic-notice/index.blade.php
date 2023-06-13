@@ -51,7 +51,7 @@
             @if ($cfg->hasPermission('write'))
             {!! Html::link(route('bbs.admin.tbl.create', [$cfg->table_name]), '글쓰기', [
             'role' => 'button',
-            'class' => 'btn btn-sm btn-default',
+            'class' => 'btn btn-sm btn-primary',
             ]) !!}
             @endif
         </div>

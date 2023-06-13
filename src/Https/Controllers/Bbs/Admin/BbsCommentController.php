@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Bbs;
+namespace App\Http\Controllers\Bbs\Admin;
 
 use Illuminate\Http\Request;
-use Auth;
-use Wangta69\Bbs\BbsService;
 
-class BbsExtensionCommentControllerSample extends \Wangta69\Bbs\BbsExtendsCommentController
+use Wangta69\Bbs\Models\BbsArticles as Articles;
+use Wangta69\Bbs\Models\BbsComments as Comments;
+
+class BbsCommentController extends \Wangta69\Bbs\BbsExtendsCommentController
 {
 
 
@@ -27,9 +28,10 @@ class BbsExtensionCommentControllerSample extends \Wangta69\Bbs\BbsExtendsCommen
     }
 
     public function _store(Request $request, $tbl_name, Articles $article, $comment_id) {
+
       $result =  $this->store($request, $tbl_name, $article, $comment_id);
       // return view('admin.bbs.'.$tbl_name.'.'.$article->id.'.show', $result);
-      return redirect()->route('admin.bbs.show', [$tbl_name, $article->id]);
+      return redirect()->route('bbs.admin.tbl.show', [$tbl_name, $article->id]);
     }
 
     public function _update(Request $request, $tbl_name, Articles $article, Comments $comment) {

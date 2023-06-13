@@ -1,5 +1,5 @@
 @extends($cfg->extends)
-@section ('bbs-content')
+@section ($cfg->section)
 <div class='basic-table index'>
     <h1 class='title'>
         {{ $cfg->name }}

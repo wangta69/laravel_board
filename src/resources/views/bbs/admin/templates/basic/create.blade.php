@@ -1,7 +1,10 @@
 @extends($cfg->extends)
 @section ($cfg->section)
 <div class="bbs-admin">
-    <div class='basic-table create'>
+    <div class='basic create'>
+        <h1 class='title'>
+            {{ $cfg->name }}
+        </h1>
         @if (isset($article))
         {!! Form::open([
         'route' => ['bbs.admin.tbl.update', $cfg->table_name, $article->id],
@@ -20,15 +23,13 @@
         {{ Form::hidden('text_type', $cfg->editor == 'none' ? 'br' : 'html') }}
         {{ Form::hidden('parent_id', isset($article) ? $article->id : '') }}
 
-        <h1 class='title'>
-            {{ $cfg->name }}
-        </h1>
+        
         @if (!$errors->isEmpty())
         <div class="alert alert-danger" role="alert">
             {!! $errors->first() !!}
         </div>
         @endif
-        <table>
+        <table class="table">
             <colgroup>
                 <col width='120' />
                 <col width='' />

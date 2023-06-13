@@ -1,5 +1,5 @@
 @extends($cfg->extends)
-@section ('bbs-content')
+@section ($cfg->section)
 <div class='basic-table show'>
     <h1 class='title'>
         {{ $article->table->name }}
@@ -42,9 +42,9 @@
         {!! Form::close() !!}
     </div>
 </div>
-    @if ($article->isOwner(Auth::user()) || $isAdmin)
-        @include ('bbs.templates.'.$cfg->skin.'.comment')
-    @endif
+@if ($cfg->enable_comment == 1)
+@include ('bbs.templates.'.$cfg->skin.'.comment')
+@endif
 @stop
 
 @section ('styles')

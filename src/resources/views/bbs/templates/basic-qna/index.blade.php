@@ -1,5 +1,5 @@
 @extends($cfg->extends)
-@section ('bbs-content')
+@section ($cfg->section)
 <div class='index'>
     <table  class="table my-tbl">
         <colgroup>

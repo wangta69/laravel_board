@@ -1,6 +1,5 @@
 @extends($cfg->extends)
-
-@section ('bbs-content')
+@section ($cfg->section)
 <div style="margin: auto;">
     @if (isset($article))
         {!! Form::open([
