@@ -3,7 +3,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
 
-class UpdatePondolBbsTables01 extends Migration
+class CreatePondolBbsConfig extends Migration
 {
     /**
      * Run the migrations.
@@ -21,17 +21,14 @@ class UpdatePondolBbsTables01 extends Migration
                 $table->string('k');
                 $table->string('v', '50')->unique();
                 $table->timestamps();
-                DB::table('bbs_config')->insert(
-                    [
-                        'k' => `extends`,
-                        'v' => `bbs.admin.default-layout`
-                    ],
-                    [
-                        'k' => `section`,
-                        'v' => `bbs-content`
-                    ]
-                );
             });
+
+            DB::table('bbs_config')->insert(
+                [
+                    ['k' => 'extends','v' => 'bbs.admin.default-layout'],
+                    ['k' => 'section','v' => 'bbs-content']
+                ]
+            );
          }
     }
 
