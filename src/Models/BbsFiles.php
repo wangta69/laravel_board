@@ -6,13 +6,13 @@ use Kyslik\ColumnSortable\Sortable;
 
 class BbsFiles extends Model
 {
-    use Sortable;
+  use Sortable;
 
-    public $sortable = [];
+  public $sortable = [];
 
-    protected $fillable = [];
+  protected $fillable = [];
 
-    protected $table = 'bbs_files';
-    //protected $dateFormat = 'U';
-    protected $primaryKey = 'id';
+  protected $table = 'bbs_files';
+  //protected $dateFormat = 'U';
+  protected $primaryKey = 'id';
 }
