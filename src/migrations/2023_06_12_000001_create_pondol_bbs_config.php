@@ -3,7 +3,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
 
-class CreatePondolBbsTables extends Migration
+class UpdatePondolBbsTables01 extends Migration
 {
     /**
      * Run the migrations.
