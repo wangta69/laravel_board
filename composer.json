@@ -19,5 +19,15 @@
         "psr-4": {
             "Wangta69\\Bbs\\": "src/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Wangta69\\Bbs\\BbsServiceProvider"
+            ],
+            "aliases": {
+                "CustomPackage": "Wangta69\\Bbs\\Facades\\BbsFacade"
+            }
+        }
     }
 }

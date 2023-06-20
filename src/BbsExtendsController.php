@@ -132,7 +132,6 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
     $validator = Validator::make($request->all(), [
       'title' => 'required|min:2|max:100',
       'content' => 'required',
-        //'username' => 'required|unique:users|min:2|max:8',
     ], [
       'title.*' => '2글자 이상의 제목을 입력해 주세요',
       'content.required' => '내용을 입력해 주세요',
@@ -320,7 +319,6 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
      * 대표 이미지 설정
      */
     protected function set_representaion($article){
-
       $article->image = null;
       //$representaion_image = null;//1순위: 첨부화일에 이미지가 있을 경우, 2순위 : editor에 이미지가 있을 경우
       $representaion_image_array = ['jpeg', 'jpg', 'png', 'gif'];
