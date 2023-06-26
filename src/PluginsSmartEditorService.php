@@ -2,20 +2,15 @@
 namespace Wangta69\Bbs;
 
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Log;
 use Validator;
 use Storage;
 use Response;
 
 class PluginsSmartEditorService {
 
-
-
-
 	public function getSmartEditorSkin() {
-	   // return view('bbs::plugins.smart_editor.test');
-        return view('bbs::plugins.smart_editor.skin');
-		//return view('bbs::plugins.smart_editor.skin');
+		return view('bbs::plugins.smart_editor.skin');
 	}
 
 	public function getInputArea($mode = '') {
@@ -34,9 +29,7 @@ class PluginsSmartEditorService {
 
 		$url = $request->get('callback').'?callback_func='.$request->get('callback_func');
 
-
 		if ($request->hasFile('Filedata')) {
-
 			$validator = Validator::make($request->all(), [
 				'Filedata' => 'image',
 			]);
@@ -44,35 +37,24 @@ class PluginsSmartEditorService {
 			// if it is not image file type
 			if ($validator->fails()) {
 				$url .= '&errstr=not_image_file';
-                return redirect($url);
+        return redirect($url);
 			}
 
 			$file = $request->file('Filedata');
-			//$filename = time();
 
-			//while (Storage::exists('editor/'.$filename)) {
-			//	$filename ++;
-			//}
+			$filepath = 'public/bbs/tmp/editor/'.session()->getId();
+			//upload to storage
+			$filename = $file->getClientOriginalName();
 
-            $filepath = 'bbs/tmp/editor/'.session()->getId();
-            //upload to storage
-            $filename = $file->getClientOriginalName();
-			$path = $file->move(public_path($filepath), $filename);
-            // $path=Storage::put($filepath,$file); // //Storage::disk('local')->put($name,$file,'public');
-
-
-           // $uploadPath = session()->getId();
-			//$file->move($uploadPath, $filename);
+			$path=Storage::put($filepath, $file);
 
 			$url .= '&bNewLine=true';
 			$url .= '&sFilename='.basename($path);;
-			$url .= '&sFileURL=bbs/tmp/editor/'.session()->getId().'/'.basename($path);
+			$url .= '&sFileURL='.Storage::url($path);
 		} else {
 			$url .= '&errstr=not_exist_file';
 		}
-
-        return  $url;
-
+			return  $url;
 	}
 
 	public function getCallback() {
