@@ -115,7 +115,7 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
       abort(403, 'Unauthorized action.');
 
     return ['cfg'=>$cfg];
-    }
+  }
 
     /*
      * Store to BBS
