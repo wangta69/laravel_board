@@ -192,9 +192,11 @@ class AdminController extends \App\Http\Controllers\Controller {
   }
 
   public function configUpdate(Request $request) {
-    BbsConfig::where('k', 'admin_blade_extend')->update(['v'=>$request->admin_blade_extend]);
-    BbsConfig::where('k', 'admin_blade_contents_section')->update(['v'=>$request->admin_blade_contents_section]);
-    return redirect()->route('bbs.admin.index', []);
+
+    // print_r($request->all());
+    BbsConfig::where('k', 'extends')->update(['v'=>$request->extends]);
+    BbsConfig::where('k', 'section')->update(['v'=>$request->section]);
+    // return redirect()->route('bbs.admin.index', []);
   }
 
 

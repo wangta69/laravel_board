@@ -10,13 +10,6 @@ use Wangta69\Bbs\Models\BbsComments as Comments;
 class BbsCommentController extends \Wangta69\Bbs\BbsExtendsCommentController
 {
 
-
-  // use BbsTraits;
-    // BBS Items per Page
-    // protected $itemsPerPage = 10;
-    //protected $deaultUrlParams = array('blade_extends' =>'bbs.layouts.default');
-    // protected $deaultUrlParams = array('blade_extends' =>'bbs.admin.default-layout');
-
      /**
      * Create a new controller instance.
      *
@@ -24,13 +17,11 @@ class BbsCommentController extends \Wangta69\Bbs\BbsExtendsCommentController
      */
     public function __construct()
     {
-        parent::__construct();
+      parent::__construct();
     }
 
     public function _store(Request $request, $tbl_name, Articles $article, $comment_id) {
-
       $result =  $this->store($request, $tbl_name, $article, $comment_id);
-      // return view('admin.bbs.'.$tbl_name.'.'.$article->id.'.show', $result);
       return redirect()->route('bbs.admin.tbl.show', [$tbl_name, $article->id]);
     }
 
@@ -43,6 +34,4 @@ class BbsCommentController extends \Wangta69\Bbs\BbsExtendsCommentController
       $result =  $this->destroy($request, $tbl_name, $article, $comment);
       return \Response::json($result, 200);
     }
-
-
 }
