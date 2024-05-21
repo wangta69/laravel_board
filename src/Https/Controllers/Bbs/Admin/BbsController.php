@@ -18,18 +18,39 @@ class BbsController extends \Wangta69\Bbs\BbsExtendsController
    * 게시물 리스트
    */
   public function _index(Request $request, $tbl_name) {
-    $result =  $this->index($request, $tbl_name);
+    
+    $preIndex = $this->preIndex($tbl_name);
+    $articles = $preIndex->articles;
+    $cfg = $preIndex->cfg;
+
+    // 사용자 정의 시작
+    // 아래처럼 게시판별 필요한 추가 내용이 있을 경우 처리한다.
+      // if ($cfg->table_name === 'qna') {
+      //   $articles = $articles->leftjoin('users as u', function($join){
+      //       $join->on('u.id', '=', 'bbs_articles.user_id');
+      //   })->addSelect(
+      //     'bbs_articles.id', 'bbs_articles.title',  'bbs_articles.user_name', 'bbs_articles.created_at', 'bbs_articles.comment_cnt','u.email');
+      // }
+    // 사용자 정의 끝
+
+    $result =  $this->index($request, $articles, $cfg);
 
     if(isset($result['error'])) {
       if ($result['error'] == 'login') {
         return redirect()->route('login');
       }
     }
-
+    // 
     // 레이아웃 정보 가져오기
     $this->getLayout($result['cfg']);
     return view('bbs.admin.templates.'.$result['cfg']->skin_admin.'.index', $result);
   }
+
+  /**
+   * 사용자 정의 (이곳에서 사용자 정의 처리) 기조 BbsController.php에 있는 내용을 가졍옮
+   */
+
+   
 
   /**
    * 게시물 보기
@@ -37,10 +58,12 @@ class BbsController extends \Wangta69\Bbs\BbsExtendsController
   public function _show(Request $request, $tbl_name, Articles $article) {
 
     $result =  $this->show($request, $tbl_name, $article);
+
+   
     if(isset($result['error'])) {
-        if ($result['error'] == 'password') {
-          return view('bbs.admin.templates.'.$result['cfg']->skin_admin.'.password-confirm', ['tbl_name'=>$tbl_name, 'article'=>$article->id]);
-        }
+      if ($result['error'] == 'password') {
+        return view('bbs.admin.templates.'.$result['cfg']->skin_admin.'.password-confirm', ['tbl_name'=>$tbl_name, 'article'=>$article->id]);
+      }
     }
     // 레이아웃 정보 가져오기
     $this->getLayout($result['cfg']);

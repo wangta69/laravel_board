@@ -75,7 +75,7 @@
 @parent
 <style>
     @include ('bbs.admin.css.style')
-    @include ('bbs::templates.'.$cfg->skin.'.css.style')
+    @include ('bbs::templates.'.$cfg->skin_admin.'.css.style')
 </style>
 @stop
 @section ('scripts')

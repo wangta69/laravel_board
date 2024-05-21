@@ -63,6 +63,6 @@
 @parent
 <style>
     @include ('bbs.admin.css.style')
-    @include ('bbs.admin.templates.'.$cfg->skin.'.css.style')
+    @include ('bbs.admin.templates.'.$cfg->skin_admin.'.css.style')
 </style>
 @stop

@@ -67,7 +67,7 @@
         </article>
     </div>
     @if ($cfg->enable_comment == 1)
-    @include ('bbs.admin.templates.'.$cfg->skin.'.comment')
+    @include ('bbs.admin.templates.'.$cfg->skin_admin.'.comment')
     @endif
 </div>
 @stop
@@ -76,7 +76,7 @@
 @parent
 <style>
     @include ('bbs.admin.css.style') 
-    @include ('bbs.admin.templates.'.$cfg->skin.'.css.style')
+    @include ('bbs.admin.templates.'.$cfg->skin_admin.'.css.style')
 </style>
 @stop
 @section ('scripts')
