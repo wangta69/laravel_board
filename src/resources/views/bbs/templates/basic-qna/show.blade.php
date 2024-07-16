@@ -91,7 +91,7 @@
 
 @section ('scripts')
 @parent
-<script type="text/javascript" src="/assets/pondol/bbs/bbs.js"></script>
+{{ Html::script('assets/pondol/bbs/bbs.js') }}
 <script>
     BBS.tbl_name = "{{$cfg->table_name}}";
     BBS.article_id = {{$article->id}};

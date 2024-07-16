@@ -103,7 +103,7 @@ class AdminController extends \App\Http\Controllers\Controller {
       }
     });
 
-    if ($validator->fails()) return redirect()->back()->withErrors($validator->errors());
+    if ($validator->fails()) return redirect()->back()->withInput()->withErrors($validator->errors());
 
     $table = new Tables;
     $table->name = $request->get('name');
@@ -127,11 +127,11 @@ class AdminController extends \App\Http\Controllers\Controller {
     $table->roles_read()->detach();
 
     if ($this->has_roles($request->get('roles-read'))) {
-        $table->roles_read()->attach($request->get('roles-read'));
+      $table->roles_read()->attach($request->get('roles-read'));
     }
 
     if ($this->has_roles($request->get('roles-write'))) {
-        $table->roles_write()->attach($request->get('roles-write'));
+      $table->roles_write()->attach($request->get('roles-write'));
     }
 
     return redirect()->route('bbs.admin.index');
@@ -193,10 +193,10 @@ class AdminController extends \App\Http\Controllers\Controller {
 
   public function configUpdate(Request $request) {
 
-    // print_r($request->all());
+
     BbsConfig::where('k', 'extends')->update(['v'=>$request->extends]);
     BbsConfig::where('k', 'section')->update(['v'=>$request->section]);
-    // return redirect()->route('bbs.admin.index', []);
+    return redirect()->route('bbs.admin.index', []);
   }
 
 

@@ -97,7 +97,7 @@
 
 @section ('scripts')
 @parent
-{{ Html::script('assets/pondol_bbs/js/bbs.js') }}
+{{ Html::script('assets/pondol/bbs/bbs.js') }}
 <script>
     $('.file-control-btn').click(function () {
         $(this).closest('li').find('input[type=file]').trigger('click');

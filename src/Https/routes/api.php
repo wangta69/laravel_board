@@ -13,18 +13,18 @@ use Illuminate\Http\Request;
 */
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+  return $request->user();
 });
 /*
 Route::group(['middleware' => ['api','cors']], function () {
-    Route::post('auth/login', 'ApiController@login');
-    Route::group(['middleware' => 'jwt.auth'], function () {
-        Route::get('user', 'ApiController@getAuthUser');
-    });
+  Route::post('auth/login', 'ApiController@login');
+  Route::group(['middleware' => 'jwt.auth'], function () {
+      Route::get('user', 'ApiController@getAuthUser');
+  });
 });
 
 */
 Route::group(['prefix' => 'api/v1/bbs', 'as' => 'bbs.', 'namespace' => 'App\Http\Controllers\Bbs'], function () {
-    Route::get('/{tbl_name}/{article}/view', 'BbsController@viewApi');
-    Route::get('/{tbl_name}', 'BbsController@indexApi');
+  Route::get('/{tbl_name}/{article}/view', 'BbsController@viewApi');
+  Route::get('/{tbl_name}', 'BbsController@indexApi');
 });

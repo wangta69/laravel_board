@@ -472,22 +472,22 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
     */
   public function destroy(Request $request, $tbl_name, Articles $article)
   {
-      $isAdmin = BbsService::hasRoles(config('bbs.admin_roles'));
-      $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+    $isAdmin = BbsService::hasRoles(config('bbs.admin_roles'));
+    $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
 
-      if (!$article->isOwner(Auth::user()) && !$isAdmin) {
-        return redirect()->route('bbs.index', [$tbl_name]);
-      }
-      //1. delete files
-      Storage::deleteDirectory('public/bbs/'.$cfg->id.'/'.date("Ym", strtotime($article->created_at)).'/'.$article->id);
+    if (!$article->isOwner(Auth::user()) && !$isAdmin) {
+      return redirect()->route('bbs.index', [$tbl_name]);
+    }
+    //1. delete files
+    Storage::deleteDirectory('public/bbs/'.$cfg->id.'/'.date("Ym", strtotime($article->created_at)).'/'.$article->id);
 
-      //2. delete files table
-      //$article->files->delete();
-      Files::where('bbs_articles_id', $article->id)->delete();
+    //2. delete files table
+    //$article->files->delete();
+    Files::where('bbs_articles_id', $article->id)->delete();
 
-      //3. delete article
-      $article->delete();
-      return ['error'=>false];
+    //3. delete article
+    $article->delete();
+    return ['error'=>false];
   }
 
     /**

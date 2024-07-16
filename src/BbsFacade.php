@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Facade;
 
 class BbsFacade extends Facade
 {
-    protected static function getFacadeAccessor() {
-        return 'bbs';
-    }
+  protected static function getFacadeAccessor() {
+    return 'bbs';
+  }
 }

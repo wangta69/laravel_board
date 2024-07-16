@@ -1,34 +1,34 @@
 {
-    "name": "wangta69/laravel_board",
-    "description": "BBS bulletin board system",
+  "name": "wangta69/laravel_board",
+  "description": "BBS bulletin board system",
 	"keywords": ["laravel", "bbs", "pondol" , "board"],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Pondol",
-            "email": "wangta69@gmail.com"
-        }
-    ],
-    "minimum-stability": "dev",
-    "require": {
-        "php": ">=6.0.0",
-		"kyslik/column-sortable": "^6.0",
-        "wangta69/php-thumbnail": "^1",
-        "wangta69/laravel-editor": "^0"
-    },
-    "autoload": {
-        "psr-4": {
-            "Wangta69\\Bbs\\": "src/"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Wangta69\\Bbs\\BbsServiceProvider"
-            ],
-            "aliases": {
-                "CustomPackage": "Wangta69\\Bbs\\Facades\\BbsFacade"
-            }
-        }
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Pondol",
+      "email": "wangta69@gmail.com"
     }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=6.0.0",
+    "kyslik/column-sortable": "^6.0",
+    "wangta69/php-thumbnail": "^1",
+    "wangta69/laravel-editor": "^0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Wangta69\\Bbs\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Wangta69\\Bbs\\BbsServiceProvider"
+      ],
+      "aliases": {
+        "CustomPackage": "Wangta69\\Bbs\\Facades\\BbsFacade"
+      }
+    }
+  }
 }

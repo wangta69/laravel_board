@@ -21,7 +21,8 @@ class BbsServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		$this->app->bind('bbs', function($app) {
+		// $this->app->bind('bbs', function($app) {
+		$this->app->singleton('bbs', function($app) {
 			return new Bbs;
 		});
 	}
