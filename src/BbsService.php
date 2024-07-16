@@ -38,15 +38,6 @@ class BbsService
     return Tables::findOrFail($id);
   }
 
-  /*
-  public static function enc_params($arr){
-      return encrypt($arr);
-  }
-
-  public static function dec_params($default_arr, $data=null){
-      return $data==null ? $default_arr:decrypt($data);
-  }
-  */
   /**
    * 전송할 데이타와 전송된 데이타를 동시에 처리하여 전달
    */

@@ -2,6 +2,7 @@ var BBS = {
   _tbl_name:'',
   _article_id:0,
   _comment_id:0,
+  csrf_token: $("meta[name=csrf-token]" ).attr("content"),
   get tbl_name(){
     return this._tbl_name;
   },
@@ -20,6 +21,28 @@ var BBS = {
   get comment_id(){
     return this._comment_id;
   },
+
+  ajaxroute: function(type, route, params, callback) {
+    var routedata = $.param( route);
+    console.log(routedata, this.csrf_token)
+    $.ajax({
+      url: '/bbs/route-url',
+      type: 'GET',
+      data: routedata,
+      success: function(url) {
+
+        console.log('url >>', url);
+        $.ajax({
+          url: url,
+          type: type,
+          data: {_token:csrf_token, data: {}},
+          success: function(resp) {
+            callback(resp);
+          }
+        });
+      }
+    });
+  }
 };
 
 var csrf_token = $("meta[name=csrf-token]" ).attr("content");

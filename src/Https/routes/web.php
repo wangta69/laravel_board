@@ -73,7 +73,8 @@ Route::group(['prefix' => 'bbs', 'as' => 'bbs.', 'namespace' => 'Wangta69\Bbs', 
   Route::put('/{tbl_name}/{article}/store', 'BbsController@_update')->name('update');
 
   Route::delete('/{tbl_name}/{article}/destroy', 'BbsController@_destroy')->name('destroy');
-  Route::get('/{file_id}/download', 'BbsController@download')->name('download');
+  Route::get('/file/{file_id}', 'BbsController@download')->name('file.download');
+  Route::delete('/file/{file_id}', 'BbsController@download')->name('file.delete');
   Route::post('/plugins/{plugins}/file-upload', 'PluginsController@fileUpload')->name('plugin.fileupload');
   Route::get('/plugins/{plugins}/{action}', 'PluginsController@index')->name('plugin.index');
   Route::get('/plugins/{plugins}', 'PluginsController@index');

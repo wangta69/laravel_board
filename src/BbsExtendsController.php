@@ -38,10 +38,16 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
    * @param String $tbl_name
    * @return \Illuminate\Http\Response
    */
-  public function index(Request $request, $articles, $cfg)
+  public function index(Request $request, $tbl_name)
   {
+
+    $preIndex = $this->preIndex($tbl_name);
+    $articles = $preIndex->articles;
+    $cfg = $preIndex->cfg;
+
     $f = $request->input('f', null); // Searching Field ex) title, content
     $s = $request->input('s', null); // Searching text
+    
 
     $user = $request->user();
     if ($cfg->auth_list === 'login' &&  !$user) {
@@ -72,7 +78,7 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
     $articles = $articles->paginate($cfg->lists)
       ->appends(request()->query());
 
-    return ['articles' =>$articles, 'cfg'=>$cfg];
+    return ['error'=> false, 'articles' =>$articles, 'cfg'=>$cfg];
   }
 
   /**
@@ -96,7 +102,7 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
       ->orderBy('order_num')
       ->paginate($cfg->lists)
       ->appends(request()->query());
-    return response()->json(['articles' => $articles, 'cfg'=>$cfg], 200);//500, 203
+    return response()->json(['error'=>false, 'articles' => $articles, 'cfg'=>$cfg], 200);//500, 203
 
   }
 
@@ -116,7 +122,7 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
     if(!$permission_result)
       abort(403, 'Unauthorized action.');
 
-    return ['cfg'=>$cfg, 'article' => new Articles];
+    return ['error'=>false, 'cfg'=>$cfg, 'article' => new Articles];
   }
 
     /*
@@ -389,7 +395,7 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
       return response()->json([$article], 200);//500, 203
     }
 
-    return  ['article' => $article, 'cfg'=>$cfg, 'isAdmin'=>$isAdmin];
+    return ['error'=>false, 'article' => $article, 'cfg'=>$cfg, 'isAdmin'=>$isAdmin];
   }
 
   public function passwordConfirm(Request $request, $tbl_name, Articles $article)
@@ -428,7 +434,7 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
     }
 
     Cookie::queue(Cookie::make($tbl_name.$content->id, '1'));
-    return response()->json(['article' => $content], 200);//500, 203
+    return response()->json(['error'=>false, 'article' => $content], 200);//500, 203
   }
 
   public function comment(Request $request, $tbl_name, Articles $article)
@@ -453,9 +459,9 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
     $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
 
     if ($article->isOwner(Auth::user()) || $isAdmin) {
-      return ['article'=>$article, 'cfg'=>$cfg];
+      return ['error'=>false, 'article'=>$article, 'cfg'=>$cfg];
     } else {
-      return redirect()->route('bbs.index', [$tbl_name]);
+      return ['error'=>'권한이 없습니다.'];
     }
   }
 
@@ -561,7 +567,6 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
       }
       $name = substr($file, strrpos($file, '/') + 1);
       $thum_dir = substr($file, 0, -strlen($name)).$width."_".$height;
-      // return $name;
       $thum_to_storage = storage_path() .'/app/'.$thum_dir;
 
       if(!file_exists($thum_to_storage."/".$name)){//thumbnail 이미지를 돌려준다.

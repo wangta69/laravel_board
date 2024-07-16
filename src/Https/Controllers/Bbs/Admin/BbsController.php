@@ -19,9 +19,7 @@ class BbsController extends \Wangta69\Bbs\BbsExtendsController
    */
   public function _index(Request $request, $tbl_name) {
     
-    $preIndex = $this->preIndex($tbl_name);
-    $articles = $preIndex->articles;
-    $cfg = $preIndex->cfg;
+    
 
     // 사용자 정의 시작
     // 아래처럼 게시판별 필요한 추가 내용이 있을 경우 처리한다.
@@ -33,7 +31,7 @@ class BbsController extends \Wangta69\Bbs\BbsExtendsController
       // }
     // 사용자 정의 끝
 
-    $result =  $this->index($request, $articles, $cfg);
+    $result =  $this->index($request, $tbl_name);
 
     if(isset($result['error'])) {
       if ($result['error'] == 'login') {

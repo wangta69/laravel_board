@@ -29,7 +29,7 @@
                 @foreach ($article->files as $file)
                     <!-- 파일 다운로드 경로 등을 넣으세요.. -->
 
-                    {{ link_to_route('bbs.download', $file->file_name, $file->id) }}
+                    {{ link_to_route('bbs.file.download', $file->file_name, $file->id) }}
 
                 @endforeach
             </td>
