@@ -42,6 +42,8 @@ class BbsController extends \Wangta69\Bbs\BbsExtendsController
     }
     // 
     // 레이아웃 정보 가져오기
+    // print_r($result)
+    // exit;
     $this->getLayout($result['cfg']);
     return view('bbs.admin.templates.'.$result['cfg']->skin_admin.'.index', $result);
   }

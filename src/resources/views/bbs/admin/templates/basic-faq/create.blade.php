@@ -2,7 +2,7 @@
 @section ($cfg->section)
 <div class="bbs-admin">
     <div class='basic-table create'>
-        @if (isset($article))
+        @if (isset($article->id))
         {!! Form::open([
         'route' => ['bbs.admin.tbl.update', $cfg->table_name, $article->id],
         'class' => 'form-horizontal',

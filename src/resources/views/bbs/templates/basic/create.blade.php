@@ -1,7 +1,7 @@
 @extends($cfg->extends)
 @section ($cfg->section)
 <div class='basic-table create'>
-    @if (isset($article))
+    @if (isset($article->id))
         {!! Form::open([
             'route' => ['bbs.update', $cfg->table_name, $article->id],
             'class' => 'form-horizontal',

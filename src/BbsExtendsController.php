@@ -43,8 +43,6 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
     $f = $request->input('f', null); // Searching Field ex) title, content
     $s = $request->input('s', null); // Searching text
 
-
-    
     $user = $request->user();
     if ($cfg->auth_list === 'login' &&  !$user) {
       return ['error'=>'login'];
@@ -74,7 +72,7 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
     $articles = $articles->paginate($cfg->lists)
       ->appends(request()->query());
 
-    return $articles;
+    return ['articles' =>$articles, 'cfg'=>$cfg];
   }
 
   /**
@@ -118,7 +116,7 @@ class BbsExtendsController extends \App\Http\Controllers\Controller {
     if(!$permission_result)
       abort(403, 'Unauthorized action.');
 
-    return ['cfg'=>$cfg];
+    return ['cfg'=>$cfg, 'article' => new Articles];
   }
 
     /*
