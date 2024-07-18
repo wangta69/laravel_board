@@ -15,9 +15,10 @@ class CreatePondolBbsTables extends Migration
     // Create BBS Config table
     if (!Schema::hasTable('bbs_tables')) {
       Schema::create('bbs_tables', function(BluePrint $table) {
-        $table->engine = 'InnoDB';
+        // $table->engine = 'InnoDB';
 
-        $table->increments('id');
+        // $table->increments('id');
+        $table->id();
         $table->string('name');
         $table->string('table_name', '20')->unique();
         $table->string('skin', '20');
@@ -39,7 +40,8 @@ class CreatePondolBbsTables extends Migration
     // Create Articles Table
     if (!Schema::hasTable('bbs_articles')) {
       Schema::create('bbs_articles', function(BluePrint $table) {
-        $table->increments('id');
+        $table->id();
+        // $table->increments('id');
         $table->integer('user_id')->nullable()->unsigned();
         $table->string('user_name', '20')->nullable();
         $table->integer('bbs_table_id')->unsigned();
@@ -61,7 +63,8 @@ class CreatePondolBbsTables extends Migration
   // Create Comments Table
     if (!Schema::hasTable('bbs_comments')) {
       Schema::create('bbs_comments', function(BluePrint $table) {
-        $table->increments('id');
+        // $table->increments('id');
+        $table->id();
         $table->integer('user_id')->nullable()->unsigned();
         $table->string('user_name', '20')->nullable();
         $table->integer('bbs_articles_id')->unsigned();
@@ -81,8 +84,9 @@ class CreatePondolBbsTables extends Migration
     // Create Files Table
     if (!Schema::hasTable('bbs_files')) {
       Schema::create('bbs_files', function(BluePrint $table) {
-        $table->engine = 'InnoDB';
-        $table->increments('id');
+        // $table->engine = 'InnoDB';
+        // $table->increments('id');
+        $table->id();
         $table->integer('bbs_articles_id')->unsigned();
         $table->string('file_name')->comment('original file name');
         $table->string('path_to_file')->comment('saved file path from storage');

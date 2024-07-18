@@ -14,9 +14,10 @@ class CreatePondolBbsCategoryTable extends Migration
   {
     // Create BBS Config table
     Schema::create('bbs_categories', function(BluePrint $table) {
-      $table->engine = 'InnoDB';
+      // $table->engine = 'InnoDB';
 
-      $table->increments('id');
+      // $table->increments('id');
+      $table->id();
       $table->integer('bbs_table_id')->unsigned();
       $table->string('name', '20');
       $table->tinyInteger('order')->unsigned()->default(0)->comment('카테고리 출력 순서');

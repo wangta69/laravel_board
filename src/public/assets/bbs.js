@@ -22,9 +22,8 @@ var BBS = {
     return this._comment_id;
   },
 
-  ajaxroute: function(type, route, params, callback) {
+  ajaxroute: function(type, route, data, callback) {
     var routedata = $.param( route);
-    console.log(routedata, this.csrf_token)
     $.ajax({
       url: '/bbs/route-url',
       type: 'GET',
@@ -32,10 +31,11 @@ var BBS = {
       success: function(url) {
 
         console.log('url >>', url);
+        data._token = csrf_token;
         $.ajax({
           url: url,
           type: type,
-          data: {_token:csrf_token, data: {}},
+          data: data,
           success: function(resp) {
             callback(resp);
           }

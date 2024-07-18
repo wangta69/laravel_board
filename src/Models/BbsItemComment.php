@@ -7,14 +7,14 @@ use Kyslik\ColumnSortable\Sortable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-class BbsComments extends Model
+class BbsItemComment extends Model
 {
   use Sortable,
   SoftDeletes;
 
   public $sortable = [];
   protected $fillable = [];
-  protected $table = 'bbs_comments';
+  // protected $table = 'bbs_item_comments';
   //protected $dateFormat = 'U';
   protected $primaryKey = 'id';
 
