@@ -2,30 +2,28 @@
 
 namespace App\Http\Controllers\Bbs\Admin;
 
-use Illuminate\Http\Request;
 use Auth;
-use Wangta69\Bbs\BbsService;
 
-class AdminController extends \Wangta69\Bbs\AdminController
+class AdminController extends \Wangta69\Bbs\AdminBaseController
 {
 
-  protected $itemsPerPage = 10;
+  // protected $itemsPerPage = 10;
 
    /**
    * Create a new controller instance.
    *
    * @return void
    */
-  public function __construct(BbsService $bbsSvc)
+  public function __construct()
   {
     parent::__construct();
-    $this->bbsSvc = $bbsSvc;
     $this->middleware('auth');
-
+    // $this->itemsPerPage = 10; // change table list count;
     $this->middleware(function ($request, $next) {
       $value = config('bbs.admin_roles'); // administrator
       if (Auth::check()) {
-        if(!BbsService::hasRoles($value))
+        // if(!BbsService::hasRoles($value))
+        if(!$this->bbsSvc->hasRoles($value))
           return redirect('');
       } else {
         return redirect('');

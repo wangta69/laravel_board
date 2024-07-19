@@ -21,7 +21,7 @@ use Pondol\Image\GetHttpImage;
 use Wangta69\Bbs\BbsService;
 
 
-class BbsExtendsController extends \App\Http\Controllers\Controller {
+class BbsBaseController extends \App\Http\Controllers\Controller {
 
   protected $bbsSvc;
   protected $cfg;

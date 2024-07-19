@@ -24,7 +24,7 @@ use Auth;
 use Wangta69\Bbs\Models\BbsItemComment;
 
 
-class BbsExtendsItemCommentController extends \App\Http\Controllers\Controller {
+class ItemCommentBaseController extends \App\Http\Controllers\Controller {
 
   // protected $bbsSvc;
   // protected $cfg;
@@ -66,12 +66,12 @@ class BbsExtendsItemCommentController extends \App\Http\Controllers\Controller {
       }
   
       
-      // $comment->parent_id = 0;//firt fill then update
-      $comment->parent_id = $parent_id  ? $parent_id : $comment->id;
+      $comment->parent_id = 0;//firt fill then update
+      // $comment->parent_id = $parent_id  ? $parent_id : $comment->id;
       $comment->save();
   
-      // $comment->parent_id = $parent_id  ? $parent_id : $comment->id;
-      // $comment->save();
+      $comment->parent_id = $parent_id  ? $parent_id : $comment->id;
+      $comment->save();
   
   
       return ['error'=>false];

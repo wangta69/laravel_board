@@ -11,13 +11,15 @@ use Validator;
 use Wangta69\Bbs\Models\BbsTables as Tables;
 use Wangta69\Bbs\Models\Role;
 use Wangta69\Bbs\Models\BbsConfig;
-use Wangta69\Bbs\BbsService;
 
-class AdminController extends \App\Http\Controllers\Controller {
+class AdminBaseController extends \App\Http\Controllers\Controller {
 
   protected $bbsSvc;
   protected $cfg;
-  public function __construct() {}
+  protected $itemsPerPage = 10;
+  public function __construct() {
+    $this->bbsSvc = \App::make('Wangta69\Bbs\BbsService');
+  }
 
   /*
    * BBS Tables List
@@ -27,12 +29,11 @@ class AdminController extends \App\Http\Controllers\Controller {
   public function index(Request $request)
   {
 
-    // $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
     // 등록된 게시판 리스트 불러오기
     $list = Tables::orderBy('created_at', 'desc')->paginate($this->itemsPerPage);
 
     $cfg = $this->admin_extends();
-    return view('bbs.admin.index', ['list' => $list, 'cfg' => $cfg]);
+    return view('bbs::admin.index', ['list' => $list, 'cfg' => $cfg]);
   }
 
   /*
@@ -42,7 +43,6 @@ class AdminController extends \App\Http\Controllers\Controller {
    */
   public function createForm(Request $request, Tables $table)
   {
-    // $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
     // front 용
     $skin_dir =  resource_path('views/bbs/templates/');
     $tmp_skins = array_map('basename',\File::directories($skin_dir));
@@ -63,8 +63,6 @@ class AdminController extends \App\Http\Controllers\Controller {
     $categoris = [];
     if ($table) { // 카테고리를 가져온다.
     }
-
-    //return view('bbs.admin.create')->with(compact('skins'));
 
     $cfg = $this->admin_extends();
     return view('bbs.admin.create', [
@@ -192,8 +190,6 @@ class AdminController extends \App\Http\Controllers\Controller {
   }
 
   public function configUpdate(Request $request) {
-
-
     BbsConfig::where('k', 'extends')->update(['v'=>$request->extends]);
     BbsConfig::where('k', 'section')->update(['v'=>$request->section]);
     return redirect()->route('bbs.admin.index', []);

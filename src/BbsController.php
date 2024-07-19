@@ -20,13 +20,13 @@ use Wangta69\Bbs\Models\BbsFiles as Files;
 use Pondol\Image\GetHttpImage;
 // use Wangta69\Bbs\BbsService;
 
-
-class BbsController extends BbsExtendsController {
+class BbsController extends BbsBaseController {
 
   protected $bbsSvc;
   protected $cfg;
   protected $laravel_ver;
   public function __construct(BbsService $bbsSvc) {
+    parent::__construct();
     $this->bbsSvc = $bbsSvc;
     $laravel = app();
     $this->laravel_ver = $laravel::VERSION;
@@ -172,6 +172,12 @@ class BbsController extends BbsExtendsController {
     }
   }
 
+  public function deletFile(Request $request, Files $file) {
+    Storage::delete($file->path_to_file);
+    $file->delete();
+    return response()->json(['error'=>false, 'file' => $file], 200);
+  }
+
   /**
    * check Permission for Read, write
    * @param String $mode read/write
@@ -277,9 +283,7 @@ class BbsController extends BbsExtendsController {
       return '';
   }
 
-  public function deletFile(Request $request, Files $file) {
-    return response()->json(['error'=>false, 'file' => $file], 200);
-  }
+
 
   private function errorHandle($error) {
     switch($error) {

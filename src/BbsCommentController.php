@@ -11,12 +11,11 @@ use Auth;
 use Wangta69\Bbs\Models\BbsArticles as Articles;
 use Wangta69\Bbs\Models\BbsComments as Comments;
 
-class BbsCommentController  extends BbsExtendsCommentController {
+class BbsCommentController  extends CommentBaseController {
 
-  protected $bbsSvc;
   protected $cfg;
-  public function __construct(BbsService $bbsSvc) {
-      $this->bbsSvc   = $bbsSvc;
+  public function __construct() {
+
   }
 
 
@@ -66,10 +65,9 @@ class BbsCommentController  extends BbsExtendsCommentController {
     if (!$comment->isOwner(Auth::user()))
       return Response::json(['result'=>false, "code"=>"003", 'message'=>'본인이 작성한 글만 수정가능합니다.'], 203);
 
-    $comment->content = $request->get('content');
-    $comment->save();
+    $result = $this->update($comment);
 
-    return Response::json(['result'=>true, "code"=>"000", 'message'=>''], 200);
+    return Response::json($result, 200);
 
   }
 

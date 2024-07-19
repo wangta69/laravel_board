@@ -11,12 +11,12 @@ use Auth;
 use Wangta69\Bbs\Models\BbsArticles as Articles;
 use Wangta69\Bbs\Models\BbsComments as Comments;
 
-class BbsExtendsCommentController extends \App\Http\Controllers\Controller {
+class CommentBaseController extends \App\Http\Controllers\Controller {
 
   protected $bbsSvc;
   protected $cfg;
-  public function __construct(BbsService $bbsSvc) {
-      $this->bbsSvc   = $bbsSvc;
+  public function __construct() {
+    $this->bbsSvc = \App::make('Wangta69\Bbs\BbsService');
   }
 
 
@@ -71,8 +71,10 @@ class BbsExtendsCommentController extends \App\Http\Controllers\Controller {
   }
 
   // update
-  public function update(Request $request, $tbl_name, $article, Comments $comment){
-
+  public function update($comment){
+    $comment->content = $request->get('content');
+    $comment->save();
+    return ['error'=>false];
   }
 
   /*
@@ -94,10 +96,10 @@ class BbsExtendsCommentController extends \App\Http\Controllers\Controller {
     //이부분이 기존 mysql 에서는 가능하지만 다른 query 와의 호환성을 위해 프로그램으로 처리하는 방식으로 변경한달.
     $depth_strlen = (strlen($comment->reply_depth) + 1);
     $depth = Comments::where('bbs_articles_id', $comment->bbs_articles_id)
-              ->where('order_num', $comment->order_num)
-              ->where('reply_depth', 'LIKE', $comment->reply_depth.'%')
-              ->whereRaw('LENGTH(reply_depth) = '.$depth_strlen)
-              ->max('reply_depth');
+      ->where('order_num', $comment->order_num)
+      ->where('reply_depth', 'LIKE', $comment->reply_depth.'%')
+      ->whereRaw('LENGTH(reply_depth) = '.$depth_strlen)
+      ->max('reply_depth');
     if($depth){
       $rtn = $comment->reply_depth.chr(ord(substr($depth, -1))+1);
     }else{

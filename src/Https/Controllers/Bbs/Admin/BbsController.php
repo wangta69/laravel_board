@@ -4,23 +4,37 @@ namespace App\Http\Controllers\Bbs\Admin;
 
 use Illuminate\Http\Request;
 
+use Auth;
+
+
 use Wangta69\Bbs\Models\BbsArticles as Articles;
 use Wangta69\Bbs\Models\BbsConfig;
 
-class BbsController extends \Wangta69\Bbs\BbsExtendsController
+class BbsController extends \Wangta69\Bbs\BbsBaseController
 {
   public function __construct()
   {
     parent::__construct();
+
+    $this->middleware('auth');
+    // $this->itemsPerPage = 10; // change table list count;
+    $this->middleware(function ($request, $next) {
+      $value = config('bbs.admin_roles'); // administrator
+      if (Auth::check()) {
+        // if(!BbsService::hasRoles($value))
+        if(!$this->bbsSvc->hasRoles($value))
+          return redirect('');
+      } else {
+        return redirect('');
+      }
+      return $next($request);
+    });
   }
 
   /**
    * 게시물 리스트
    */
   public function _index(Request $request, $tbl_name) {
-    
-    
-
     // 사용자 정의 시작
     // 아래처럼 게시판별 필요한 추가 내용이 있을 경우 처리한다.
       // if ($cfg->table_name === 'qna') {
@@ -59,7 +73,6 @@ class BbsController extends \Wangta69\Bbs\BbsExtendsController
 
     $result =  $this->show($request, $tbl_name, $article);
 
-   
     if(isset($result['error'])) {
       if ($result['error'] == 'password') {
         return view('bbs.admin.templates.'.$result['cfg']->skin_admin.'.password-confirm', ['tbl_name'=>$tbl_name, 'article'=>$article->id]);
@@ -93,7 +106,6 @@ class BbsController extends \Wangta69\Bbs\BbsExtendsController
     } else {
       return redirect()->route('bbs.admin.tbl.show', [$result[0], $result[1]]);
     }
-    
   }
 
   public function _edit(Request $request, $tbl_name, Articles $article) {
