@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class BbsConfig extends Model
 {
-  public $sortable = [];
+    public $sortable = [];
 
-  protected $fillable = [];
+    protected $fillable = [];
 
-  protected $table = 'bbs_config';
-  //protected $dateFormat = 'U';
-  protected $primaryKey = 'id';
+    protected $table = 'bbs_config';
+    //protected $dateFormat = 'U';
+    protected $primaryKey = 'id';
 }

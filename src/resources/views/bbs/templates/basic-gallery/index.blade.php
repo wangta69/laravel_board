@@ -17,10 +17,7 @@
 
         <div class='btn-area text-right'>
             @if ($cfg->hasPermission('write'))
-                {!! Html::link(route('bbs.create', [$cfg->table_name]), '글쓰기', [
-                    'role' => 'button',
-                    'class' => 'btn btn-sm btn-default',
-                ]) !!}
+            <a href="{{ route('bbs.create', [$cfg->table_name]) }}" role='button' class="btn btn-sm btn-default">글쓰기</a>
             @endif
         </div>
     </div>
@@ -32,7 +29,7 @@
               <img src="{{ BbsController::get_thumb($article->image, 205)  }}" width="300" height="200">
           </a>
           <div class="desc">
-              <span class="title">{!! Html::link(route('bbs.show', [$cfg->table_name, $article->id]), $article->title) !!}</span>
+              <span class="title"><a href="{{ route('bbs.show', [$cfg->table_name, $article->id]) }}">{{$article->title}}</a></span>
               <span class="info">{{ $article->user_name }}</span>
 
           </div>
@@ -47,10 +44,7 @@
 
         <div class='btn-area text-right'>
             @if ($cfg->hasPermission('write'))
-                {!! Html::link(route('bbs.create', [$cfg->table_name]), '글쓰기', [
-                    'role' => 'button',
-                    'class' => 'btn btn-sm btn-default',
-                ]) !!}
+            <a href="{{ route('bbs.create', [$cfg->table_name]) }}" role='button' class="btn btn-sm btn-default">글쓰기</a>
             @endif
         </div>
     </div>
@@ -65,5 +59,5 @@
 @stop
 @section ('scripts')
 @parent
-{{ Html::script('assets/pondol/bbs/bbs.js') }}
+<script src="/assets/pondol/bbs/bbs.js"></script>
 @stop

@@ -45,11 +45,9 @@
                             {{ date('Y-m-d', strtotime($board->created_at)) }}
                         </td>
                         <td class='text-center'>
-                            {!! Html::link(route('bbs.admin.show', [ $board->id]), 'edit', array('class' => 'btn btn-secondary
-                            btn-sm')) !!}
-                            {!! Html::link(route('bbs.admin.tbl.index', [$board->table_name]), 'view', array('class' => 'btn
-                            btn-secondary btn-sm')) !!}
-                            {{ Form::button('Delete', array('class' => 'btn btn-danger btn-sm btn-delete')) }}
+                            <a href="{{ route('bbs.admin.show', [$board->id]) }}" class='btn btn-secondary btn-sm'>edit</a>
+                            <a href="{{ route('bbs.admin.tbl.index', [$board->table_name]) }}" class='btn btn-secondary btn-sm'>view</a>
+                            <button type="button" class="btn btn-danger btn-sm btn-delete">Delete</button>
                         </td>
                     </tr>
                     @endforeach
@@ -61,10 +59,7 @@
                 {!! $list->render() !!}
             </div>
             <div class='btn-area text-right'>
-                {!! Html::link(route('bbs.admin.create', []), 'create', [
-                'role' => 'button',
-                'class' => 'btn btn-primary btn-sm',
-                ]) !!}
+                <a href="{{ route('bbs.admin.create') }}" role="button" class='btn btn-primary btn-sm'>create</a>
             </div>
         </div>
     </div>
@@ -74,37 +69,79 @@
         <div class="card-header">
             <h2>관리자 환경 설정</h2>
         </div>
-    {!! Form::open([
-            'route' => ['bbs.admin.config.update'],
-            'class' => 'form-horizontal',
-            'method' => 'put'
-            ]) !!}
+    <form method="post" 
+                action="{{ route('bbs.admin.config.update') }}" 
+                class='form-horizontal' 
+                enctype='multipart/form-data'>
+                @csrf
+                @method('PUT')
         <div class="card-body">
             <table class="table">
                 <tr>
                     <th>관리자용 Blade Extends
                     <th>
-                    <td>{!! Form::text('extends', old('extends') ? old('extends') : $cfg->extends, [
-                        'class' => 'form-control',
-                        'placeholder' => 'Admin 용 blade extends',
-                        ]) !!}</td>
+                    <td>
+                        <input type="text" name="extends" value="{{  old('extends') ? old('extends') : $cfg->extends }}" class='form-control'placeholder='Admin 용 blade extends'> 
+                    </td>
                 </tr>
                         <tr>
                     <th>관리자용 contents section
                     <th>
-                    <td>{!! Form::text('section', old('section') ? old('section') : $cfg->section, [
-                        'class' => 'form-control',
-                        'placeholder' => 'Admin 용 blade section',
-                        ]) !!}</td>
+                    <td>
+                        <input type="text" name="section" value="{{  old('section') ? old('section') : $cfg->section }}" class='form-control'placeholder='Admin 용 blade section'> 
+                    </td>
                 </tr>
             </table>
         </div>
-    <div class="card-footer ">
-        {!! Form::submit('Update', [
-        'class' => 'btn btn-primary btn-sm',
-        ]) !!}
+        <div class="card-footer ">
+            <button type="submit" class="btn btn-primary btn-sm">Update</button>
+        </div>
+        </form>
     </div>
-    {!! Form::close() !!}
+
+
+    <div class="card mt-5">
+        <div class="card-header">
+            <h2>Comment</h2>
+        </div>
+        <form method="post" 
+            action="{{ route('bbs.admin.config.update') }}" 
+            class='form-horizontal'>
+            @csrf
+            @method('PUT')
+        <div class="card-body">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="comment type 입력">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="button">등록</button>
+                </div>
+            </div>
+        </div>
+        </form>
+        <div class="card-body">
+            <table class="table">
+                <tr>
+                    <th>관리자용 Blade Extends
+                    <th>
+                    <td>
+                    <input type="text" name="extends" value="{{  old('extends') ? old('extends') : $cfg->extends }}" class='form-control'placeholder='Admin 용 blade extends'>    
+                    </td>
+                </tr>
+                        <tr>
+                    <th>관리자용 contents section
+                    <th>
+                    <td>
+                    <input type="text" name="section" value="{{  old('section') ? old('section') : $cfg->section }}" class='form-control'placeholder='Admin 용 blade section'>    
+</td>
+                </tr>
+            </table>
+        </div>
+        <div class="card-footer ">
+        <button type="submit" class="btn btn-primary btn-sm">Update</button>
+        </div>
+       
+    </div>
+
 </div>
 @stop
 @section ('styles')

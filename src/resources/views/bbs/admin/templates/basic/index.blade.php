@@ -39,8 +39,9 @@
                     <td class='text-center'>
                         {{ number_format($articles->total() - $articles->perPage() * ($articles->currentPage() - 1) - $index) }}
                     </td>
-                    <td>{!! Html::link(route('bbs.admin.tbl.show', [$cfg->table_name, $article->id]), $article->title)
-                        !!}</td>
+                    <td>
+                        <a href="{{ route('bbs.admin.tbl.show', [$cfg->table_name, $article->id]) }}">{{$article->title}}</a>
+                    </td>
                     <td class='text-center'>{{ $article->user_name }}</td>
                     <td class='text-center'>{{ date('Y-m-d', strtotime($article->created_at)) }}</td>
                     <td class='text-center'>{{ number_format($article->hit) }}</td>
@@ -61,10 +62,7 @@
 
         <div class='btn-area text-right'>
             @if ($cfg->hasPermission('write'))
-            {!! Html::link(route('bbs.admin.tbl.create', [$cfg->table_name]), '글쓰기', [
-            'role' => 'button',
-            'class' => 'btn btn-sm btn-primary',
-            ]) !!}
+            <a href="{{ route('bbs.admin.tbl.create', [$cfg->table_name]) }}" role='button' class='btn btn-sm btn-primary'>글쓰기</a>
             @endif
         </div>
     </div>
@@ -75,10 +73,10 @@
 @parent
 <style>
     @include ('bbs.admin.css.style')
-    @include ('bbs::templates.'.$cfg->skin_admin.'.css.style')
+    @include ('bbs::templates.'.$cfg->skin.'.css.style')
 </style>
 @stop
 @section ('scripts')
 @parent
-{{ Html::script('assets/pondol/bbs/bbs.js') }}
+<script src="/assets/pondol/bbs/bbs.js"></script>
 @stop

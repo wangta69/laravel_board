@@ -1,10 +1,7 @@
-{!! Form::textarea($name, $value, [
-	'id' => $id,
-	'style' => 'display: none;',
-]) !!}
+<textarea id="{{$id}}" name="{{$name}}" style='display: none;'>{{$value}}</textarea>
 
 @section ('scripts')
-{{ Html::script('/plugins/editor/smart-editor/js/service/HuskyEZCreator.js') }}
+<script src="/plugins/editor/smart-editor/js/service/HuskyEZCreator.js"></script>
 @parent
 <script>
 var oEditors = [];

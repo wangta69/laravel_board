@@ -7,23 +7,24 @@
         <h2 class='title'>
             {{ $cfg->name }}
         </h2>
-        @if (isset($article->id))
-        {!! Form::open([
-        'route' => ['bbs.admin.tbl.update', $cfg->table_name, $article->id],
-        'class' => 'form-horizontal',
-        'method' => 'put',
-        'enctype' => 'multipart/form-data',
-        ]) !!}
+        @if (isset($article))
+        <form method="post" 
+            action="{{ route('bbs.admin.tbl.update', [$cfg->table_name, $article->id]) }}" 
+            class='form-horizontal' 
+            enctype='multipart/form-data'>
+            @csrf
+            @method('PUT')
         @else
-        {!! Form::open([
-        'route' => ['bbs.admin.tbl.store', $cfg->table_name],
-        'class' => 'form-horizontal',
-        'enctype' => 'multipart/form-data',
-        ]) !!}
+        <form method="post" 
+            action="{{ route('bbs.admin.tbl.store', [$cfg->table_name]) }}" 
+            class='form-horizontal' 
+            enctype='multipart/form-data'>
+            @csrf
+
         @endif
 
-        {{ Form::hidden('text_type', $cfg->editor == 'none' ? 'br' : 'html') }}
-        {{ Form::hidden('parent_id', isset($article) ? $article->id : '') }}
+        <input type="hidden" name="text_type" value="{{$cfg->editor == 'none' ? 'br' : 'html'}}">
+        <input type="hidden" name="parent_id" value="{{isset($article) ? $article->id : ''}}">
 
         @if (!$errors->isEmpty())
         <div class="alert alert-danger" role="alert">
@@ -33,11 +34,7 @@
 
         <div class="form-group row">
             <div class='col-sm-12'>
-                {!! Form::text('title', isset($article) ? $article->title : old('title'), [
-                'class' => 'form-control input-sm',
-                'id' => 'title',
-                'placeholder'=>'문의 제목을 입력해 주세요'
-                ]) !!}
+            <input type="text" name="title" value="{{  isset($article) ? $article->title : old('title') }}" class='form-control input-sm' id='title' placeholder='문의 제목을 입력해 주세요'>
             </div>
         </div>
         <div class="form-group row">
@@ -52,23 +49,19 @@
 
         <div class='form-group mt-5'>
             <div class='col-sm-12 text-right'>
-                {!! Form::submit('작성완료', [
-                'class' => 'btn btn-primary btn-sm',
-                ]) !!}
-                {!! Html::link(route('bbs.admin.tbl.index', [$cfg->table_name]), '목록', [
-                'class' => 'btn btn-secondary btn-sm',
-                ]) !!}
+            <button type="submit" class="btn btn-primary btn-sm">작성완료</button>
+            <a href="{{ route('bbs.admin.tbl.index', [$cfg->table_name]) }}" class='btn btn-default btn-sm'>목록</a>
             </div>
         </div>
     </div>
-    {!! Form::close() !!}
+    </form>
 </div>
 @stop
 
 @section ('styles')
 @parent
 <style>
-    @include ('bbs.admin.css.style') @include ('bbs.admin.templates.'.$cfg->skin_admin.'.css.style')
+    @include ('bbs.admin.css.style') @include ('bbs.admin.templates.'.$cfg->skin.'.css.style')
 
 </style>
 @stop

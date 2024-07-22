@@ -23,23 +23,16 @@
     </div>
 
     <div class='btn-area text-right'>
-        {!! Form::open([
-            'route' => ['bbs.destroy', $cfg->table_name, $article->id],
-            'method' => 'delete',
-        ]) !!}
+    <form method="post" 
+            action="{{ route('bbs.destroy', [$cfg->table_name, $article->id]) }}">
+            @csrf
+        @method('DELETE')
             @if ($article->isOwner(Auth::user()) || $isAdmin)
-                {!! Html::link(route('bbs.edit', [$cfg->table_name, $article->id]), '수정', [
-                    'role' => 'button',
-                    'class' => 'btn btn-primary btn-sm',
-                ]) !!}
-                {!! Form::submit('삭제', [
-                    'class' => 'btn btn-danger btn-sm',
-                ]) !!}
+            <a href="{{ route('bbs.edit', [$cfg->table_name, $article->id]) }}" role='button' class='btn btn-primary btn-sm'>수정</a>
+                <button type="submit" class="btn btn-danger btn-sm">삭제</button>
             @endif
-            {!! Html::link(route('bbs.index', [$cfg->table_name]), '목록', [
-                'class' => 'btn btn-default btn-sm',
-            ]) !!}
-        {!! Form::close() !!}
+            <a href="{{ route('bbs.index', [$cfg->table_name]) }}" class='btn btn-default btn-sm'>목록</a>
+            </form>
     </div>
 </div>
 @if ($cfg->enable_comment == 1)

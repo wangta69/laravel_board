@@ -65,7 +65,7 @@ class AdminBaseController extends \App\Http\Controllers\Controller {
     }
 
     $cfg = $this->admin_extends();
-    return view('bbs.admin.create', [
+    return view('bbs::admin.create', [
       'table'=>$table,
       'cfg'=>$cfg,
       'skins' => $skins,
@@ -229,7 +229,7 @@ class AdminBaseController extends \App\Http\Controllers\Controller {
       $skins[$v] = $v;
     }
 
-    return view('bbs.admin.create', ['cfg'=> $table, 'skins' => $skins, 'roles' => Role::get()]);
+    return view('bbs::admin.create', ['cfg'=> $table, 'skins' => $skins, 'roles' => Role::get()]);
   }
 
   /*

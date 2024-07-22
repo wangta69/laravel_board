@@ -13,13 +13,12 @@
 
   @endforeach
   <div class="bbs-comments">
-    {!! Form::open([
-    'route' => ['bbs.item.comment.store', $item, $item_id, 0],
-    'class' => 'form-horizontal',
-    'enctype' => 'multipart/form-data',
-    ]) !!}
-
-    {{ Form::hidden('comment_id', 0) }}
+    <form method="post" 
+    action="{{ route('bbs.item.comment.store', [$item, $item_id, 0]) }}" 
+    class='form-horizontal' 
+    enctype='multipart/form-data'>
+    @csrf
+    <input type="hidden" name="parent_id" value="0">
     
     <section class="comment-input">
     @error('error')
@@ -36,7 +35,7 @@
 
       </div>
     </section>
-    {!! Form::close() !!}
+    </form>
   </div>
 
   <div id="re-comment" style="display: none; margin: 20px;">
@@ -96,7 +95,7 @@
 @endsection
 @section('scripts')
 @parent
-{{ Html::script('assets/pondol/bbs/bbs.js?v=1') }}
+<script src="/assets/pondol/bbs/bbs.js"></script>
 <script>
 var item = "{{$item}}"; 
 var item_id = {{$item_id}};

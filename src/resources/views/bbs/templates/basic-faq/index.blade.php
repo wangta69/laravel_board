@@ -8,7 +8,7 @@
     @foreach ($articles as $index => $article)
         @if ($cfg->hasPermission('write'))
         <div class="faq-title">
-            {!! Html::link(route('bbs.show', [$cfg->table_name, $article->id]), $article->title) !!}
+        <a href="{{ route('bbs.show', [$cfg->table_name, $article->id]) }}">{{$article->title}}</a>
         </div>
         @else
         <div class="faq-title view" user-attr-id="{{$article->id}}"><!-- 링크 클릭시 ajax를 이용하여 답변글 호출 -->
@@ -26,10 +26,7 @@
 
     <div class='btn-area text-right'>
         @if ($cfg->hasPermission('write'))
-            {!! Html::link(route('bbs.create', [$cfg->table_name]), '글쓰기', [
-                'role' => 'button',
-                'class' => 'btn btn-sm btn-default',
-            ]) !!}
+        <a href="{{ route('bbs.create', [$cfg->table_name]) }}" role='button' class="btn btn-sm btn-default">글쓰기</a>
         @endif
     </div>
 </div>

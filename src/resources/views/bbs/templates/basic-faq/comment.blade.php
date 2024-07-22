@@ -7,14 +7,13 @@
     }
 @endphp
 
-{!! Form::open([
-    'method' => '',
-    'route' => ['bbs.comment.update', $cfg->table_name, $article->id, $comment->id],
-    'class' => 'form-horizontal',
-    'id' => 'comment-form',
-    'enctype' => 'multipart/form-data',
-]) !!}
-    {{ Form::hidden('text_type', 'br') }}
+<form method="post" 
+                        action="{{ route('bbs.comment.update', [$cfg->table_name, $article->id, $comment->id]) }}" 
+                        class='form-horizontal' 
+                        enctype='multipart/form-data'>
+                        @csrf
+                    @method('PUT')
+<input type="hidden" name="text_type" value="br">
     <section class="comment-input">
         <div class="container-fluid">
             <div style="float:right;">
@@ -26,7 +25,7 @@
 
         </div>
     </section>
-{!! Form::close() !!}
+    </form>
 </section>
 @section ('scripts')
 @parent

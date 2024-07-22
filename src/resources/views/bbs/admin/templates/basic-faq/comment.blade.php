@@ -1,10 +1,11 @@
 @if ($isAdmin)
-{!! Form::open([
-'route' => ['bbs.admin.tbl.comment.store', $cfg->table_name, $article->id, 0],
-'class' => 'form-horizontal',
-'enctype' => 'multipart/form-data',
-]) !!}
-{{ Form::hidden('text_type', 'br') }}
+<form method="post" 
+    action="{{ route('bbs.admin.tbl.comment.store', [$cfg->table_name, $article->id, 0]) }}" 
+    class='form-horizontal' 
+    enctype='multipart/form-data'>
+    @csrf
+
+<input type="hidden" name="text_type" value="br">
 <div class="bbs-comments">
     <section class="comment-input">
         <div class="container-fluid">
@@ -18,7 +19,7 @@
 
         </div>
     </section>
-    {!! Form::close() !!}
+    </form>
     @endif
     <section class="comment-list">
         <h3>댓글목록</h3>
@@ -41,16 +42,10 @@
                     <div class='footer'>
 
                         @if ($comment->isOwner(Auth::user()))
-                        {!! Form::button('수정', [
-                        'class' => 'btn btn-primary btn-sm comment-update-form',
-                        ]) !!}
-                        {!! Form::button('삭제', [
-                        'class' => 'btn btn-danger btn-sm comment-delete-admin',
-                        ]) !!}
+                        <button type="button" class="btn btn-primary btn-sm comment-update-form">수정</button>
+                        <button type="button" class="btn btn-danger btn-sm comment-delete-admin">삭제</button>
                         @else
-                        {!! Form::button('답변', [
-                        'class' => 'btn btn-default btn-sm comment-reply-form-admin',
-                        ]) !!}
+                        <button type="button" class="btn btn-default btn-sm comment-reply-form-admin">답변</button>
                         @endif
                     </div>
                     <div class="re_comment">
@@ -59,13 +54,14 @@
                 </li>
                 <li class="update" style="display: none;">
 
-                    {!! Form::open([
-                    'route' => ['bbs.admin.tbl.comment.update', $cfg->table_name, $article->id, $comment->id],
-                    'method' => 'put',
-                    'class' => 'form-horizontal',
-                    'enctype' => 'multipart/form-data',
-                    ]) !!}
-                    {{ Form::hidden('text_type', 'br') }}
+                    <form method="post" 
+                        action="{{ route('bbs.admin.tbl.comment.update', [$cfg->table_name, $article->id, $comment->id]) }}" 
+                        class='form-horizontal' 
+                        enctype='multipart/form-data'>
+                        @csrf
+                        @method('PUT')
+
+                    <input type="hidden" name="text_type" value="br">
 
 
                     <section class="comment-input">
@@ -83,7 +79,7 @@
                             </div>
                         </div>
                     </section>
-                    {!! Form::close() !!}
+                    </form>
                 </li>
             </ul>
         </article>

@@ -9,7 +9,7 @@
             @foreach ($articles as $index => $article)
             @if ($cfg->hasPermission('write'))
             <div class="faq-title">
-                {!! Html::link(route('bbs.admin.tbl.show', [$cfg->table_name, $article->id]), $article->title) !!}
+            <a href="{{ route('bbs.admin.tbl.show', [$cfg->table_name, $article->id]) }}">{{$article->title}}</a>
             </div>
             @else
             <div class="faq-title view" user-attr-id="{{$article->id}}">
@@ -28,10 +28,7 @@
 
         <div class='btn-area text-right'>
             @if ($cfg->hasPermission('write'))
-            {!! Html::link(route('bbs.admin.tbl.create', [$cfg->table_name]), '글쓰기', [
-            'role' => 'button',
-            'class' => 'btn btn-sm btn-primary',
-            ]) !!}
+            <a href="{{ route('bbs.admin.tbl.create', [$cfg->table_name]) }}" role='button' class='btn btn-sm btn-primary'>글쓰기</a>
             @endif
         </div>
     </div>
@@ -42,7 +39,7 @@
 @parent
 <style>
     @include ('bbs.admin.css.style')
-    @include ('bbs.admin.templates.'.$cfg->skin_admin.'.css.style')
+    @include ('bbs.admin.templates.'.$cfg->skin.'.css.style')
 </style>
 @stop
 

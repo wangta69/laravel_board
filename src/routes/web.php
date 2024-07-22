@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,11 +20,8 @@ Route::group(['prefix' => 'bbs/admin', 'as' => 'bbs.admin.', 'namespace' => 'App
   Route::post('create', 'AdminController@store')->name('store');
   Route::put('{table}/create', 'AdminController@update')->name('update');
 
-  Route::get('{table}/create', 'AdminController@createForm')->name('show');
-  
-  
+  Route::get('{table}/create', 'AdminController@createForm')->name('show');  
   Route::delete('{table}/delete', 'AdminController@destroy')->name('destroy');
-
   
 
   // 캬테고리 관련
@@ -41,9 +38,13 @@ Route::group(['prefix' => 'bbs/admin', 'as' => 'bbs.admin.', 'namespace' => 'App
   Route::get('tbl/{tbl_name}/{article}/edit', 'BbsController@_edit')->name('tbl.edit');
   Route::delete('tbl/{tbl_name}/{article}/destroy', 'BbsController@_destroy')->name('tbl.destroy');
   Route::get('tbl/{file_id}/download', 'BbsController@_download')->name('tbl.download');
+
   Route::post('tbl/{tbl_name}/{article}/comment/{comment}', 'BbsCommentController@_store')->name('tbl.comment.store');
   Route::put('tbl/{tbl_name}/{article}/comment/{comment}', 'BbsCommentController@_update')->name('tbl.comment.update');
   Route::delete('tbl/{tbl_name}/{article}/comment/{comment}', 'BbsCommentController@_destroy')->name('tbl.comment.destroy');
+
+  // 아이템코멘트 
+  Route::get('item-comment/{item}', 'ItemCommentController@_index')->name('comments');
 });
 
 
@@ -98,8 +99,8 @@ Route::group(['prefix' => 'bbs', 'as' => 'bbs.comment.', 'namespace' => 'Wangta6
 
 
 Route::group(['prefix' => 'bbs', 'as' => 'bbs.item.comment.', 'namespace' => 'Wangta69\Bbs', 'middleware' => ['web']], function () {
-
-  Route::post('/item-comment/{item}/{item_id}/{parent_id?}', 'BbsItemCommentController@_store')->name('store');
+ 
+  Route::post('/item-comment/{item}/{item_id}/{parent_id?}', 'ItemCommentController@_store')->name('store');
   // Route::get('/item-comment/{item}/{item_id}/{parent_id?}', 'BbsItemCommentController@_store')->name('store');
   //  Route::get('/{tbl_name}/{article}/comment/{comment}', 'BbsCommentController@store')->name('store');//for test
   // Route::delete('/item-comment/{item}/{parent}/{comment}', 'BbsItemCommentController@_destroy')->name('destroy');

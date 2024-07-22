@@ -15,8 +15,7 @@
                     <img src="{{ BbsController::get_thumb($article->image, 205, 205)  }}" width="300" height="200">
                 </a>
                 <div class="desc">
-                    <span class="title">{!! Html::link(route('bbs.admin.tbl.show', [$cfg->table_name, $article->id]),
-                        $article->title) !!}</span>
+                    <span class="title"><a href="{{ route('bbs.admin.tbl.show', [$cfg->table_name, $article->id]) }}">{{$article->title}}</a></span>
                     <span class="info">{{ $article->user_name }}</span>
 
                 </div>
@@ -30,10 +29,7 @@
             <div class='btn-area text-right'>
     
                 @if ($cfg->hasPermission('write'))
-                {!! Html::link(route('bbs.admin.tbl.create', [$cfg->table_name]), '글쓰기', [
-                'role' => 'button',
-                'class' => 'btn btn-sm btn-primary',
-                ]) !!}
+                <a href="{{ route('bbs.admin.tbl.create', [$cfg->table_name]) }}" role='button' class='btn btn-sm btn-primary'>글쓰기</a>
                 @endif
             </div>
         </div>
@@ -45,10 +41,10 @@
 @parent
 <style>
     @include ('bbs.admin.css.style')
-    @include ('bbs.admin.templates.'.$cfg->skin_admin.'.css.style')
+    @include ('bbs.admin.templates.'.$cfg->skin.'.css.style')
 </style>
 @stop
 @section ('scripts')
 @parent
-{{ Html::script('assets/pondol/bbs/bbs.jss') }}
+<script src="/assets/pondol/bbs/bbs.js"></script>
 @stop

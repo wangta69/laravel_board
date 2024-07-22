@@ -30,7 +30,7 @@
                         <ul class="link">
                             @foreach ($article->files as $file)
                             <!-- 파일 다운로드 경로 등을 넣으세요.. -->
-                            <li>{{ link_to_route('bbs.file.download', $file->file_name, $file->id) }}</li>
+                            <li>{{ link_to_route('bbs.download', $file->file_name, $file->id) }}</li>
                             @endforeach
                         </ul>
                     </td>
@@ -45,27 +45,21 @@
         </div>
 
         <div class='btn-area text-right'>
-            {!! Form::open([
-            'route' => ['bbs.admin.tbl.destroy', $cfg->table_name, $article->id],
-            'method' => 'delete',
-            ]) !!}
+            <form method="post" 
+            action="{{ route('bbs.admin.tbl.destroy', [$cfg->table_name, $article->id]) }}">
+            @csrf
+            @method('DELETE')
+
             @if ($article->isOwner(Auth::user()) || $isAdmin)
-            {!! Html::link(route('bbs.admin.tbl.edit', [$cfg->table_name, $article->id]), '수정', [
-            'role' => 'button',
-            'class' => 'btn btn-primary btn-sm',
-            ]) !!}
-            {!! Form::submit('삭제', [
-            'class' => 'btn btn-danger btn-sm',
-            ]) !!}
+            <a href="{{ route('bbs.admin.tbl.edit', [$cfg->table_name, $article->id]) }}" role="button" class='btn btn-primary btn-sm'>수정</a>
+            <button type="submit" class="btn btn-danger btn-sm">삭제</button>
             @endif
-            {!! Html::link(route('bbs.admin.tbl.index', [$cfg->table_name]), '목록', [
-            'class' => 'btn btn-default btn-sm',
-            ]) !!}
-            {!! Form::close() !!}
+            <a href="{{ route('bbs.admin.tbl.index', [$cfg->table_name]) }}" class='btn btn-default btn-sm'>목록</a>
+            </form>
         </div>
     </div>
     @if ($cfg->enable_comment == 1)
-    @include ('bbs.admin.templates.'.$cfg->skin_admin.'.comment')
+    @include ('bbs.admin.templates.'.$cfg->skin.'.comment')
     @endif
 </div>
 @stop
@@ -74,12 +68,12 @@
 @parent
 <style>
     @include ('bbs.admin.css.style') 
-    @include ('bbs.admin.templates.'.$cfg->skin_admin.'.css.style')
+    @include ('bbs.admin.templates.'.$cfg->skin.'.css.style')
 </style>
 @stop
 @section ('scripts')
 @parent
-{{ Html::script('assets/pondol/bbs/bbs.js') }}
+<script src="/assets/pondol/bbs/bbs.js"></script>
 <script>
     BBS.tbl_name = "{{$cfg->table_name}}";
     BBS.article_id = {{$article-> id}};

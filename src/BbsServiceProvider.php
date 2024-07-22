@@ -31,7 +31,7 @@ class BbsServiceProvider extends ServiceProvider {
 
     $this->mergeConfigFrom(
       // __DIR__.'/../config/courier.php', 'courier'
-      __DIR__.'/Https/config/bbs.php', 'bbs'
+      __DIR__.'/config/bbs.php', 'bbs'
     );
   }
 
