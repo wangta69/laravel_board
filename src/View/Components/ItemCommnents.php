@@ -1,8 +1,8 @@
 <?php
-namespace Wangta69\Bbs\View\Components;
+namespace Pondol\Bbs\View\Components;
 
 use Illuminate\View\Component;
-use Wangta69\Bbs\Models\BbsItemComment;
+use Pondol\Bbs\Models\BbsItemComment;
 
 class ItemCommnents extends Component
 {

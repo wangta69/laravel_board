@@ -1,6 +1,6 @@
 @extends($cfg->extends)
 @section ($cfg->section)
-<?php use Wangta69\Bbs\BbsController;?>
+<?php use Pondol\Bbs\BbsController;?>
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Home</a></li>

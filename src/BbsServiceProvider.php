@@ -1,11 +1,11 @@
 <?php
-namespace Wangta69\Bbs;
+namespace Pondol\Bbs;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Facades\Blade;
-use Wangta69\Bbs\View\Components\ItemCommnents;
+use Pondol\Bbs\View\Components\ItemCommnents;
 
 class BbsServiceProvider extends ServiceProvider {
 

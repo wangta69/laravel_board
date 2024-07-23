@@ -62,14 +62,10 @@ Route::group(['prefix' => 'bbs/admin', 'as' => 'bbs.admin.', 'namespace' => 'App
 //     //Route::post('/{tbl_name}/{article}/comment/store', 'BbsCommentController@store')->name('comment.store');
 // });
 
-Route::group(['prefix' => 'bbs', 'as' => 'bbs.', 'namespace' => 'Wangta69\Bbs', 'middleware' => ['web']], function () {
+Route::group(['prefix' => 'bbs', 'as' => 'bbs.', 'namespace' => 'Pondol\Bbs', 'middleware' => ['web']], function () {
   
   Route::get('/file/{file}', 'BbsController@_download')->name('file.download');
   Route::delete('/file/{file}', 'BbsController@deletFile')->name('file.delete');
-
-  Route::post('/plugins/{plugins}/file-upload', 'PluginsController@fileUpload')->name('plugin.fileupload');
-  Route::get('/plugins/{plugins}/{action}', 'PluginsController@index')->name('plugin.index');
-  Route::get('/plugins/{plugins}', 'PluginsController@index');
   
   Route::get('/route-url', 'ServiceController@routeUrl');
 
@@ -88,7 +84,7 @@ Route::group(['prefix' => 'bbs', 'as' => 'bbs.', 'namespace' => 'Wangta69\Bbs', 
 
 });
 
-Route::group(['prefix' => 'bbs', 'as' => 'bbs.comment.', 'namespace' => 'Wangta69\Bbs', 'middleware' => ['web']], function () {
+Route::group(['prefix' => 'bbs', 'as' => 'bbs.comment.', 'namespace' => 'Pondol\Bbs', 'middleware' => ['web']], function () {
 
   Route::post('/{tbl_name}/{article}/comment/{comment}', 'BbsCommentController@store')->name('store');
   //  Route::get('/{tbl_name}/{article}/comment/{comment}', 'BbsCommentController@store')->name('store');//for test
@@ -98,7 +94,7 @@ Route::group(['prefix' => 'bbs', 'as' => 'bbs.comment.', 'namespace' => 'Wangta6
 });
 
 
-Route::group(['prefix' => 'bbs', 'as' => 'bbs.item.comment.', 'namespace' => 'Wangta69\Bbs', 'middleware' => ['web']], function () {
+Route::group(['prefix' => 'bbs', 'as' => 'bbs.item.comment.', 'namespace' => 'Pondol\Bbs', 'middleware' => ['web']], function () {
  
   Route::post('/item-comment/{item}/{item_id}/{parent_id?}', 'ItemCommentController@_store')->name('store');
   // Route::get('/item-comment/{item}/{item_id}/{parent_id?}', 'BbsItemCommentController@_store')->name('store');

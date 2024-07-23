@@ -17,16 +17,16 @@
     },
     "autoload": {
         "psr-4": {
-            "Wangta69\\Bbs\\": "src/"
+            "Pondol\\Bbs\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Wangta69\\Bbs\\BbsServiceProvider"
+                "Pondol\\Bbs\\BbsServiceProvider"
             ],
             "aliases": {
-                "CustomPackage": "Wangta69\\Bbs\\Facades\\BbsFacade"
+                "CustomPackage": "Pondol\\Bbs\\Facades\\BbsFacade"
             }
         }
     }

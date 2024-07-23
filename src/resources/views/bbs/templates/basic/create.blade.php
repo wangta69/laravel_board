@@ -42,7 +42,11 @@
         <tr>
             <th>내용</th>
             <td style='padding: 5px 10px;'>
-                @include ('bbs::plugins.editor', ['cfg'=>$cfg, 'article'=>isset($article) ? $article:null, 'attr'=> ['class' => 'form-control input-sm']])
+                @if($cfg->editor == 'smartEditor')
+                    @include ('editor::smart-editor.editor', ['name'=>'content', 'id'=>'content-id', 'value'=>isset($article) ? $article->content : old('content'), 'attr'=>['class'=>'form-control input-sm']])
+                @else
+                    <textarea name="content" class="form-control">{{  isset($article) ? $article->content : old('content') }}</textarea>
+                @endif
             </td>
         </tr>
         <tr class='file-control'>

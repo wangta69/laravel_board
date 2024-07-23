@@ -1,5 +1,5 @@
 <?php
-namespace Wangta69\Bbs;
+namespace Pondol\Bbs;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -8,7 +8,7 @@ use Validator;
 use Response;
 use Auth;
 
-use Wangta69\Bbs\Models\BbsItemComment;
+use Pondol\Bbs\Models\BbsItemComment;
 
 class ItemCommentController extends ItemCommentBaseController {
 

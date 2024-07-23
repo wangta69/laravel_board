@@ -7,10 +7,10 @@ use Illuminate\Http\Request;
 use Auth;
 
 
-use Wangta69\Bbs\Models\BbsArticles as Articles;
-use Wangta69\Bbs\Models\BbsConfig;
+use Pondol\Bbs\Models\BbsArticles as Articles;
+use Pondol\Bbs\Models\BbsConfig;
 
-class BbsController extends \Wangta69\Bbs\BbsBaseController
+class BbsController extends \Pondol\Bbs\BbsBaseController
 {
   public function __construct()
   {

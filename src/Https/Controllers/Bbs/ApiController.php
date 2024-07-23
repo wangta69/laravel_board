@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Bbs\Admin;
 
 use Illuminate\Http\Request;
 
-use Wangta69\Bbs\Models\BbsArticles as Articles;
-use Wangta69\Bbs\Models\BbsConfig;
+use Pondol\Bbs\Models\BbsArticles as Articles;
+use Pondol\Bbs\Models\BbsConfig;
 
-class BbsController extends \Wangta69\Bbs\BbsExtendsController
+class BbsController extends \Pondol\Bbs\BbsExtendsController
 {
   public function __construct()
   {

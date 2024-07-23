@@ -1,6 +1,6 @@
 <?php
 
-namespace Wangta69\Bbs\Models;
+namespace Pondol\Bbs\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Kyslik\ColumnSortable\Sortable;
@@ -38,7 +38,7 @@ class BbsItemComment extends Model
 
   public function article()
   {
-    return $this->belongsTo('Wangta69\Bbs\Models\BbsArticles', 'bbs_articles_id');
+    return $this->belongsTo('Pondol\Bbs\Models\BbsArticles', 'bbs_articles_id');
   }
 
   /*

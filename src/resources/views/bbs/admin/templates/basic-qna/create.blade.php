@@ -7,7 +7,7 @@
         <h2 class='title'>
             {{ $cfg->name }}
         </h2>
-        @if (isset($article))
+        @if (isset($article->id))
         <form method="post" 
             action="{{ route('bbs.admin.tbl.update', [$cfg->table_name, $article->id]) }}" 
             class='form-horizontal' 
@@ -39,11 +39,12 @@
         </div>
         <div class="form-group row">
             <div class='col-sm-12'>
-                @include ('bbs::plugins.editor', [
-                'cfg'=>$cfg,
-                'article'=>isset($article) ? $article:null,
-                'attr'=> ['class' => 'form-control input-sm', 'placeholder'=>'문의 내용을 입력해 주세요']
-                ])
+                @if($cfg->editor == 'smartEditor')
+                    @include ('editor::smart-editor.editor', ['name'=>'content', 'id'=>'content-id', 'value'=>isset($article) ? $article->content : old('content'), 
+                    'attr'=>['class'=>'form-control input-sm', 'placeholder'=>'문의 내용을 입력해 주세요']])
+                @else
+                    <textarea name="content" class="form-control" placeholder='문의 내용을 입력해 주세요'>{{  isset($article) ? $article->content : old('content') }}</textarea>
+                @endif
             </div>
         </div>
 

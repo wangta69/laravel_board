@@ -1,5 +1,5 @@
 <?php
-namespace Wangta69\Bbs\Facades;
+namespace Pondol\Bbs\Facades;
 use Illuminate\Support\Facades\Facade;
 
 class BbsFacade extends Facade

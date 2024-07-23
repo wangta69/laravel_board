@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Bbs\Admin;
 
 use Auth;
 
-class AdminController extends \Wangta69\Bbs\AdminBaseController
+class AdminController extends \Pondol\Bbs\AdminBaseController
 {
 
   // protected $itemsPerPage = 10;

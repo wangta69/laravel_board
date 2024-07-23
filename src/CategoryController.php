@@ -1,5 +1,5 @@
 <?php
-namespace Wangta69\Bbs;
+namespace Pondol\Bbs;
 
 use Illuminate\Http\Request;
 
@@ -7,9 +7,9 @@ use Route;
 use View;
 use Validator;
 
-use Wangta69\Bbs\Models\BbsCategories as Category;
-// use Wangta69\Bbs\Models\Role;
-// use Wangta69\Bbs\BbsService;
+use Pondol\Bbs\Models\BbsCategories as Category;
+// use Pondol\Bbs\Models\Role;
+// use Pondol\Bbs\BbsService;
 
 
 

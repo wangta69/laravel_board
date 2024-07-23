@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Bbs;
 
 use Illuminate\Http\Request;
 use Auth;
-// use Wangta69\Bbs\BbsService;
+// use Pondol\Bbs\BbsService;
 
-class CategoryController extends \Wangta69\Bbs\CategoryController
+class CategoryController extends \Pondol\Bbs\CategoryController
 {
      /**
      * Create a new controller instance.

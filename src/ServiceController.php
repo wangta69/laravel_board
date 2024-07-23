@@ -1,5 +1,5 @@
 <?php
-namespace Wangta69\Bbs;
+namespace Pondol\Bbs;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -13,7 +13,7 @@ use Response;
 use Auth;
 
 use Pondol\Image\GetHttpImage;
-use Wangta69\Bbs\BbsService;
+use Pondol\Bbs\BbsService;
 
 
 class ServiceController extends \App\Http\Controllers\Controller {

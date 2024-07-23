@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Bbs\Admin;
 
 use Auth;
 
-class CategoryController extends \Wangta69\Bbs\CategoryBaseController
+class CategoryController extends \Pondol\Bbs\CategoryBaseController
 {
     /**
    * Create a new controller instance.

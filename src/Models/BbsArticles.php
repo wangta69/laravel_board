@@ -1,6 +1,6 @@
 <?php
 
-namespace Wangta69\Bbs\Models;
+namespace Pondol\Bbs\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Kyslik\ColumnSortable\Sortable;
@@ -42,7 +42,7 @@ class BbsArticles extends Model
 
     public function table()
     {
-        return $this->belongsTo('Wangta69\Bbs\Models\BbsTables', 'bbs_table_id');
+        return $this->belongsTo('Pondol\Bbs\Models\BbsTables', 'bbs_table_id');
     }
 
     /*
@@ -50,7 +50,7 @@ class BbsArticles extends Model
      * @return ArticleFiles Model
      */
     public function comments() {
-       return $this->HasMany('Wangta69\Bbs\Models\BbsComments');
+       return $this->HasMany('Pondol\Bbs\Models\BbsComments');
     }
 
     public function comment() {
@@ -61,7 +61,7 @@ class BbsArticles extends Model
      * @return ArticleFiles Model
      */
     public function files() {
-       return $this->HasMany('Wangta69\Bbs\Models\BbsFiles');
+       return $this->HasMany('Pondol\Bbs\Models\BbsFiles');
     }
     /*
      * find owner of a article

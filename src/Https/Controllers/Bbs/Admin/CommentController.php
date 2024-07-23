@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Bbs\Admin;
 use Illuminate\Http\Request;
 use Auth;
 
-use Wangta69\Bbs\Models\BbsArticles as Articles;
-use Wangta69\Bbs\Models\BbsComments as Comments;
+use Pondol\Bbs\Models\BbsArticles as Articles;
+use Pondol\Bbs\Models\BbsComments as Comments;
 
-class CommentController extends \Wangta69\Bbs\CommentBaseController
+class CommentController extends \Pondol\Bbs\CommentBaseController
 {
 
     /**

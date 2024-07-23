@@ -1,10 +1,10 @@
 <?php
-namespace Wangta69\Bbs;
+namespace Pondol\Bbs;
 
 
-use Wangta69\Bbs\Models\BbsTables as Tables;
-use Wangta69\Bbs\Models\BbsArticles as Articles;
-use Wangta69\Bbs\Models\BbsFiles as Files;
+use Pondol\Bbs\Models\BbsTables as Tables;
+use Pondol\Bbs\Models\BbsArticles as Articles;
+use Pondol\Bbs\Models\BbsFiles as Files;
 use Auth;
 class BbsService
 {
@@ -88,7 +88,7 @@ class BbsService
 
   /**
    * 이전 다음 찾기
-   * use Wangta69\Bbs\BbsService;
+   * use Pondol\Bbs\BbsService;
    * $prev = BbsService::next(2, $article->id);
    * $next = BbsService::previous(2, $article->id);
    */

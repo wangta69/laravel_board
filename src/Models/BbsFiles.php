@@ -1,5 +1,5 @@
 <?php
-namespace Wangta69\Bbs\Models;
+namespace Pondol\Bbs\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Kyslik\ColumnSortable\Sortable;

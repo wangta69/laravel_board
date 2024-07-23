@@ -1,5 +1,5 @@
 <?php
-namespace Wangta69\Bbs;
+namespace Pondol\Bbs;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -13,15 +13,15 @@ use Auth;
 // use Response;
 // use Auth;
 
-// use Wangta69\Bbs\Models\BbsTables as Tables;
-// use Wangta69\Bbs\Models\BbsArticles as Articles;
-// use Wangta69\Bbs\Models\BbsComments as Comments;
-// use Wangta69\Bbs\Models\BbsFiles as Files;
+// use Pondol\Bbs\Models\BbsTables as Tables;
+// use Pondol\Bbs\Models\BbsArticles as Articles;
+// use Pondol\Bbs\Models\BbsComments as Comments;
+// use Pondol\Bbs\Models\BbsFiles as Files;
 
 // use Pondol\Image\GetHttpImage;
-// use Wangta69\Bbs\BbsService;
+// use Pondol\Bbs\BbsService;
 
-use Wangta69\Bbs\Models\BbsItemComment;
+use Pondol\Bbs\Models\BbsItemComment;
 
 
 class ItemCommentBaseController extends \App\Http\Controllers\Controller {
@@ -30,7 +30,7 @@ class ItemCommentBaseController extends \App\Http\Controllers\Controller {
   // protected $cfg;
   // protected $laravel_ver;
   public function __construct() {
-    $this->bbsSvc = \App::make('Wangta69\Bbs\BbsService');
+    $this->bbsSvc = \App::make('Pondol\Bbs\BbsService');
     // $laravel = app();
     // $this->laravel_ver = $laravel::VERSION;
   }

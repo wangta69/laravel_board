@@ -2,21 +2,19 @@
 @section ($cfg->section)
 <div class="bbs-admin">
     <div class='basic-table create'>
-        @if (isset($article))
+        @if (isset($article->id))
         <form method="post" 
             action="{{ route('bbs.admin.tbl.update', [$cfg->table_name, $article->id]) }}" 
             class='form-horizontal' 
             enctype='multipart/form-data'>
-            @csrf
             @method('PUT')
-
         @else
         <form method="post" 
             action="{{ route('bbs.admin.tbl.store', [$cfg->table_name]) }}" 
             class='form-horizontal' 
             enctype='multipart/form-data'>
-            @csrf
         @endif
+        @csrf
 
         <input type="hidden" name="text_type" value="{{$cfg->editor == 'none' ? 'br' : 'html'}}">
         <input type="hidden" name="parent_id" value="{{isset($article) ? $article->id : ''}}">
@@ -43,8 +41,11 @@
                 <tr style="display: none;">
                     <th>내용</th>
                     <td style='padding: 5px 10px;'>
-                        @include ('bbs::plugins.editor', ['cfg'=>$cfg, 'article'=>isset($article) ? $article:null,
-                        'attr'=> ['class' => 'form-control input-sm']])
+                    @if($cfg->editor == 'smartEditor')
+                        @include ('editor::smart-editor.editor', ['name'=>'content', 'id'=>'content-id', 'value'=>isset($article) ? $article->content : old('content'), 'attr'=>['class'=>'form-control input-sm']])
+                    @else
+                        <textarea name="content" class="form-control">{{  isset($article) ? $article->content : old('content') }}</textarea>
+                    @endif
                     </td>
                 </tr>
             </thead>

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Bbs\Admin;
 
 use Auth;
 
-class ItemCommentController extends \Wangta69\Bbs\ItemCommentBaseController
+class ItemCommentController extends \Pondol\Bbs\ItemCommentBaseController
 {
 
   // protected $itemsPerPage = 10;

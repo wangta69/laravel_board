@@ -1,6 +1,6 @@
 @extends($cfg->extends)
 @section ($cfg->section)
-<?php use Wangta69\Bbs\BbsController;?>
+<?php use Pondol\Bbs\BbsController;?>
 <div class="bbs-admin">
     <h2 class='title'>
         {{ $cfg->name }}

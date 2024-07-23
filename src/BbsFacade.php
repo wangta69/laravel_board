@@ -1,5 +1,5 @@
 <?php
-namespace Wangta69\Bbs;
+namespace Pondol\Bbs;
 
 use Illuminate\Support\Facades\Facade;
 

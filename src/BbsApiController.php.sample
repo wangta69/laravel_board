@@ -3,18 +3,18 @@
 namespace App\Http\Controllers;
 
 // use App\Http\Controllers\Controller;
-use Wangta69\Bbs\BbsController;
+use Pondol\Bbs\BbsController;
 use Illuminate\Http\Request;
 use Response;
 use Validator;
 use Auth;
 use Illuminate\Support\Facades\Redis;
-use Wangta69\Bbs\Models\BbsTables as Tables;
-use Wangta69\Bbs\Models\BbsArticles as Articles;
-use Wangta69\Bbs\Models\BbsComments as Comments;
-use Wangta69\Bbs\Models\BbsFiles as Files;
+use Pondol\Bbs\Models\BbsTables as Tables;
+use Pondol\Bbs\Models\BbsArticles as Articles;
+use Pondol\Bbs\Models\BbsComments as Comments;
+use Pondol\Bbs\Models\BbsFiles as Files;
 use App\Notifications\CountChanged;
-use Wangta69\Bbs\BbsService;
+use Pondol\Bbs\BbsService;
 
 class BbsApiController extends BbsController
 {

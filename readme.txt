@@ -6,9 +6,9 @@ namespace App\Http\Controllers\Bbs;
 
 use Illuminate\Http\Request;
 use Auth;
-use Wangta69\Bbs\BbsService;
+use Pondol\Bbs\BbsService;
 
-class AnnouncementController extends \Wangta69\Bbs\BbsController
+class AnnouncementController extends \Pondol\Bbs\BbsController
 {
     // Article Items per Page
     protected $itemsPerPage = 10;

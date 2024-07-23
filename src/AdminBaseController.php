@@ -1,5 +1,5 @@
 <?php
-namespace Wangta69\Bbs;
+namespace Pondol\Bbs;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -8,9 +8,9 @@ use Route;
 use View;
 use Validator;
 
-use Wangta69\Bbs\Models\BbsTables as Tables;
-use Wangta69\Bbs\Models\Role;
-use Wangta69\Bbs\Models\BbsConfig;
+use Pondol\Bbs\Models\BbsTables as Tables;
+use Pondol\Bbs\Models\Role;
+use Pondol\Bbs\Models\BbsConfig;
 
 class AdminBaseController extends \App\Http\Controllers\Controller {
 
@@ -18,7 +18,7 @@ class AdminBaseController extends \App\Http\Controllers\Controller {
   protected $cfg;
   protected $itemsPerPage = 10;
   public function __construct() {
-    $this->bbsSvc = \App::make('Wangta69\Bbs\BbsService');
+    $this->bbsSvc = \App::make('Pondol\Bbs\BbsService');
   }
 
   /*
