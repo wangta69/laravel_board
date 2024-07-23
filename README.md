@@ -11,7 +11,7 @@ composer require wangta69/laravel_board
 ```
 
 ## 
-[Old version] (./documents/5.x.md)
+[Old version](./documents/5.x.md)
 
 ## Setup
 Step 1.1) Add ServiceProvider to the providers array in `config/app.php`.
