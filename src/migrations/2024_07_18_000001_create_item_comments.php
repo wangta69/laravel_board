@@ -3,7 +3,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
 
-class CreateBbsItemCommentsTables extends Migration
+class CreateItemComments extends Migration
 {
   /**
    * Run the migrations.
