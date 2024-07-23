@@ -54,7 +54,7 @@ Type url http://YourDomain/bbs/admin and Create What you want Bbs.  <br />
 If you have rolls not yet,  do 'php artisan make:model Role -m' <br />
 
 ### Users
-Go to /vendor/wangta69/laravel_board/src/MOdel/bbs_articles and modify user() according to app condition;
+Go to /vendor/wangta69/laravel_board/src/Model/bbs_articles and modify user() according to app condition;
 ```
 public function user() {
 	return $this->belongsTo('App\User');

@@ -2,6 +2,7 @@
     "name": "wangta69/laravel_board",
     "description": "BBS bulletin board system",
 	"keywords": ["laravel", "bbs", "pondol" , "board"],
+    "homepage": "https://www.onstory.fun/doc/programming/laravel/package.laravelboard",
     "license": "MIT",
     "authors": [
         {
@@ -17,7 +18,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Pondol\\Bbs\\": "src/"
+            "Pondol\\Bbs\\": "src/",
+            "Pondol\\Bbs\\View\\Components\\":"src/View/Components"
         }
     },
     "extra": {
