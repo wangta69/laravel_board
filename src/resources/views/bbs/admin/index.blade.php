@@ -1,8 +1,20 @@
 @extends($cfg->extends)
 @section ($cfg->section)
 <div class="bbs-admin">
-    <h2>게시판 리스트</h2>
-    <table class='table table-striped'>
+<!-- <div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Card title</h5>
+  </div>
+  <div class="card-footer">
+  </div>
+</div> -->
+
+  <div class="card">
+    <div class="card-header">
+    @lang('bbs::messages.admin.title')
+   </div>
+    <div class="card-body">
+      <table class='table table-striped'>
         <colgroup>
             <col width='50' />
             <col width='' />
@@ -12,14 +24,14 @@
             <col width='200' />
         </colgroup>
         <thead>
-            <tr>
-                <th class='text-center'>#</th>
-                <th class='text-center'>name</th>
-                <th class='text-center'>table name</th>
-                <th class='text-center'>skin</th>
-                <th class='text-center'>created</th>
-                <th class='text-center'></th>
-            </tr>
+          <tr>
+            <th class='text-center'>#</th>
+            <th class='text-center'>name</th>
+            <th class='text-center'>table name</th>
+            <th class='text-center'>skin</th>
+            <th class='text-center'>created</th>
+            <th class='text-center'></th>
+          </tr>
         </thead>
         <tbody>
             @foreach ($list as $index => $board)
@@ -40,90 +52,88 @@
                     {{ date('Y-m-d', strtotime($board->created_at)) }}
                 </td>
                 <td class='text-center'>
-                    {!! Html::link(route('bbs.admin.show', [ $board->id]), 'edit', array('class' => 'btn btn-secondary
-                    btn-sm')) !!}
-                    {!! Html::link(route('bbs.admin.tbl.index', [$board->table_name]), 'view', array('class' => 'btn
-                    btn-secondary btn-sm')) !!}
-                    {{ Form::button('Delete', array('class' => 'btn btn-danger btn-sm btn-delete')) }}
+                    <a href="{{route('bbs.admin.show', [ $board->id]) }}" class="btn btn-secondary btn-sm">Edit</a>
+                    <a href="{{route('bbs.admin.tbl.index', [$board->table_name]) }}" class="btn btn-secondary btn-sm">View</a>
+                    <button type="button" class="btn btn-danger btn-sm btn-delete">Delete</button>
                 </td>
             </tr>
             @endforeach
         </tbody>
     </table>
-
     <div class='navigation'>
-        {!! $list->render() !!}
+      {!! $list->render() !!}
     </div>
-    <div class='btn-area text-right'>
-        {!! Html::link(route('bbs.admin.create', []), 'create', [
-        'role' => 'button',
-        'class' => 'btn btn-primary btn-sm',
-        ]) !!}
     </div>
+    <div class="card-footer">
+      <a href="{{route('bbs.admin.create') }}" class="btn btn-primary" role="button">Create</a>
+    </div>
+  </div>
 
-    <h2>관리자 환경 설정</h2>
-    {!! Form::open([
-    'route' => ['bbs.admin.config.update'],
-    'class' => 'form-horizontal',
-    'method' => 'put'
-    ]) !!}
-    <table class="table">
+
+  
+  <div class="card mt-5">
+  <div class="card-header">
+  @lang('bbs::messages.admin.layout')
+   </div>
+    <form method="POST" action="{{route('bbs.admin.config.update') }}" class="form-horizontal">
+    @csrf
+    @method('PUT')
+    <div class="card-body">
+      <table class="table">
         <tr>
-            <th>관리자용 Blade Extends
-            <th>
-            <td>{!! Form::text('extends', old('extends') ? old('extends') : $cfg->extends, [
-                'class' => 'form-control',
-                'placeholder' => 'Admin 용 blade extends',
-                ]) !!}</td>
+          <th>@lang('bbs::messages.admin.layout-extends')<th>
+          <td>
+            <input type="text" name="extends" class="form-control"placeholder="Admin 용 blade extends" value="{{old('extends') ? old('extends') : $cfg->extends}}">
+          </td>
         </tr>
-				<tr>
-            <th>관리자용 contents section
-            <th>
-            <td>{!! Form::text('section', old('section') ? old('section') : $cfg->section, [
-                'class' => 'form-control',
-                'placeholder' => 'Admin 용 blade section',
-                ]) !!}</td>
+        <tr>
+          <th>@lang('bbs::messages.admin.layout-section')<th>
+          <td>
+            <input type="text" name="section" class="form-control"placeholder="Admin 용 blade section" value="{{old('section') ? old('section') : $cfg->section}}">
+          </td>
         </tr>
     </table>
-    <div>
-        {!! Form::submit('Update', [
-        'class' => 'btn btn-primary btn-sm',
-        ]) !!}
     </div>
-    {!! Form::close() !!}
+    <div class="card-footer">
+      <button type="submit" class="btn btn-primary">Update</button>
+    </div>
+    </form>
+  </div>
+
+
+  
 </div>
 @stop
 @section ('styles')
 @parent
 <style>
-    @include ('bbs.admin.css.style')
+  @include ('bbs::admin.css.style')
 </style>
 @stop
 @section ('scripts')
 @parent
 <script>
-    $(function () {
-        $(".btn-delete").click(function () {
-            $this = $(this).parents(".data-row");
-            var board_id = $this.attr("user-attr-board-id");
+  $(function () {
+    $(".btn-delete").on('click', function () {
+      $this = $(this).parents(".data-row");
+      var board_id = $this.attr("user-attr-board-id");
 
-            if (confirm('삭제하시겠습니까?')) {
-                $.ajax({
-                    url: '/bbs/admin/' + board_id + '/delete',
-                    type: 'POST',
-                    data: {
-                        '_token': $('meta[name=csrf-token]').attr("content"),
-                        '_method': 'DELETE',
-                    },
-                    success: function (result) {
-                        // Do something with the result
-                        console.log('result>', result);
-                        $this.remove();
-                    }
-                });
-            }
-        })
+      if (confirm('are you sure?')) {
+        $.ajax({
+          url: '/bbs/admin/' + board_id + '/delete',
+          type: 'POST',
+          data: {
+            '_token': $('meta[name=csrf-token]').attr("content"),
+            '_method': 'DELETE',
+          },
+          success: function (result) {
+            // Do something with the result
+            $this.remove();
+          }
+        });
+      }
     })
+  })
 
 </script>
 @endsection

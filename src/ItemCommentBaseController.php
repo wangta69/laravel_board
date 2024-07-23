@@ -22,7 +22,7 @@ use Auth;
 // use Pondol\Bbs\BbsService;
 
 use Pondol\Bbs\Models\BbsItemComment;
-
+use Pondol\Bbs\Models\BbsConfig;
 
 class ItemCommentBaseController extends \App\Http\Controllers\Controller {
 
@@ -156,5 +156,15 @@ class ItemCommentBaseController extends \App\Http\Controllers\Controller {
 
     //return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
     return Response::json(['error'=>false, "code"=>"000", 'comment'=>$comment], 200);
+  }
+
+  protected function admin_extends() {
+    $config = BbsConfig::get();
+    $cfg = new \stdclass;
+    foreach($config as $v) {
+      $cfg->{$v->k} = $v->v;
+    }
+
+    return $cfg;
   }
 }

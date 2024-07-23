@@ -75,7 +75,7 @@
     <a href="{{ route('bbs.admin.tbl.index', [$cfg->table_name]) }}" class='btn btn-default btn-sm'>목록</a>
     </div>
   </div>
-  {!! Form::close() !!}
+</form>
 </div>
 @stop
 

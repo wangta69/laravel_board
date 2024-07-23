@@ -1,34 +1,37 @@
 {
     "name": "wangta69/laravel_board",
     "description": "BBS bulletin board system",
-	"keywords": ["laravel", "bbs", "pondol" , "board"],
+    "keywords": ["laravel", "bbs", "pondol" , "board", "게시판", "korea"],
     "homepage": "https://www.onstory.fun/doc/programming/laravel/package.laravelboard",
     "license": "MIT",
     "authors": [
-        {
-            "name": "Pondol",
-            "email": "wangta69@gmail.com"
-        }
+      {
+        "name": "Pondol",
+        "email": "wangta69@gmail.com",
+        "homepage": "https://www.onstory.fun"
+      }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {
-        "php": ">=5.3.0",
-		"kyslik/column-sortable": "^6.0",
-        "wangta69/php-thumbnail": "^1"
+      "php": ">=7.0.0",
+      "kyslik/column-sortable": "^6.0",
+      "wangta69/php-thumbnail": "^1",
+      "wangta69/laravel-editor": "^8"
     },
     "autoload": {
-        "psr-4": {
-            "Pondol\\Bbs\\": "src/"
-        }
+      "psr-4": {
+        "Pondol\\Bbs\\": "src/"
+      }
     },
     "extra": {
-        "laravel": {
-            "providers": [
-                "Pondol\\Bbs\\BbsServiceProvider"
-            ],
-            "aliases": {
-                "CustomPackage": "Pondol\\Bbs\\Facades\\BbsFacade"
-            }
+      "laravel": {
+        "providers": [
+          "Pondol\\Bbs\\BbsServiceProvider"
+        ],
+        "aliases": {
+          "CustomPackage": "Pondol\\Bbs\\Facades\\BbsFacade"
         }
+      }
     }
-}
+  }
+  
