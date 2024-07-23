@@ -18,8 +18,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Pondol\\Bbs\\": "src/",
-            "Pondol\\Bbs\\View\\Components\\":"src/View/Components"
+            "Pondol\\Bbs\\": "src/"
         }
     },
     "extra": {
