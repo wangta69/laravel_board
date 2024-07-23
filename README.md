@@ -10,7 +10,8 @@ Laravel 5.4에서 테스트 되었습니다.<br />
 composer require wangta69/laravel_board
 ```
 
-## Laravel 5
+## 
+[Old version] (./documents/5.x.md)
 
 ## Setup
 Step 1.1) Add ServiceProvider to the providers array in `config/app.php`.
