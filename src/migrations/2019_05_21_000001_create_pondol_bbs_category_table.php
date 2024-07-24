@@ -5,35 +5,35 @@ use Illuminate\Database\Schema\Blueprint;
 
 class CreatePondolBbsCategoryTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
-    {
-        // Create BBS Config table
-        Schema::create('bbs_categories', function(BluePrint $table) {
-            $table->engine = 'InnoDB';
+  /**
+   * Run the migrations.
+   *
+   * @return void
+   */
+  public function up()
+  {
+    // Create BBS Config table
+    Schema::create('bbs_categories', function(BluePrint $table) {
+      $table->engine = 'InnoDB';
 
-            $table->increments('id');
-            $table->integer('bbs_table_id')->unsigned();
-            $table->string('name', '20');
-            $table->tinyInteger('order')->unsigned()->default(0)->comment('카테고리 출력 순서');
-            $table->timestamps();
-            $table->index('bbs_table_id');
-            $table->foreign('bbs_table_id')->references('id')->on('bbs_tables')
-            ->onDelete('cascade');
-        });
-    }
+      $table->id();
+      $table->bigInteger('bbs_table_id')->unsigned();
+      $table->string('name', '20');
+      $table->tinyInteger('order')->unsigned()->default(0)->comment('카테고리 출력 순서');
+      $table->timestamps();
+      $table->index('bbs_table_id');
+      $table->foreign('bbs_table_id')->references('id')->on('bbs_tables')
+      ->onDelete('cascade');
+    });
+  }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('bbs_categories');
-    }
+  /**
+   * Reverse the migrations.
+   *
+   * @return void
+   */
+  public function down()
+  {
+    Schema::dropIfExists('bbs_categories');
+  }
 }
