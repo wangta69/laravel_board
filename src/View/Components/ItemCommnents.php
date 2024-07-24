@@ -24,7 +24,7 @@ class ItemCommnents extends Component
   public function render()
   {
 
-    $comments = BbsItemComment::select('id', 'item', 'user_name', 'content', 'reply_depth', 'created_at')
+    $comments = BbsItemComment::select('id', 'item', 'writer', 'content', 'reply_depth', 'created_at')
     ->where('item', $this->item)
     ->where('item_id', $this->item_id)
     ->orderBy('order_num', 'desc')

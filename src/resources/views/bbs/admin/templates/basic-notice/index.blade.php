@@ -1,11 +1,23 @@
 @extends($cfg->extends)
 @section ($cfg->section)
 <div class="bbs-admin">
-    <div class='basic-notice index'>
+    <div class='basic index'>
         <h2 class='title'>
             {{ $cfg->name }}
         </h2>
-        <table class="table">
+        <form method='get' action="{{url()->current()}}">
+            <div class="col-3 float-end">
+                <div  class=" input-group">
+                    <select name="f" id="" class="form-select" >
+                        <option value="title" @if (request()->get('f') == 'title') selected @endif>Title</option>
+                        <option value="content" @if (request()->get('f') == 'content') selected @endif>Contents</option>
+                    </select>
+                    <input type="text" name="s" placeholder="Keyword Search" value="{{request()->get('s')}}"  class="form-control"/>
+                    <button type="submit" class="btn btn-primary">@lang('bbs::messages.bbs.button.search')</button>
+                </div>
+            </div>
+        </form>
+        <table class="table mt-5">
             <colgroup>
                 <col width='50' />
                 <col width='' />
@@ -15,26 +27,28 @@
             <thead>
                 <tr>
                     <th class='text-center'>#</th>
-                    <th class='text-center'>제목</th>
-                    <th class='text-center'>작성일</th>
-                    <th class='text-center'>조회수</th>
+                    <th class='text-center'>@lang('bbs::messages.bbs.title.title')</th>
+                    <th class='text-center'>@lang('bbs::messages.bbs.title.created_at')</th>
+                    <th class='text-center'>@lang('bbs::messages.bbs.title.views')</th>
                 </tr>
             </thead>
             <tbody>
+
                 @forelse ($articles as $index => $article)
-                {{-- @foreach($articles as $article) --}}
                 <tr>
                     <td class='text-center'>
                         {{ number_format($articles->total() - $articles->perPage() * ($articles->currentPage() - 1) - $index) }}
                     </td>
-                    <td><a href="{{ route('bbs.admin.tbl.show', [$cfg->table_name, $article->id]) }}">{{$article->title}}</a></td>
+                    <td>
+                        <a href="{{ route('bbs.admin.tbl.show', [$cfg->table_name, $article->id]) }}">{{$article->title}}</a>
+                    </td>
                     <td class='text-center'>{{ date('Y-m-d', strtotime($article->created_at)) }}</td>
                     <td class='text-center'>{{ number_format($article->hit) }}</td>
                 </tr>
                 @empty
                 <tr>
                     <td colspan="4">
-                        No contents
+                    @lang('bbs::messages.bbs.title.no-data')
                     </td>
                 </tr>
                 @endforelse
@@ -46,9 +60,8 @@
         </div>
 
         <div class='btn-area text-right'>
-
             @if ($cfg->hasPermission('write'))
-            <a href="{{ route('bbs.admin.tbl.create', [$cfg->table_name]) }}" role='button' class='btn btn-sm btn-primary'>글쓰기</a>
+            <a href="{{ route('bbs.admin.tbl.create', [$cfg->table_name]) }}" role='button' class='btn btn-sm btn-primary'>@lang('bbs::messages.bbs.button.write')</a>
             @endif
         </div>
     </div>
@@ -59,6 +72,10 @@
 @parent
 <style>
     @include ('bbs.admin.css.style')
-    @include ('bbs.admin.templates.'.$cfg->skin.'.css.style')
+    @include ('bbs::templates.'.$cfg->skin.'.css.style')
 </style>
+@stop
+@section ('scripts')
+@parent
+<script src="/assets/pondol/bbs/bbs.js"></script>
 @stop

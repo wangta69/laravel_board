@@ -40,7 +40,7 @@
                     {{ number_format($comments->total() - $comments->perPage() * ($comments->currentPage() - 1) - $index) }}
                 </td>
                 <td><a href="/{{$comment->path}}">{{$comment->title}}</a></td>
-                <td class='text-center'>{{ $comment->user_name }}</td>
+                <td class='text-center'>{{ $comment->writer }}</td>
                 <td class='text-center'>{{ $comment->content }}</td>
                 <td class='text-center'>{{ date('Y-m-d H:i', strtotime($comment->created_at)) }}</td>
             </tr>

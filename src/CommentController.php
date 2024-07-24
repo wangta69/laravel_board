@@ -13,13 +13,13 @@ use App\Http\Controllers\Controller;
 use Pondol\Bbs\Models\BbsArticles as Articles;
 use Pondol\Bbs\Models\BbsComments as Comments;
 
-class BbsCommentController  extends Controller {
+class CommentController  extends Controller {
 
   use CommentBase;
 
   protected $cfg;
-  public function __construct() {
-
+  public function __construct(BbsService $bbsSvc) {
+    $this->bbsSvc = $bbsSvc;
   }
 
 
@@ -43,7 +43,8 @@ class BbsCommentController  extends Controller {
 
     if ($validator->fails()) return redirect()->back()->withErrors($validator->errors());
 
-    $result = $this->store($tbl_name, $article, $comment_id);
+
+    $result = $this->store($request, $tbl_name, $article, $comment_id);
 
     if($request->ajax()){
       return Response::json($result, 200);
@@ -69,7 +70,7 @@ class BbsCommentController  extends Controller {
     if (!$comment->isOwner(Auth::user()))
       return Response::json(['result'=>false, "code"=>"003", 'message'=>'본인이 작성한 글만 수정가능합니다.'], 203);
 
-    $result = $this->update($comment);
+    $result = $this->update($request, $comment);
 
     return Response::json($result, 200);
 
@@ -86,7 +87,7 @@ class BbsCommentController  extends Controller {
     * @return \Illuminate\Http\Response
     * ajax로 처러되며 리턴도 json type으로 처리
     */
-  public function _destroy(Request $request, Articles $article, Comments $comment)
+  public function _destroy(Request $request, $tbl_name, Articles $article, Comments $comment)
   {
 
     if (!$comment->isOwner(Auth::user())) {

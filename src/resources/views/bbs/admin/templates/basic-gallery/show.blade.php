@@ -31,7 +31,7 @@
                             <ul class="link">
                                 @foreach ($article->files as $file)
                                 <!-- 파일 다운로드 경로 등을 넣으세요.. -->
-                                <li>{{ link_to_route('bbs.download', $file->file_name, $file->id) }}</li>
+                                <li>{{ link_to_route('bbs.file.download', $file->file_name, $file->id) }}</li>
                                 @endforeach
                             </ul>
                         </td>

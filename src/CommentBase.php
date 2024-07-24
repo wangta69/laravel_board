@@ -11,13 +11,13 @@ use Auth;
 use Pondol\Bbs\Models\BbsArticles as Articles;
 use Pondol\Bbs\Models\BbsComments as Comments;
 
-class CommentBase {
+trait CommentBase {
 
-  protected $bbsSvc;
+  // protected $bbsSvc;
   protected $cfg;
-  public function __construct() {
-    $this->bbsSvc = \App::make('Pondol\Bbs\BbsService');
-  }
+  // public function __construct() {
+  //   $this->bbsSvc = \App::make('Pondol\Bbs\BbsService');
+  // }
 
 
 /*
@@ -27,11 +27,13 @@ class CommentBase {
     * @param  \Illuminate\Http\Request  $request
     * @return \Illuminate\Http\Response
     */
-  public function store($tbl_name, $article, $comment_id)
+  public function store($request, $tbl_name, $article, $comment_id)
   {
     $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
 
     //본글에 대한 답변인지 댓글의 댓글인지 구분
+
+
     $comment = new Comments;
     if($comment_id){
       $parent_comment = Comments::find($comment_id);
@@ -42,10 +44,10 @@ class CommentBase {
       $comment->order_num = $this->get_order_num($article->id);
     }
 
-    $comment->user_name = $request->get('user_name');
+    $comment->writer = $request->get('writer');
     if (Auth::check()) {
       $comment->user_id = Auth::user()->id;
-      $comment->user_name = $comment->user_name ? $comment->user_name : Auth::user()->name;
+      $comment->writer = $comment->writer ? $comment->writer : Auth::user()->name;
     } else {
       $comment->user_id = 0;
     }
@@ -71,7 +73,7 @@ class CommentBase {
   }
 
   // update
-  public function update($comment){
+  public function update($request, $comment){
     $comment->content = $request->get('content');
     $comment->save();
     return ['error'=>false];

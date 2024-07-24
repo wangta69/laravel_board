@@ -15,11 +15,11 @@ trait ItemCommentBase {
   // protected $bbsSvc;
   // protected $cfg;
   // protected $laravel_ver;
-  public function __construct() {
-    // $this->bbsSvc = \App::make('Pondol\Bbs\BbsService');
-    // $laravel = app();
-    // $this->laravel_ver = $laravel::VERSION;
-  }
+  // public function __construct() {
+  //   // $this->bbsSvc = \App::make('Pondol\Bbs\BbsService');
+  //   // $laravel = app();
+  //   // $this->laravel_ver = $laravel::VERSION;
+  // }
 
   public function index($request, $item) {
     $comment = BbsItemComment::where('bbs_item_comments.item', $item);
@@ -43,7 +43,7 @@ trait ItemCommentBase {
 
     if (Auth::check()) {
       $comment->user_id = Auth::user()->id;
-      $comment->user_name = $comment->user_name ? $comment->user_name : Auth::user()->name;
+      $comment->writer = $comment->writer ? $comment->writer : Auth::user()->name;
     } else {
       $comment->user_id = null;
     }

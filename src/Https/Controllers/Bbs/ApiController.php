@@ -28,7 +28,7 @@ class BbsController extends \Pondol\Bbs\BbsExtendsController
       //   $articles = $articles->leftjoin('users as u', function($join){
       //       $join->on('u.id', '=', 'bbs_articles.user_id');
       //   })->addSelect(
-      //     'bbs_articles.id', 'bbs_articles.title',  'bbs_articles.user_name', 'bbs_articles.created_at', 'bbs_articles.comment_cnt', 'u.email');
+      //     'bbs_articles.id', 'bbs_articles.title',  'bbs_articles.writer', 'bbs_articles.created_at', 'bbs_articles.comment_cnt', 'u.email');
       // }
     // 사용자 정의 끝
 

@@ -1,6 +1,5 @@
 <form method="post" 
     action="{{ route('bbs.comment.store', [$cfg->table_name, $article->id, 0]) }}" 
-    class='form-horizontal' 
     enctype='multipart/form-data'>
     @csrf
 
@@ -27,9 +26,9 @@
             <ul>
                 <li class="view depth-{{ strlen($comment->reply_depth) }}">
                    <header>
-                        <h3>{{ $comment->user_name }}의 댓글</h3>
+                        <h3>{{ $comment->writer }}의 댓글</h3>
                         <div class="info">
-                            <b>{{ $comment->user_name }}</b>
+                            <b>{{ $comment->writer }}</b>
                             <span class="comment-time-info"><time datetime="{{ $comment->created_at }}">{{ date("Y-m-d H:i", strtotime($comment->created_at))}}</time></span>
                         </div>
                     </header>
@@ -52,7 +51,6 @@
 
                     <form method="post" 
                         action="{{ route('bbs.comment.update', [$cfg->table_name, $article->id, $comment->id]) }}" 
-                        class='form-horizontal' 
                         enctype='multipart/form-data'>
                         @csrf
                     @method('PUT')

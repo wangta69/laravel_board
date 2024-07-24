@@ -1,17 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\Bbs\Admin;
-use Illuminate\Http\Request;
-use Auth;
-use Pondol\Bbs\BbsService;
-use App\Http\Controllers\Controller;
-// use Pondol\Bbs\Models\BbsItemComment;
-use Pondol\Bbs\ItemCommentBase;
 
-class ItemCommentController extends Controller
+use Auth;
+
+class ItemCommentController extends \Pondol\Bbs\ItemCommentBaseController
 {
 
-  use ItemCommentBase;
   // protected $itemsPerPage = 10;
 
    /**
@@ -19,9 +14,9 @@ class ItemCommentController extends Controller
    *
    * @return void
    */
-  public function __construct(BbsService $bbsSvc )
+  public function __construct()
   {
-    $this->bbsSvc = $bbsSvc;
+    parent::__construct();
     $this->middleware('auth');
     // $this->itemsPerPage = 10; // change table list count;
     $this->middleware(function ($request, $next) {
@@ -40,29 +35,14 @@ class ItemCommentController extends Controller
   /**
    * 게시물 리스트
    */
-  public function _index(Request $request, $item) {
-    $comments =  $this->index($request, $item)->select(
-      'bbs_item_comments.user_id', 'bbs_item_comments.user_name', 'bbs_item_comments.content', 'bbs_item_comments.created_at'
-    );
-    // 아래와 같이 사용자정의를 하여 각각의 데이타를 가져와야 한다.
-    switch($item) {
-      case 'story':
-        $comments->join('keywords', function($join){
-          $join->on('bbs_item_comments.item_id', '=', 'keywords.id');
-        })
-        ->addSelect('keywords.title', 'keywords.path');
-    }
+  public function _index(Request $request, $type) {
+    $result =  $this->index($request, $type);
 
-    $comments =  $comments->orderBy('bbs_item_comments.id', 'desc')->paginate(20)->appends(request()->query());
-    
-    // print_r($comments);
     // if(isset($result['error'])) {
     //   if ($result['error'] == 'login') {
     //     return redirect()->route('login');
     //   }
     // }
-    // exit;
-    $cfg = $this->admin_extends();
-    return view('bbs.admin.comment.story', ['comments'=>$comments, 'cfg'=>$cfg]);
+    return view('bbs.admin.comment.index');
   }
 }

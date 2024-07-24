@@ -14,7 +14,7 @@ class UpdatePondolBbsArticles2 extends Migration
   {
     // Update BBS Articles table
     Schema::table('bbs_articles', function(BluePrint $table) {
-      $table->string('password', '20')->nullable()->after('user_name')->comment('비회원용 글수정 이나 비밀글 확인용');
+      $table->string('password', '20')->nullable()->after('writer')->comment('비회원용 글수정 이나 비밀글 확인용');
     });
   }
 }

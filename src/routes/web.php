@@ -86,10 +86,10 @@ Route::group(['prefix' => 'bbs', 'as' => 'bbs.', 'namespace' => 'Pondol\Bbs', 'm
 
 Route::group(['prefix' => 'bbs', 'as' => 'bbs.comment.', 'namespace' => 'Pondol\Bbs', 'middleware' => ['web']], function () {
 
-  Route::post('/{tbl_name}/{article}/comment/{comment}', 'BbsCommentController@store')->name('store');
+  Route::post('/{tbl_name}/{article}/comment/{comment}', 'CommentController@_store')->name('store');
   //  Route::get('/{tbl_name}/{article}/comment/{comment}', 'BbsCommentController@store')->name('store');//for test
-  Route::delete('/{tbl_name}/{article}/comment/{comment}', 'BbsCommentController@destroy')->name('destroy');
-  Route::put('/{tbl_name}/{article}/comment/{comment}', 'BbsCommentController@update')->name('update');
+  Route::delete('/{tbl_name}/{article}/comment/{comment}', 'CommentController@_destroy')->name('destroy');
+  Route::put('/{tbl_name}/{article}/comment/{comment}', 'CommentController@_update')->name('update');
 
 });
 

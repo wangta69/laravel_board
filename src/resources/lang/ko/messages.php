@@ -39,12 +39,29 @@ return [
     'view' => '보기',
     'delete' => '삭제'
   ],
-  'number' => '번호',
-  'title' => '제목',
-  'created_at' => '작성일',
-  'writer' => '작성자',
-  'no-data' => '디스플레이할 데이타가 없습니다.',
+  
   'message' => [
-    'LOGIN' => '로그인 후 이용가능합니다.'
+    'LOGIN' => '로그인 후 이용가능합니다.',
+    'confirm-delete' => '삭제하시겠습니까?'
+  ],
+  'bbs'=>[
+    'title'=>[
+      'number' => '번호',
+      'title' => '제목',
+      'content' => '내용',
+      'created_at' => '작성일',
+      'writer' => '작성자',
+      'views' => '조회수',
+      'attached' => '첨부파일',
+      'no-data' => '디스플레이할 데이타가 없습니다.',
+    ],
+    'button'=>[
+      'write' => '글쓰기',
+      'store' => '작성완료',
+      'search' => '검색',
+      'modify' => '수정',
+      'delete' => '삭제',
+      'list' => '목록',
+    ]
   ]
 ];

@@ -3,23 +3,21 @@ namespace App\Http\Controllers\Bbs\Admin;
 
 use Illuminate\Http\Request;
 use Auth;
-use App\Http\Controllers\Controller;
-use Pondol\Bbs\Models\BbsArticles as Articles;
-use Pondol\Bbs\CommentBase;
 
-class CommentController extends Controller
+use Pondol\Bbs\Models\BbsArticles as Articles;
+use Pondol\Bbs\Models\BbsComments as Comments;
+
+class CommentController extends \Pondol\Bbs\CommentBaseController
 {
 
-  use CommentBase;
     /**
    * Create a new controller instance.
    *
    * @return void
    */
-  public function __construct(BbsService $bbsSvc )
+  public function __construct()
   {
-    $this->bbsSvc = $bbsSvc;
-    
+    parent::__construct();
     $this->middleware('auth');
     // $this->itemsPerPage = 10; // change table list count;
     $this->middleware(function ($request, $next) {

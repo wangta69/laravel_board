@@ -9,7 +9,6 @@
 
 <form method="post" 
                         action="{{ route('bbs.comment.update', [$cfg->table_name, $article->id, $comment->id]) }}" 
-                        class='form-horizontal' 
                         enctype='multipart/form-data'>
                         @csrf
                     @method('PUT')

@@ -16,11 +16,7 @@
             <thead>
                 <tr>
                     <th>제목</th>
-                    <td colspan='3'>{{ $article->title }}</td>
-                </tr>
-                <tr>
-                    <th>작성자</th>
-                    <td>{{ $article->user->name }} ({{ date('Y-m-d H:i', strtotime($article->created_at)) }})</td>
+                    <td>{{ $article->title }} ({{ date('Y-m-d H:i', strtotime($article->created_at)) }})</td>
                     <th>조회수</th>
                     <td>{{ number_format($article->hit) }}</td>
                 </tr>
@@ -30,7 +26,7 @@
                         <ul class="link">
                             @foreach ($article->files as $file)
                             <!-- 파일 다운로드 경로 등을 넣으세요.. -->
-                            <li>{{ link_to_route('bbs.download', $file->file_name, $file->id) }}</li>
+                            <li>{{ link_to_route('bbs.file.download', $file->file_name, $file->id) }}</li>
                             @endforeach
                         </ul>
                     </td>
@@ -45,16 +41,11 @@
         </div>
 
         <div class='btn-area text-right'>
-        <form method="post" 
-                action="{{ route('bbs.admin.tbl.destroy', [$cfg->table_name, $article->id]) }}">
-                @csrf
-                @method('DELETE')
             @if ($article->isOwner(Auth::user()) || $isAdmin)
             <a href="{{ route('bbs.admin.tbl.edit', [$cfg->table_name, $article->id]) }}" role="button" class='btn btn-primary btn-sm'>수정</a>
             <button type="submit" class="btn btn-danger btn-sm">삭제</button>
             @endif
             <a href="{{ route('bbs.admin.tbl.index', [$cfg->table_name]) }}" class='btn btn-default btn-sm'>목록</a>
-            </form>
         </div>
     </div>
     @if ($cfg->enable_comment == 1)

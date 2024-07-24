@@ -6,24 +6,16 @@ use Illuminate\Http\Request;
 
 use Auth;
 
-use App\Http\Controllers\Controller;
-
-use Pondol\Bbs\BbsService;
 
 use Pondol\Bbs\Models\BbsArticles as Articles;
 use Pondol\Bbs\Models\BbsConfig;
-use Pondol\Bbs\BbsBase;
 
-class BbsController extends Controller
+class BbsController extends \Pondol\Bbs\BbsBaseController
 {
-
-  use BbsBase;
-
-  public function __construct(
-    BbsService $bbsSvc 
-  )
+  public function __construct()
   {
-    $this->bbsSvc = $bbsSvc;
+    parent::__construct();
+
     $this->middleware('auth');
     // $this->itemsPerPage = 10; // change table list count;
     $this->middleware(function ($request, $next) {
@@ -49,7 +41,7 @@ class BbsController extends Controller
       //   $articles = $articles->leftjoin('users as u', function($join){
       //       $join->on('u.id', '=', 'bbs_articles.user_id');
       //   })->addSelect(
-      //     'bbs_articles.id', 'bbs_articles.title',  'bbs_articles.user_name', 'bbs_articles.created_at', 'bbs_articles.comment_cnt','u.email');
+      //     'bbs_articles.id', 'bbs_articles.title',  'bbs_articles.writer', 'bbs_articles.created_at', 'bbs_articles.comment_cnt','u.email');
       // }
     // 사용자 정의 끝
 

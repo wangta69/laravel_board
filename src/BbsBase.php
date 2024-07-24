@@ -23,14 +23,14 @@ use Pondol\Bbs\BbsService;
 
 trait BbsBase  {
 
-  protected $bbsSvc;
-  protected $cfg;
-  protected $laravel_ver;
-  public function __construct() {
-    $this->bbsSvc = \App::make('Pondol\Bbs\BbsService');
-    $laravel = app();
-    $this->laravel_ver = $laravel::VERSION;
-  }
+  // protected $bbsSvc;
+  // protected $cfg;
+  // protected $laravel_ver;
+  // public function __construct() {
+  //   $this->bbsSvc = \App::make('Pondol\Bbs\BbsService');
+  //   $laravel = app();
+  //   $this->laravel_ver = $laravel::VERSION;
+  // }
 
   /*
    * List Page
@@ -168,11 +168,11 @@ trait BbsBase  {
     $article = new Articles;
 
     $article->bbs_table_id = $cfg->id;
-    $article->user_name = $request->get('user_name');
+    $article->writer = $request->get('writer');
 
     if (Auth::check()) {
       $article->user_id = Auth::user()->id;
-      $article->user_name = $article->user_name ? $article->user_name : Auth::user()->name;
+      $article->writer = $article->writer ? $article->writer : Auth::user()->name;
     } else {
       $article->user_id = 0;
     }
@@ -250,6 +250,7 @@ trait BbsBase  {
       return redirect()->back()->withErrors($validator->errors());
 
     $article->title = $request->get('title');
+    $article->writer = $request->get('writer') ? $request->get('writer') : $article->writer;
     $article->content = $request->get('content');
     $article->save();
 
@@ -305,15 +306,15 @@ trait BbsBase  {
      */
   protected function contents_update($article, $table_id, $date_Ym){
 
-    $sourceDir = storage_path() .'/app/public/bbs/tmp/editor/'. session()->getId();
+    $sourceDir = storage_path() .'/app/public/tmp/editor/'. session()->getId();
     $destinationDir = storage_path() .'/app/public/bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor';
 
-    $article->content = str_replace('/storage/bbs/tmp/editor/'.session()->getId(), '/storage/bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor', $article->content);
+    $article->content = str_replace('/storage/tmp/editor/'.session()->getId(), '/storage/bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor', $article->content);
 
     $article->save();
 
     $success = File::copyDirectory($sourceDir, $destinationDir);
-    Storage::deleteDirectory('public/bbs/tmp/editor/'. session()->getId());
+    Storage::deleteDirectory('public/tmp/editor/'. session()->getId());
   }
 
   /**

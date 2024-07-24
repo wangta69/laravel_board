@@ -4,14 +4,12 @@
     @if (isset($article->id))
     <form method="post" 
             action="{{ route('bbs.update', [$cfg->table_name, $article->id]) }}" 
-            class='form-horizontal' 
             enctype='multipart/form-data'>
             @csrf
             @method('PUT')
     @else
     <form method="post" 
             action="{{ route('bbs.store', [$cfg->table_name]) }}" 
-            class='form-horizontal' 
             enctype='multipart/form-data'>
             @csrf
     @endif

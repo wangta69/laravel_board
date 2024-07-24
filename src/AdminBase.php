@@ -17,9 +17,9 @@ trait AdminBase {
   // protected $bbsSvc;
   protected $cfg;
   protected $itemsPerPage = 10;
-  public function __construct() {
-    // $this->bbsSvc = \App::make('Pondol\Bbs\BbsService');
-  }
+  // public function __construct() {
+  //   // $this->bbsSvc = \App::make('Pondol\Bbs\BbsService');
+  // }
 
   /*
    * BBS Tables List

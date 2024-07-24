@@ -19,7 +19,7 @@ class CreateItemComments extends Migration
         $table->string('item', '10');
 
         $table->unsignedBigInteger('user_id');
-        $table->string('user_name', '20');
+        $table->string('writer', '20');
         $table->unsignedBigInteger('item_id');
         $table->integer('order_num')->comment('정렬번호');
         $table->unsignedBigInteger('parent_id')->comment('부모 id');

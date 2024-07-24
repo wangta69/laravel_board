@@ -1,6 +1,6 @@
 @extends($cfg->extends)
 @section ($cfg->section)
-<?php use Pondol\Bbs\BbsController;?>
+<?php use Wangta69\Bbs\BbsController;?>
 <div class="bbs-admin">
     <h2 class='title'>
         {{ $cfg->name }}
@@ -16,7 +16,7 @@
                 </a>
                 <div class="desc">
                     <span class="title"><a href="{{ route('bbs.admin.tbl.show', [$cfg->table_name, $article->id]) }}">{{$article->title}}</a></span>
-                    <span class="info">{{ $article->user_name }}</span>
+                    <span class="info">{{ $article->writer }}</span>
 
                 </div>
             </div>

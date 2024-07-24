@@ -28,8 +28,9 @@
       <label for='skin' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.skin-user')</label>
       <div class='col-sm-10'>
           <select name="skin" class="form-select" id="skin">
+
               @foreach($skins as $k=>$v)
-              <option value="{{$k}}" @if(isset($table) && $table->skin = $k) selected @endif>{{$v}}</option>
+              <option value="{{$k}}" @if(isset($table) && $table->skin == $k) selected @endif>{{$v}}</option>
               @endforeach
           </select>
       </div>
@@ -39,7 +40,7 @@
       <div class='col-sm-10'>
           <select name="skin_admin" class="form-select" id="skin_admin">
               @foreach($skins_admin as $k=>$v)
-              <option value="{{$k}}" @if(isset($table) && $table->skins_admin = $k) selected @endif>{{$v}}</option>
+              <option value="{{$k}}" @if(isset($table) && $table->skins_admin == $k) selected @endif>{{$v}}</option>
               @endforeach
           </select>
       </div>
@@ -61,7 +62,7 @@
       <div class='col-sm-10'>
           <select name="editor" class="form-select" id="editor">
               @foreach($editors as $k=>$v)
-              <option value="{{$k}}" @if(isset($table) && $table->editor = $k) selected @endif>{{$v}}</option>
+              <option value="{{$k}}" @if(isset($table) && $table->editor == $k) selected @endif>{{$v}}</option>
               @endforeach
           </select>
       </div>

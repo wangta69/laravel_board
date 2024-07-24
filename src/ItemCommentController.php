@@ -59,7 +59,7 @@ class ItemCommentController extends Controller {
     $comment = new BbsItemComment;
     $comment->item = $item;
     $comment->item_id = $item_id;//firt fill then update
-    $comment->user_name = $request->get('user_name');
+    $comment->writer = $request->get('writer');
     $comment->content = $request->get('content');
 
     $result = $this->store($comment, $item_id, $parent_id);

@@ -139,24 +139,13 @@ class BbsController extends Controller {
   public function destroy(Request $request, $tbl_name, Articles $article)
   {
 
-    $isAdmin = BbsService::hasRoles(config('bbs.admin_roles'));
-    $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
-    $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
-
-    if (!$article->isOwner(Auth::user()) && !$isAdmin) {
+    $result =  $this->destroy($request, $tbl_name, $article);
+    
+    if($request->ajax()){
+      return response()->json($result, 200);//500, 203
+    } else {
       return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
     }
-    //1. delete files
-    Storage::deleteDirectory('public/bbs/'.$cfg->id.'/'.date("Ym", strtotime($article->created_at)).'/'.$article->id);
-
-    //2. delete files table
-    //$article->files->delete();
-    Files::where('bbs_articles_id', $article->id)->delete();
-
-    //3. delete article
-    $article->delete();
-
-    return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
   }
 
   /**
@@ -222,31 +211,31 @@ class BbsController extends Controller {
    * 썸내일 생성용
    * @param String $file  public/bbs/5/201804/37/filename.jpeg
    */
-  public static function get_thumb($file, $width=0, $height=0){
-    if ($file) {
-      if($width == 0 &&  $height == 0)
-        return str_replace(["public"], ["/storage"], $file);
+  // public static function get_thumb($file, $width=0, $height=0){
+  //   if ($file) {
+  //     if($width == 0 &&  $height == 0)
+  //       return str_replace(["public"], ["/storage"], $file);
 
-      $name = substr($file, strrpos($file, '/') + 1);
-      $thum_dir = substr($file, 0, -strlen($name)).$width."_".$height;
-      // return $name;
-      $thum_to_storage = storage_path() .'/app/'.$thum_dir;
-      //home/Web/coinvill-web/storage/app/public/bbs/5/201804/37/205x205/Srrf1axuyM1ZO9NaYM3lStoNLZyVvAfEgWMqWNUU.jpeg
-      //return $file;
-      //return $thum_to_storage."/".$name;
+  //     $name = substr($file, strrpos($file, '/') + 1);
+  //     $thum_dir = substr($file, 0, -strlen($name)).$width."_".$height;
+  //     // return $name;
+  //     $thum_to_storage = storage_path() .'/app/'.$thum_dir;
+  //     //home/Web/coinvill-web/storage/app/public/bbs/5/201804/37/205x205/Srrf1axuyM1ZO9NaYM3lStoNLZyVvAfEgWMqWNUU.jpeg
+  //     //return $file;
+  //     //return $thum_to_storage."/".$name;
 
 
-      if(!file_exists($thum_to_storage."/".$name)){//thumbnail 이미지를 돌려준다.
-        $file_to_storage = storage_path() .'/app/'.$file;
-        $image = new GetHttpImage();
-        $image->read($file_to_storage)->set_size($width, $height)->copyimage()->save($thum_to_storage);
-      }
+  //     if(!file_exists($thum_to_storage."/".$name)){//thumbnail 이미지를 돌려준다.
+  //       $file_to_storage = storage_path() .'/app/'.$file;
+  //       $image = new GetHttpImage();
+  //       $image->read($file_to_storage)->set_size($width, $height)->copyimage()->save($thum_to_storage);
+  //     }
 
-      return str_replace(["public"], ["/storage"], $thum_dir)."/".$name;
-    }else
-      return '';
+  //     return str_replace(["public"], ["/storage"], $thum_dir)."/".$name;
+  //   }else
+  //     return '';
 
-  }
+  // }
 
   /**
    * 이미지 리사이징

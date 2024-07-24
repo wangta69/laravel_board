@@ -39,12 +39,28 @@ return [
     'view' => 'View',
     'delete' => 'Delete'
   ],
-  'number' => 'No.',
-  'title' => 'Title',
-  'created_at' => 'Created',
-  'writer' => 'Writer',
-  'no-data' => 'There is no data to display.',
   'message' => [
-    'LOGIN' => 'Available after login.'
+    'LOGIN' => 'Available after login.',
+    'confirm-delete' => 'Are you sure you want to delete?'
+  ],
+  'bbs'=>[
+    'title'=>[
+      'number' => 'No.',
+      'title' => 'Title',
+      'content' => 'Content',
+      'created_at' => 'Created',
+      'writer' => 'Writer',
+      'views' => 'Views',
+      'attached' => 'Files',
+      'no-data' => 'There is no data to display.',
+    ],
+    'button'=>[
+      'write' => 'Write',
+      'store' => 'Store',
+      'search' => 'Search',
+      'modify' => 'Modify',
+      'delete' => 'Delete',
+      'list' => 'List',
+    ]
   ]
 ];

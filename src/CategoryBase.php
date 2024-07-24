@@ -17,7 +17,7 @@ use Pondol\Bbs\Models\BbsCategories as Category;
 trait CategoryBase {
   protected $bbsSvc;
   protected $cfg;
-  public function __construct() {}
+  // public function __construct() {}
 
   public function addCategory(Request $request, $tableId) {
     // 카테고리 테이블의 bbs_table_id에서 max order를 구한 후 + 1하여 저장한다.
