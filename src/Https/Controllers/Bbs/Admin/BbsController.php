@@ -6,16 +6,24 @@ use Illuminate\Http\Request;
 
 use Auth;
 
+use App\Http\Controllers\Controller;
+
+use Pondol\Bbs\BbsService;
 
 use Pondol\Bbs\Models\BbsArticles as Articles;
 use Pondol\Bbs\Models\BbsConfig;
+use Pondol\Bbs\BbsBase;
 
-class BbsController extends \Pondol\Bbs\BbsBaseController
+class BbsController extends Controller
 {
-  public function __construct()
-  {
-    parent::__construct();
 
+  use BbsBase;
+
+  public function __construct(
+    BbsService $bbsSvc 
+  )
+  {
+    $this->bbsSvc = $bbsSvc;
     $this->middleware('auth');
     // $this->itemsPerPage = 10; // change table list count;
     $this->middleware(function ($request, $next) {

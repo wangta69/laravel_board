@@ -12,13 +12,13 @@ use Pondol\Bbs\Models\BbsTables as Tables;
 use Pondol\Bbs\Models\Role;
 use Pondol\Bbs\Models\BbsConfig;
 
-class AdminBaseController extends \App\Http\Controllers\Controller {
-
-  protected $bbsSvc;
+// class AdminBaseController extends \App\Http\Controllers\Controller {
+trait AdminBase {
+  // protected $bbsSvc;
   protected $cfg;
   protected $itemsPerPage = 10;
   public function __construct() {
-    $this->bbsSvc = \App::make('Pondol\Bbs\BbsService');
+    // $this->bbsSvc = \App::make('Pondol\Bbs\BbsService');
   }
 
   /*

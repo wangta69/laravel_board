@@ -11,6 +11,7 @@ use File;
 use Storage;
 use Response;
 use Auth;
+use App\Http\Controllers\Controller;
 
 use Pondol\Bbs\Models\BbsTables as Tables;
 use Pondol\Bbs\Models\BbsArticles as Articles;
@@ -20,13 +21,13 @@ use Pondol\Bbs\Models\BbsFiles as Files;
 use Pondol\Image\GetHttpImage;
 // use Pondol\Bbs\BbsService;
 
-class BbsController extends BbsBaseController {
+class BbsController extends Controller {
 
+  use BbsBase;
   protected $bbsSvc;
   protected $cfg;
   protected $laravel_ver;
   public function __construct(BbsService $bbsSvc) {
-    parent::__construct();
     $this->bbsSvc = $bbsSvc;
     $laravel = app();
     $this->laravel_ver = $laravel::VERSION;

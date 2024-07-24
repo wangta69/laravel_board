@@ -5,83 +5,92 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 use Validator;
-use Response;
 use Auth;
 
-use Pondol\Bbs\Models\BbsArticles as Articles;
-use Pondol\Bbs\Models\BbsComments as Comments;
+use Pondol\Bbs\Models\BbsItemComment;
+use Pondol\Bbs\Models\BbsConfig;
 
-class CommentBaseController extends \App\Http\Controllers\Controller {
+trait ItemCommentBase {
 
-  protected $bbsSvc;
-  protected $cfg;
+  // protected $bbsSvc;
+  // protected $cfg;
+  // protected $laravel_ver;
   public function __construct() {
-    $this->bbsSvc = \App::make('Pondol\Bbs\BbsService');
+    // $this->bbsSvc = \App::make('Pondol\Bbs\BbsService');
+    // $laravel = app();
+    // $this->laravel_ver = $laravel::VERSION;
   }
 
+  public function index($request, $item) {
+    $comment = BbsItemComment::where('bbs_item_comments.item', $item);
+    return $comment;
+  }  
 
-/*
-    * Store Comment to BBS
-    *
-    * @param String $tbl_name
-    * @param  \Illuminate\Http\Request  $request
-    * @return \Illuminate\Http\Response
-    */
-  public function store($tbl_name, $article, $comment_id)
+  public function store($comment, $item_id, $parent_id)
   {
-    $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
 
     //본글에 대한 답변인지 댓글의 댓글인지 구분
-    $comment = new Comments;
-    if($comment_id){
-      $parent_comment = Comments::find($comment_id);
+
+    if($parent_id){
+      $parent_comment = BbsItemComment::find($parent_id);
       $comment->reply_depth = $this->get_reply_depth($parent_comment);//리플 depth는 asc 방식으로 처리한다(먼저 쓴글이 최근위로)
       $comment->order_num = $parent_comment->order_num;
     }else{
       // $comment->reply_depth   = 'A';
-      $comment->order_num = $this->get_order_num($article->id);
+      $comment->order_num = $this->get_order_num($comment->item, $item_id);
+      $comment->reply_depth = 'A';
     }
 
-    $comment->user_name = $request->get('user_name');
     if (Auth::check()) {
       $comment->user_id = Auth::user()->id;
       $comment->user_name = $comment->user_name ? $comment->user_name : Auth::user()->name;
     } else {
-      $comment->user_id = 0;
+      $comment->user_id = null;
     }
 
-    $comment->bbs_articles_id = $article->id;//firt fill then update
-
-    $comment->content = $request->get('content');
+    
     $comment->parent_id = 0;//firt fill then update
+    // $comment->parent_id = $parent_id  ? $parent_id : $comment->id;
     $comment->save();
 
-    $comment->parent_id = $comment_id  ? $comment_id : $comment->id;
+    $comment->parent_id = $parent_id  ? $parent_id : $comment->id;
     $comment->save();
 
-    $article->comment_cnt++;
-    $article->save();
+
+    return ['error'=>false];
 
 
-    if($request->ajax()){
-      return Response::json(['result'=>true, "code"=>"000", 'message'=>''], 200);
-    }
-    //return view('welcome');
-    return redirect()->route('bbs.show', [$tbl_name, $article->id, 'urlParams='.$request->input('urlParams')]);
   }
 
   // update
-  public function update($comment){
+  public function update(Request $request, $tbl_name, $article, Comments $comment){
+
+    if(!$tbl_name || !$comment->id)
+      return Response::json(['result'=>false, "code"=>"001", 'message'=>'필요값이 충분하지 않습니다.'], 203);
+
+    $validator = Validator::make($request->all(), [
+      'content' => 'required|min:2',
+    ]);
+    // |max:255
+
+    if ($validator->fails())
+      return Response::json(['result'=>false, "code"=>"002", 'message'=>$validator->errors()], 203);
+
+    if (!$comment->isOwner(Auth::user()))
+      return Response::json(['result'=>false, "code"=>"003", 'message'=>'본인이 작성한 글만 수정가능합니다.'], 203);
+
     $comment->content = $request->get('content');
     $comment->save();
-    return ['error'=>false];
+
+    return Response::json(['result'=>true, "code"=>"000", 'message'=>''], 200);
+
   }
 
   /*
     *
     */
-  private function get_order_num($article_id){
-    $order_num = Comments::where('bbs_articles_id', $article_id)->min('order_num');
+  private function get_order_num($item, $item_id){
+    $order_num = BbsItemComment::where('item', $item)->where('item_id', $item_id)->min('order_num');
     return $order_num ? $order_num-1:-1;
   }
 
@@ -95,7 +104,8 @@ class CommentBaseController extends \App\Http\Controllers\Controller {
     //reply_depth 마지막 글자에 .chr(ord($reply_depth)+1); 을하여 부모글 depth와 함께 리턴한다.
     //이부분이 기존 mysql 에서는 가능하지만 다른 query 와의 호환성을 위해 프로그램으로 처리하는 방식으로 변경한달.
     $depth_strlen = (strlen($comment->reply_depth) + 1);
-    $depth = Comments::where('bbs_articles_id', $comment->bbs_articles_id)
+    $depth = BbsItemComment::where('item_id', $comment->item_id)
+      ->where('item', $comment->item)
       ->where('order_num', $comment->order_num)
       ->where('reply_depth', 'LIKE', $comment->reply_depth.'%')
       ->whereRaw('LENGTH(reply_depth) = '.$depth_strlen)
@@ -117,8 +127,12 @@ class CommentBaseController extends \App\Http\Controllers\Controller {
     * @return \Illuminate\Http\Response
     * ajax로 처러되며 리턴도 json type으로 처리
     */
-  public function destroy($article, $comment)
+  public function destroy(Request $request, $tbl_name, Articles $article, Comments $comment)
   {
+
+    if (!$comment->isOwner(Auth::user())) {
+      return Response::json(['error'=>'본인이 작성한 글만 삭제가능합니다.', "code"=>"001"], 200);
+    }
 
     //1. delete comment
     $comment->delete();
@@ -127,6 +141,16 @@ class CommentBaseController extends \App\Http\Controllers\Controller {
     $article->save();
 
     //return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
-    return Response::json(['error'=>false, 'comment'=>$comment], 200);
+    return Response::json(['error'=>false, "code"=>"000", 'comment'=>$comment], 200);
+  }
+
+  protected function admin_extends() {
+    $config = BbsConfig::get();
+    $cfg = new \stdclass;
+    foreach($config as $v) {
+      $cfg->{$v->k} = $v->v;
+    }
+
+    return $cfg;
   }
 }

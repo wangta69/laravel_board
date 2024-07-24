@@ -13,14 +13,13 @@ use Pondol\Bbs\Models\BbsCategories as Category;
 
 
 
-class CategoryController extends \App\Http\Controllers\Controller {
-
+// class CategoryBaseController extends \App\Http\Controllers\Controller {
+trait CategoryBase {
   protected $bbsSvc;
   protected $cfg;
   public function __construct() {}
 
   public function addCategory(Request $request, $tableId) {
-
     // 카테고리 테이블의 bbs_table_id에서 max order를 구한 후 + 1하여 저장한다.
     $max = Category::where('bbs_table_id', $tableId)->max('order');
 
@@ -32,8 +31,8 @@ class CategoryController extends \App\Http\Controllers\Controller {
     $category->order = $order;
     $category->save();
     return response()->json([
-        'error' => false,
-        'id' => $category->id
+      'error' => false,
+      'id' => $category->id
     ], 200);
   }
 
@@ -69,7 +68,6 @@ class CategoryController extends \App\Http\Controllers\Controller {
     return response()->json([
         'error' => false
     ], 200);
-
   }
 
   public function deleteCategory($category, Request $request) {
@@ -89,9 +87,7 @@ class CategoryController extends \App\Http\Controllers\Controller {
     }
 
     return response()->json([
-        'error' => false
+      'error' => false
     ], 200);
-
   }
-
 }

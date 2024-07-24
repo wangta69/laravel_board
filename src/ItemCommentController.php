@@ -8,14 +8,15 @@ use Validator;
 use Response;
 use Auth;
 
+use App\Http\Controllers\Controller;
 use Pondol\Bbs\Models\BbsItemComment;
+use Pondol\Bbs\ItemCommentBase;
 
-class ItemCommentController extends ItemCommentBaseController {
-
-  protected $bbsSvc;
+class ItemCommentController extends Controller {
+  use ItemCommentBase;
   protected $cfg;
-  public function __construct(BbsService $bbsSvc) {
-    // $this->bbsSvc   = $bbsSvc;
+  public function __construct() {
+
   }
 
 

@@ -3,10 +3,15 @@
 namespace App\Http\Controllers\Bbs\Admin;
 use Illuminate\Http\Request;
 use Auth;
+use Pondol\Bbs\BbsService;
+use App\Http\Controllers\Controller;
+// use Pondol\Bbs\Models\BbsItemComment;
+use Pondol\Bbs\ItemCommentBase;
 
-class ItemCommentController extends \Pondol\Bbs\ItemCommentBaseController
+class ItemCommentController extends Controller
 {
 
+  use ItemCommentBase;
   // protected $itemsPerPage = 10;
 
    /**
@@ -14,9 +19,9 @@ class ItemCommentController extends \Pondol\Bbs\ItemCommentBaseController
    *
    * @return void
    */
-  public function __construct()
+  public function __construct(BbsService $bbsSvc )
   {
-    parent::__construct();
+    $this->bbsSvc = $bbsSvc;
     $this->middleware('auth');
     // $this->itemsPerPage = 10; // change table list count;
     $this->middleware(function ($request, $next) {

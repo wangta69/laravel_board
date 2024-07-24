@@ -1,22 +1,20 @@
 <?php
-
 namespace App\Http\Controllers\Bbs\Admin;
+use App\Http\Controllers\Controller;
 
 use Auth;
-
-class AdminController extends \Pondol\Bbs\AdminBaseController
+use Pondol\Bbs\BbsService;
+use Pondol\Bbs\AdminBase;
+class AdminController extends Controller
 {
+  use AdminBase;
 
-  // protected $itemsPerPage = 10;
-
-   /**
-   * Create a new controller instance.
-   *
-   * @return void
-   */
-  public function __construct()
+  public function __construct(
+    BbsService $bbsSvc 
+  )
   {
-    parent::__construct();
+    $this->bbsSvc = $bbsSvc;
+    // parent::__construct();
     $this->middleware('auth');
     // $this->itemsPerPage = 10; // change table list count;
     $this->middleware(function ($request, $next) {
