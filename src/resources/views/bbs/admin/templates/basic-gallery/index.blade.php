@@ -1,6 +1,5 @@
 @extends($cfg->extends)
 @section ($cfg->section)
-<?php use Wangta69\Bbs\BbsController;?>
 <div class="bbs-admin">
     <h2 class='title'>
         {{ $cfg->name }}
@@ -9,18 +8,19 @@
     <div class="basic-gallery index">
         <div class='gallery'>
 
-            @foreach ($articles as $index => $article)
-            <div>
-                <a href="{{ route('bbs.admin.tbl.show', [$cfg->table_name, $article->id]) }}" class="image-link">
-                    <img src="{{ BbsController::get_thumb($article->image, 205, 205)  }}" width="300" height="200">
-                </a>
-                <div class="desc">
-                    <span class="title"><a href="{{ route('bbs.admin.tbl.show', [$cfg->table_name, $article->id]) }}">{{$article->title}}</a></span>
-                    <span class="info">{{ $article->writer }}</span>
-
-                </div>
+        @foreach ($articles as $index => $article)
+        <div class="col-lg-3 col-md-4 col-xs-6 mb-5 " style="text-align: center;">
+          <a href="{{ route('bbs.admin.tbl.show', [$cfg->table_name, $article->id]) }}">
+              <img src="{{get_thumb($article->image, 205) }}" >
+          </a>
+          <div class="mx-auto d-block">
+          <div class="input-group" style="justify-content: center;">
+              <span class="input-group-text"><a href="{{ route('bbs.admin.tbl.show', [$cfg->table_name, $article->id]) }}">{{$article->title}}</a></span>
+              <span class="input-group-text">{{ $article->writer }}</span>
             </div>
-            @endforeach
+          </div>
+        </div>
+        @endforeach
         </div>
         <div class="bbs-bottom-nav">
             <nav aria-label="Page navigation">

@@ -15,13 +15,17 @@
             </colgroup>
             <thead>
                 <tr>
-                    <th>제목</th>
-                    <td>{{ $article->title }} ({{ date('Y-m-d H:i', strtotime($article->created_at)) }})</td>
-                    <th>조회수</th>
+                    <th>@lang('bbs::messages.bbs.title.title')</th>
+                    <td colspan='3'>{{ $article->title }}</td>
+                </tr>
+                <tr>
+                    <th>@lang('bbs::messages.bbs.title.writer')</th>
+                    <td>{{ $article->writer }} ({{ date('Y-m-d H:i', strtotime($article->created_at)) }})</td>
+                    <th>@lang('bbs::messages.bbs.title.views')</th>
                     <td>{{ number_format($article->hit) }}</td>
                 </tr>
                 <tr>
-                    <th>첨부파일</th>
+                    <th>@lang('bbs::messages.bbs.title.attached')</th>
                     <td colspan='3'>
                         <ul class="link">
                             @foreach ($article->files as $file)
@@ -42,10 +46,11 @@
 
         <div class='btn-area text-right'>
             @if ($article->isOwner(Auth::user()) || $isAdmin)
-            <a href="{{ route('bbs.admin.tbl.edit', [$cfg->table_name, $article->id]) }}" role="button" class='btn btn-primary btn-sm'>수정</a>
-            <button type="submit" class="btn btn-danger btn-sm">삭제</button>
+            <a href="{{ route('bbs.admin.tbl.edit', [$cfg->table_name, $article->id]) }}" class='btn btn-primary btn-sm'>@lang('bbs::messages.bbs.button.modify')</a>
+            <button type="button" class="btn btn-danger btn-sm btn-delete">@lang('bbs::messages.bbs.button.delete')</button>
             @endif
-            <a href="{{ route('bbs.admin.tbl.index', [$cfg->table_name]) }}" class='btn btn-default btn-sm'>목록</a>
+            <a href="{{ route('bbs.admin.tbl.index', [$cfg->table_name]) }}" class='btn btn-default btn-sm'>@lang('bbs::messages.bbs.button.list')</a>
+
         </div>
     </div>
     @if ($cfg->enable_comment == 1)
@@ -61,11 +66,30 @@
     @include ('bbs.admin.templates.'.$cfg->skin.'.css.style')
 </style>
 @stop
+
 @section ('scripts')
 @parent
-<script src="/assets/pondol/bbs/bbs.js"></script>
+<script src="/assets/pondol/bbs/bbs.js?v=1"></script>
 <script>
-    BBS.tbl_name = "{{$cfg->table_name}}";
-    BBS.article_id = {{$article-> id}};
+  BBS.tbl_name = "{{$cfg->table_name}}";
+  BBS.article_id = {{$article-> id}};
+  $(function(){
+    $('.btn-delete').on('click', function(){
+      if(confirm('@lang('bbs::messages.message.confirm-delete')')) {
+        BBS.ajaxroute('delete', {
+          'name': 'bbs.admin.tbl.destroy', 
+          'params[0]': '{{$cfg->table_name}}', 
+          'params[1]': {{$article->id}}, 
+        }, {}, function(resp) {
+          if(resp.error) {
+            alert(resp.error)
+          } else {
+              var url = "{{ route('bbs.admin.tbl.index', [$cfg->table_name]) }}"
+              location.href= url;
+          }
+      })
+      }
+    })
+  })
 </script>
 @stop

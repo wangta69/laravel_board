@@ -99,6 +99,17 @@ class BbsController extends Controller {
       // return redirect()->route('bbs.templates.'.$result['cfg']->skin.'show', $result);
   }
 
+  public function _destroy(Request $request, $tbl_name, Articles $article) {
+    
+    $result =  $this->destroy($request, $tbl_name, $article);
+
+    if($request->ajax()){
+      return response()->json($result, 200);//500, 203
+    } else {
+      return redirect()->route('bbs.index', [$tbl_name]);
+    }
+  }
+
   /*
   * Show Article
   *
@@ -136,17 +147,17 @@ class BbsController extends Controller {
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-  public function destroy(Request $request, $tbl_name, Articles $article)
-  {
+  // public function destroy(Request $request, $tbl_name, Articles $article)
+  // {
 
-    $result =  $this->destroy($request, $tbl_name, $article);
+  //   $result =  $this->destroy($request, $tbl_name, $article);
     
-    if($request->ajax()){
-      return response()->json($result, 200);//500, 203
-    } else {
-      return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
-    }
-  }
+  //   if($request->ajax()){
+  //     return response()->json($result, 200);//500, 203
+  //   } else {
+  //     return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
+  //   }
+  // }
 
   /**
    * file download from storage

@@ -81,7 +81,12 @@
           'params[0]': '{{$cfg->table_name}}', 
           'params[1]': {{$article->id}}, 
         }, {}, function(resp) {
-
+          if(resp.error) {
+            alert(resp.error)
+          } else {
+              var url = "{{ route('bbs.admin.tbl.index', [$cfg->table_name]) }}"
+              location.href= url;
+          }
       })
       }
     })

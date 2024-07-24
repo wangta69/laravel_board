@@ -17,7 +17,7 @@ use Pondol\Bbs\Models\BbsArticles as Articles;
 use Pondol\Bbs\Models\BbsComments as Comments;
 use Pondol\Bbs\Models\BbsFiles as Files;
 
-use Pondol\Image\GetHttpImage;
+// use Pondol\Image\GetHttpImage;
 use Pondol\Bbs\BbsService;
 
 
@@ -477,12 +477,15 @@ trait BbsBase  {
     */
   public function destroy(Request $request, $tbl_name, Articles $article)
   {
+    
     $isAdmin = BbsService::hasRoles(config('bbs.admin_roles'));
     $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
 
+
     if (!$article->isOwner(Auth::user()) && !$isAdmin) {
-      return redirect()->route('bbs.index', [$tbl_name]);
+      return ['error'=>'삭제권한이 없습니다.'];
     }
+
     //1. delete files
     Storage::deleteDirectory('public/bbs/'.$cfg->id.'/'.date("Ym", strtotime($article->created_at)).'/'.$article->id);
 
@@ -554,38 +557,38 @@ trait BbsBase  {
     return $rtn;
   }
 
-  /**
-   * @param String $file  public/bbs/5/201804/37/filename.jpeg
-   */
-  public static function get_thumb($file, $width=null, $height=null) {
-    if ($file) {
-      if($width == null &&  $height == null) {
-        return str_replace(["public"], ["/storage"], $file);
-      } else if($width == null ) {
-        $width = $height;
-      } else if($height == null) {
-        $height = $width;
-      }
-      $name = substr($file, strrpos($file, '/') + 1);
-      $thum_dir = substr($file, 0, -strlen($name)).$width."_".$height;
-      $thum_to_storage = storage_path() .'/app/'.$thum_dir;
+  // /**
+  //  * @param String $file  public/bbs/5/201804/37/filename.jpeg
+  //  */
+  // public static function get_thumb($file, $width=null, $height=null) {
+  //   if ($file) {
+  //     if($width == null &&  $height == null) {
+  //       return str_replace(["public"], ["/storage"], $file);
+  //     } else if($width == null ) {
+  //       $width = $height;
+  //     } else if($height == null) {
+  //       $height = $width;
+  //     }
+  //     $name = substr($file, strrpos($file, '/') + 1);
+  //     $thum_dir = substr($file, 0, -strlen($name)).$width."_".$height;
+  //     $thum_to_storage = storage_path() .'/app/'.$thum_dir;
 
-      if(!file_exists($thum_to_storage."/".$name)){//thumbnail 이미지를 돌려준다.
-        $file_to_storage = storage_path() .'/app/'.$file;
-        $image = new GetHttpImage();
+  //     if(!file_exists($thum_to_storage."/".$name)){//thumbnail 이미지를 돌려준다.
+  //       $file_to_storage = storage_path() .'/app/'.$file;
+  //       $image = new GetHttpImage();
 
-        try {
-          // $image->read($file_to_storage)->set_size($width, $height)->copyimage()->save($thum_to_storage);
-          $result = $image->read($file_to_storage)->set_size($width, $height)->copyimage();
-          if ($result) {
-              $result->save($thum_to_storage);
-          }
-        } catch (\Exception $e) {
-        }
-      }
+  //       try {
+  //         // $image->read($file_to_storage)->set_size($width, $height)->copyimage()->save($thum_to_storage);
+  //         $result = $image->read($file_to_storage)->set_size($width, $height)->copyimage();
+  //         if ($result) {
+  //             $result->save($thum_to_storage);
+  //         }
+  //       } catch (\Exception $e) {
+  //       }
+  //     }
 
-      return str_replace(["public"], ["/storage"], $thum_dir)."/".$name;
-    }else
-      return '';
-  }
+  //     return str_replace(["public"], ["/storage"], $thum_dir)."/".$name;
+  //   }else
+  //     return '';
+  // }
 }

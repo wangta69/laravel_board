@@ -52,7 +52,7 @@
 
             @if ($article->isOwner(Auth::user()) || $isAdmin)
             <a href="{{ route('bbs.admin.tbl.edit', [$cfg->table_name, $article->id]) }}" role="button" class='btn btn-primary btn-sm'>수정</a>
-            <button type="submit" class="btn btn-danger btn-sm">삭제</button>
+            <button type="button" class="btn btn-danger btn-sm btn-delete">@lang('bbs::messages.bbs.button.delete')</button>
             @endif
             <a href="{{ route('bbs.admin.tbl.index', [$cfg->table_name]) }}" class='btn btn-default btn-sm'>목록</a>
             </form>
