@@ -48,13 +48,15 @@ If you have rolls not yet,  do 'php artisan make:model Role -m' <br />
 > After create bbs link for admin : http://YourDomain//bbs/admin/tbl/[table name] <br>
 > link for user : http://YourDomain//bbs/[table name] <br>
 
-### Extract data only
+### functions
+### bbs_get_thumb
+### bbs_get_latest
 > if you want some data to dispay from bbs, follow below explain 
 ```
 use Pondol\Bbs\BbsService;
 public function Anything()
 {
-	$pds = BbsService::get_latest(array('id'=>3, 'cnt'=>4));
+	$pds = BbsService::bbs_get_latest(array('table'=>'free', 'cnt'=>4));
 }
 ```
 

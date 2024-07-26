@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::group(['prefix' => 'bbs', 'as' => 'bbs.', 'namespace' => 'Pondol\Bbs', 'middleware' => ['web']], function () {
+  Route::get('/route-url', 'ServiceController@routeUrl');
+});
+
 Route::group(['prefix' => 'bbs/admin', 'as' => 'bbs.admin.', 'namespace' => 'App\Http\Controllers\Bbs\Admin', 'middleware' => ['web']], function () {
   Route::get('', 'AdminController@index')->name('index');
   
@@ -39,9 +44,9 @@ Route::group(['prefix' => 'bbs/admin', 'as' => 'bbs.admin.', 'namespace' => 'App
   Route::delete('tbl/{tbl_name}/{article}/destroy', 'BbsController@_destroy')->name('tbl.destroy');
   Route::get('tbl/{file_id}/download', 'BbsController@_download')->name('tbl.download');
 
-  Route::post('tbl/{tbl_name}/{article}/comment/{comment}', 'BbsCommentController@_store')->name('tbl.comment.store');
-  Route::put('tbl/{tbl_name}/{article}/comment/{comment}', 'BbsCommentController@_update')->name('tbl.comment.update');
-  Route::delete('tbl/{tbl_name}/{article}/comment/{comment}', 'BbsCommentController@_destroy')->name('tbl.comment.destroy');
+  Route::post('tbl/{tbl_name}/{article}/comment/{comment}', 'CommentController@_store')->name('tbl.comment.store');
+  Route::put('tbl/{tbl_name}/{article}/comment/{comment}', 'CommentController@_update')->name('tbl.comment.update');
+  Route::delete('tbl/{tbl_name}/{article}/comment/{comment}', 'CommentController@_destroy')->name('tbl.comment.destroy');
 
   // 아이템코멘트 
   Route::get('item-comment/{item}', 'ItemCommentController@_index')->name('comments');
@@ -62,14 +67,12 @@ Route::group(['prefix' => 'bbs/admin', 'as' => 'bbs.admin.', 'namespace' => 'App
 //     //Route::post('/{tbl_name}/{article}/comment/store', 'BbsCommentController@store')->name('comment.store');
 // });
 
-Route::group(['prefix' => 'bbs', 'as' => 'bbs.', 'namespace' => 'Pondol\Bbs', 'middleware' => ['web']], function () {
+Route::group(['prefix' => 'bbs', 'as' => 'bbs.', 'namespace' => 'App\Http\Controllers\Bbs', 'middleware' => ['web']], function () {
   
   Route::get('/file/{file}', 'BbsController@_download')->name('file.download');
   Route::delete('/file/{file}', 'BbsController@deletFile')->name('file.delete');
   
-  Route::get('/route-url', 'ServiceController@routeUrl');
-
-  
+ 
   Route::get('/{tbl_name}', 'BbsController@_index')->name('index');
   Route::get('/{tbl_name}/{article}/show', 'BbsController@_show')->name('show');
   // Route::get('bbs/{tbl_name}/{article}/show/confirm', 'BBSController@_passwordConfirm')->name('bbs.show.password');
@@ -80,21 +83,18 @@ Route::group(['prefix' => 'bbs', 'as' => 'bbs.', 'namespace' => 'Pondol\Bbs', 'm
   Route::get('/{tbl_name}/{article}/edit', 'BbsController@_edit')->name('edit');
   Route::put('/{tbl_name}/{article}/store', 'BbsController@_update')->name('update');
   Route::delete('/{tbl_name}/{article}/destroy', 'BbsController@_destroy')->name('destroy');
- 
-
 });
 
-Route::group(['prefix' => 'bbs', 'as' => 'bbs.comment.', 'namespace' => 'Pondol\Bbs', 'middleware' => ['web']], function () {
 
+
+
+Route::group(['prefix' => 'bbs', 'as' => 'bbs.comment.', 'namespace' => 'App\Http\Controllers\Bbs', 'middleware' => ['web']], function () {
   Route::post('/{tbl_name}/{article}/comment/{comment}', 'CommentController@_store')->name('store');
-  //  Route::get('/{tbl_name}/{article}/comment/{comment}', 'BbsCommentController@store')->name('store');//for test
   Route::delete('/{tbl_name}/{article}/comment/{comment}', 'CommentController@_destroy')->name('destroy');
   Route::put('/{tbl_name}/{article}/comment/{comment}', 'CommentController@_update')->name('update');
-
 });
 
-
-Route::group(['prefix' => 'bbs', 'as' => 'bbs.item.comment.', 'namespace' => 'Pondol\Bbs', 'middleware' => ['web']], function () {
+Route::group(['prefix' => 'bbs', 'as' => 'bbs.item.comment.', 'namespace' => 'App\Http\Controllers\Bbs', 'middleware' => ['web']], function () {
  
   Route::post('/item-comment/{item}/{item_id}/{parent_id?}', 'ItemCommentController@_store')->name('store');
   // Route::get('/item-comment/{item}/{item_id}/{parent_id?}', 'BbsItemCommentController@_store')->name('store');

@@ -68,7 +68,7 @@ class CreatePondolBbsTables extends Migration
                 $table->integer('order_num')->comment('정렬번호');
                 $table->integer('parent_id')->unsigned()->comment('부모 id');
                 $table->string('reply_depth', '25')->nullable()->comment('reply 일경우 depth A AA B..');
-                $table->text('content');
+                $table->text('content')->nullable()->comment('사용자가 삭제할때 자식이 있을 경우 이곳을 null로 처리한다.');
                 $table->timestamps();
                 $table->softDeletes();
                 $table->index('order_num');

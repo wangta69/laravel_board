@@ -30,7 +30,7 @@ class ItemCommnents extends Component
     ->orderBy('order_num', 'desc')
     ->get();
 
-    return view('bbs::components.comments.'.$this->skin.'.comments', [
+    return view('bbs.components.comments.user.'.$this->skin.'.comments', [
       'item' => $this->item,
       'item_id' => $this->item_id,
       'comments' => $comments

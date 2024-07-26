@@ -5,6 +5,7 @@ return [
     'layout' => 'Layout setting for admin',
     'layout-extends' => 'Blade extends for admin',
     'layout-section' => 'Contents section for admin',
+    'configure' => 'BBS configure',
     'bbs'=>[
       'edit'=>'BBS Edit',
       'create'=>'BBS Create',
@@ -41,7 +42,8 @@ return [
   ],
   'message' => [
     'LOGIN' => 'Available after login.',
-    'confirm-delete' => 'Are you sure you want to delete?'
+    'confirm-delete' => 'Are you sure you want to delete?',
+    'deleted-content' => 'This content was deleted'
   ],
   'bbs'=>[
     'title'=>[
@@ -53,14 +55,24 @@ return [
       'views' => 'Views',
       'attached' => 'Files',
       'no-data' => 'There is no data to display.',
+      'comment-placeholder' => 'Comment...',
+      'comments' => 'Comments.',
+      'status' => [
+        'answerd' => 'Answerd',
+        'ready' => 'Ready',
+      ]
     ],
     'button'=>[
+      'create' => 'Write',
       'write' => 'Write',
       'store' => 'Store',
       'search' => 'Search',
       'modify' => 'Modify',
+      'update' => 'Update',
       'delete' => 'Delete',
       'list' => 'List',
+      'cancel' => 'Cancel',
+      'reple-create' => 'Write',
     ]
   ]
 ];

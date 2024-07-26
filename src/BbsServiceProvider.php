@@ -68,22 +68,27 @@ class BbsServiceProvider extends ServiceProvider {
     ], 'public');
 
     // copy config
-    $this->publishes([
-      __DIR__.'/config/bbs.php' => config_path('bbs.php'),
-    ], 'public');
+    // $this->publishes([__DIR__.'/config/bbs.php' => config_path('bbs.php')], 'public');
 
 
     // LOAD THE VIEWS
     // - first the published views (in case they have any changes)
     $this->publishes([
-      __DIR__.'/resources/views/bbs' => resource_path('views/bbs'),
+      // copy config
+      __DIR__.'/config/bbs.php' => config_path('bbs.php'),
+      // copy resource 파일
+      __DIR__.'/resources/views/bbs/components' => resource_path('views/bbs/components'),
+      __DIR__.'/resources/views/bbs/templates' => resource_path('views/bbs/templates'),
+      // controllers;
+      __DIR__.'/Https/Controllers/Bbs/' => app_path('Http/Controllers/Bbs')
     ]);
+    
     // - loadViews  : 상기와 다른 점음  resources/views/bbs 에 없을 경우 아래 것에서 처리한다. for user modify
     $this->loadViewsFrom(__DIR__.'/resources/views/bbs', 'bbs');
 
-    $this->publishes([
-      __DIR__.'/Https/Controllers/Bbs/' => app_path('Http/Controllers/Bbs'),
-    ]);
+    // $this->publishes([
+    //   __DIR__.'/Https/Controllers/Bbs/' => app_path('Http/Controllers/Bbs'),
+    // ]);
     //  var_dump($result);
 
     Blade::component('item-comments', ItemCommnents::class);

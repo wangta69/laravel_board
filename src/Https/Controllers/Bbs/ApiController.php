@@ -1,137 +1,287 @@
 <?php
 
-namespace App\Http\Controllers\Bbs\Admin;
+namespace App\Http\Controllers\Bbs;
 
+// use App\Http\Controllers\Controller;
+use Pondol\Bbs\BbsController;
 use Illuminate\Http\Request;
-
+use Response;
+use Validator;
+use Auth;
+use Illuminate\Support\Facades\Redis;
+use Pondol\Bbs\Models\BbsTables as Tables;
 use Pondol\Bbs\Models\BbsArticles as Articles;
-use Pondol\Bbs\Models\BbsConfig;
+use Pondol\Bbs\Models\BbsComments as Comments;
+use Pondol\Bbs\Models\BbsFiles as Files;
+use App\Notifications\CountChanged;
+use Pondol\Bbs\BbsService;
 
-class BbsController extends \Pondol\Bbs\BbsExtendsController
+class BbsApiController extends BbsController
 {
-  public function __construct()
-  {
-    parent::__construct();
-  }
+    protected $bbsSvc;
+    protected $deaultUrlParams;
+    // protected $cfg;
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    // public function __construct(BbsService $bbsSvc)
+    // {
+    //     //$this->middleware('guest', ['except' => 'logout']);
+    //     $this->bbsSvc = $bbsSvc;
+    // }
 
-  /**
-   * 게시물 리스트
-   */
-  public function _index(Request $request, $tbl_name) {
-    
-    $preIndex = $this->preIndex($tbl_name);
-    $articles = $preIndex->articles;
-    $cfg = $preIndex->cfg;
+    /**
+     * 리스트 가져오기
+     */
+    public function lists($tbl_name, Request $request)
+    {
+        $user = $request->user();
+        $offset = $request->input('offset', 0);
+        $take = $request->input('take', 10);
 
-    // 사용자 정의 시작
-      // if ($cfg->table_name === 'qna') {
-      //   $articles = $articles->leftjoin('users as u', function($join){
-      //       $join->on('u.id', '=', 'bbs_articles.user_id');
-      //   })->addSelect(
-      //     'bbs_articles.id', 'bbs_articles.title',  'bbs_articles.writer', 'bbs_articles.created_at', 'bbs_articles.comment_cnt', 'u.email');
-      // }
-    // 사용자 정의 끝
+        $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+    //    $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
 
-    $articles =  $this->index($request, $articles, $cfg);
+        $articles = Articles::
+            select('id', 'user_id', 'writer', 'title', 'image', 'hit', 'created_at')
+            ->where('bbs_table_id', $cfg->id)
+            ->skip($offset)
+            ->take($take)
+            ->orderBy('order_num');
 
-    if(isset($result['error'])) {
-      if ($result['error'] == 'login') {
-        return redirect()->route('login');
-      }
-    }
-    // 
-    // 레이아웃 정보 가져오기
-    $this->getLayout($cfg);
-    return view('bbs.admin.templates.'.$cfg->skin_admin.'.index', ['articles'=>$articles, 'cfg'=>$cfg]);
-  }
+        if ($tbl_name === 'qna') {
+            $articles = $articles->where('user_id', $user->id);
+        }
 
-  /**
-   * 사용자 정의 (이곳에서 사용자 정의 처리) 기조 BbsController.php에 있는 내용을 가졍옮
-   */
+        $articles = $articles->get();
+        return response()->json([
+            'error'=>false,
+            'articles' => $articles,
+            'cfg'=>$cfg
+        ], 200);//500, 203
 
-   
 
-  /**
-   * 게시물 보기
-   */
-  public function _show(Request $request, $tbl_name, Articles $article) {
-
-    $result =  $this->show($request, $tbl_name, $article);
-
-   
-    if(isset($result['error'])) {
-      if ($result['error'] == 'password') {
-        return view('bbs.admin.templates.'.$result['cfg']->skin_admin.'.password-confirm', ['tbl_name'=>$tbl_name, 'article'=>$article->id]);
-      }
-    }
-    // 레이아웃 정보 가져오기
-    $this->getLayout($result['cfg']);
-    return view('bbs.admin.templates.'.$result['cfg']->skin_admin.'.show', $result);
-  }
-
-  public function _create(Request $request, $tbl_name) {
-    $result =  $this->create($request, $tbl_name);
-    // 레이아웃 정보 가져오기
-    $this->getLayout($result['cfg']);
-    return view('bbs.admin.templates.'.$result['cfg']->skin_admin.'.create', $result);
-  }
-
-  public function _store(Request $request, $tbl_name) {
-
-    // if ($validator->fails()) return ['error'=>'validation', 'errors'=>$validator->errors()];
-    $result =  $this->store($request, $tbl_name);
-    if(isset($result['error'])) {
-      if ($result['error'] == 'validation') {
-        return redirect()->back()->withInput()->withErrors($result['errors']);
-      }
+        // $user = $request->user();
+        // $items = Qna::where('user_id', $user->id)
+        //     ->skip($offset)
+        //     ->take($take)
+        //     ->orderby('id', 'desc')
+        //     ->get();
+        // return response()->json([
+        //     'error' => false,
+        //     'items' => $items
+        // ], 200);
     }
 
-    $enable_password = $result[2]->enable_password;
-    if ($enable_password) {
-      return redirect()->route('bbs.admin.tbl.index', [$result[0]]);
-    } else {
-      return redirect()->route('bbs.admin.tbl.show', [$result[0], $result[1]]);
+    /**
+     * 수정하기
+     */
+    // public function update(Qna $qna, Request $request)
+    // {
+    //     $user = $request->user();
+    //
+    //     if ($qna->user_id != $user->id) {
+    //         return response()->json([
+    //             'error' => 'NOT_ALLOWED_ACCESS'
+    //         ], 203);
+    //     }
+    //     $rules = [
+    //         'item' => 'required|min:2',
+    //         'subject' => 'required|min:2',
+    //         'question' => 'required|min:2',
+    //     ];
+    //
+    //     $messages = [
+    //         'item.required' =>'SOME_FIELD_REQUIRED',
+    //         'subject.required' =>'SOME_FIELD_REQUIRED',
+    //         'question.required' =>'SOME_FIELD_REQUIRED',
+    //     ];
+    //
+    //     $validator = Validator::make($request->all(), $rules, $messages);
+    //
+    //     if ($validator->fails()) {
+    //         return response()->json(['error'=>$validator->errors()->first()], 203);
+    //     } else {
+    //         $qna->item = $request->item;
+    //         $qna->subject = $request->subject;
+    //         $qna->question = $request->question;
+    //         $qna->save();
+    //     }
+    //
+    //     return response()->json([
+    //         'error' => false
+    //     ], 200);
+    // }
+
+    /**
+     * 보기
+     */
+    public function show(Request $request, $tbl_name, Articles $article)
+    {
+        $user = $request->user();
+
+    //    $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+    //    $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+
+//        $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+    //    $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+//exit;
+        // $content = Articles::find($article);
+        if ($tbl_name === 'qna' &&  $article->user_id != $user->id) {
+            return response()->json([
+               'error' => 'NOT_ALLOWED_ACCESS'
+            ], 203);
+        }
+
+        if ($request->cookie($tbl_name.$article->id) != '1') {
+            $article->hit ++;
+            $article->save();
+        }
+
+    //    Cookie::queue(Cookie::make($tbl_name.$content->id, '1'));
+        return response()->json(['error'=>false, 'article' => $article], 200);//500, 203
+
+        //
+        // $user = $request->user();
+        //
+        // if ($qna->user_id != $user->id) {
+        //     return response()->json([
+        //         'error' => 'NOT_ALLOWED_ACCESS'
+        //     ], 203);
+        // }
+        //
+        // return response()->json([
+        //     'error' => false,
+        //     'item' => $qna
+        // ], 200);
     }
-    
-  }
 
-  public function _edit(Request $request, $tbl_name, Articles $article) {
-    $result =  $this->edit($request, $tbl_name, $article);
-    $this->getLayout($result['cfg']);
-    return view('bbs.admin.templates.'.$result['cfg']->skin_admin.'.create', $result);
-  }
 
-  public function _update(Request $request, $tbl_name, Articles $article) {
-    $result =  $this->update($request, $tbl_name, $article);
-    return redirect()->route('bbs.admin.tbl.show', $result);
-  }
+    /*
+     * Store to BBS
+     *
+     * @param String $tbl_name
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request, $tbl_name)
+    {
 
-  public function _destroy(Request $request, $tbl_name, Articles $article) {
-    $result =  $this->destroy($request, $tbl_name, $article);
-    return redirect()->route('bbs.admin.tbl.index', [$tbl_name]);
-  }
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|min:2|max:100',
+            'content' => 'required',
+            //'username' => 'required|unique:users|min:2|max:8',
+        ]);
 
-  public function _passwordConfirm(Request $request, $tbl_name, Articles $article) {
-    $result =  $this->passwordConfirm($request, $tbl_name, $article);
+        if ($validator->fails()) return redirect()->back()->withErrors($validator->errors());
 
-    if(isset($result['error'])) {
-      if ($result['error'] == 'validation') {
-        return redirect()->back()->withInput()->withErrors($result['errors']);
-      }
+        $parent_id = $request->get('parent_id');//if this vaule setted it means reply
+
+        $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+        $urlParams = BbsService::create_params($this->deaultUrlParams, $request->input('urlParams'));
+
+
+        //check permission
+        $permission_result = $cfg->hasPermission('write');
+        if(!$permission_result)
+            abort(403, 'Unauthorized action.');
+
+
+        $article = new Articles;
+
+        $article->bbs_table_id = $cfg->id;
+        $article->writer = $request->get('writer');
+
+        if (Auth::check()) {
+            $article->user_id = Auth::user()->id;
+            $article->writer = $article->writer ? $article->writer : Auth::user()->name;
+        } else {
+            $article->user_id = 0;
+        }
+
+        $article->order_num = $this->get_order_num();
+        $article->parent_id = 0;//firt fill then update
+        $article->comment_cnt = 0;
+        $article->title = $request->get('title');
+        $article->content = $request->get('content');
+        $article->text_type = $request->input('text_type', 'br');
+
+        $article->save();
+
+
+        $article->parent_id = $parent_id ? $parent_id : $article->id;
+        $article->save();
+
+        $date_Ym = date("Ym");
+        $filepath = 'public/bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;
+
+        if(is_array($request->file('uploads')))
+            foreach ($request->file('uploads') as $index => $upload) {
+                if ($upload == null) continue;
+
+                //get file path (bbs/bbs_tables_id/YM/bbs_articles_id)
+                //upload to storage
+                $filename = $upload->getClientOriginalName();
+                $fileextension = $upload->getClientOriginalExtension();
+
+                $path=Storage::put($filepath,$upload); // //Storage::disk('local')->put($name,$file,'public');
+
+                //save to database
+                $file = new Files;
+                $file->rank = $index;
+                $file->bbs_articles_id = $article->id;
+                $file->file_name = $filename;
+                $file->path_to_file = $path;
+                $file->name_on_disk = basename($path);
+                $file->save();
+            }//foreach if
+
+        $this->contents_update($article, $cfg->id, $date_Ym);
+        $this->set_representaion($article);
+
+        return response()->json(['error'=>false], 200);
+        // return redirect()->route('bbs.show', [$tbl_name, $article->id, 'urlParams='.$urlParams->enc]);
     }
 
-    return redirect()->route('bbs.admin.tbl.show', [$tbl_name, $article->id]);
-  }
+    /**
+     * 저장하기
+     */
+    // public function store(Request $request)
+    // {
+    //
+    //     $user = $request->user();
+    //     $rules = [
+    //         'item' => 'required|min:2',
+    //         'subject' => 'required|min:2',
+    //         'question' => 'required|min:2',
+    //     ];
+    //
+    //     $messages = [
+    //         'item.required' =>'SOME_FIELD_REQUIRED',
+    //         'subject.required' =>'SOME_FIELD_REQUIRED',
+    //         'question.required' =>'SOME_FIELD_REQUIRED',
+    //     ];
+    //
+    //     $validator = Validator::make($request->all(), $rules, $messages);
+    //
+    //     if ($validator->fails()) {
+    //         return response()->json(['error'=>$validator->errors()->first()], 203);
+    //     } else {
+    //         $qna = new Qna();
+    //         $qna->user_id = $user->id;
+    //         $qna->trade_id = $request->trade_id;
+    //         $qna->ad_id = $request->ad_id;
+    //         $qna->item = $request->item;
+    //         $qna->subject = $request->subject;
+    //         $qna->question = $request->question;
+    //         $qna->save();
+    //
+    //         $qna->notify(new CountChanged('add', 'qnas'));
+    //     }
+    //
+    //     return Response::json(['result'=>true], 200);
+    // }
 
-  private function getLayout(&$cfg) {
-    $config = BbsConfig::get();
-    foreach($config as $v) {
-      switch($v->k) {
-        case 'extends':
-          $cfg->extends = $v->v; break;
-        case 'section':
-          $cfg->section = $v->v; break;
-      }
-    }
-  }
 }

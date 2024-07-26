@@ -3,27 +3,27 @@ namespace App\Http\Controllers\Bbs\Admin;
 
 use Illuminate\Http\Request;
 use Auth;
-
+use App\Http\Controllers\Controller;
 use Pondol\Bbs\Models\BbsArticles as Articles;
-use Pondol\Bbs\Models\BbsComments as Comments;
-
-class CommentController extends \Pondol\Bbs\CommentBaseController
+use Pondol\Bbs\CommentBase;
+use Pondol\Bbs\BbsService;
+class CommentController extends Controller
 {
 
+  use CommentBase;
     /**
    * Create a new controller instance.
    *
    * @return void
    */
-  public function __construct()
+  public function __construct(BbsService $bbsSvc )
   {
-    parent::__construct();
+    $this->bbsSvc = $bbsSvc;
     $this->middleware('auth');
-    // $this->itemsPerPage = 10; // change table list count;
+
     $this->middleware(function ($request, $next) {
       $value = config('bbs.admin_roles'); // administrator
       if (Auth::check()) {
-        // if(!BbsService::hasRoles($value))
         if(!$this->bbsSvc->hasRoles($value))
           return redirect('');
       } else {
@@ -35,7 +35,12 @@ class CommentController extends \Pondol\Bbs\CommentBaseController
 
   public function _store(Request $request, $tbl_name, Articles $article, $comment_id) {
     $result =  $this->store($request, $tbl_name, $article, $comment_id);
-    return redirect()->route('bbs.admin.tbl.show', [$tbl_name, $article->id]);
+    if($request->ajax()){
+      return response()->json($result, 200);//500, 203
+    } else {
+      return redirect()->route('bbs.admin.tbl.show', [$tbl_name, $article->id]);
+    }
+
   }
 
   public function _update(Request $request, $tbl_name, Articles $article, Comments $comment) {

@@ -42,6 +42,7 @@ trait CommentBase {
     }else{
       // $comment->reply_depth   = 'A';
       $comment->order_num = $this->get_order_num($article->id);
+      $comment->reply_depth = 'A';
     }
 
     $comment->writer = $request->get('writer');
@@ -64,12 +65,7 @@ trait CommentBase {
     $article->comment_cnt++;
     $article->save();
 
-
-    if($request->ajax()){
-      return Response::json(['result'=>true, "code"=>"000", 'message'=>''], 200);
-    }
-    //return view('welcome');
-    return redirect()->route('bbs.show', [$tbl_name, $article->id, 'urlParams='.$request->input('urlParams')]);
+    return ['error'=>false];
   }
 
   // update
@@ -121,9 +117,22 @@ trait CommentBase {
     */
   public function destroy($article, $comment)
   {
+    // find child
 
+    // if child is not exitst
+
+    $isChild = Comments::where('order_num', $comment->order_num)
+    ->where('parent_id', $comment->id)->first();
     //1. delete comment
-    $comment->delete();
+
+    if($isChild) {
+      $comment->content = null;
+      $comment->save();
+    } else {
+      $comment->delete();
+    }
+
+    // else update to only contents null
 
     $article->comment_cnt--;
     $article->save();

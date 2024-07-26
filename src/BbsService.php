@@ -22,10 +22,15 @@ class BbsService
    * @param Array $params = array(id, cnt)
    */
   public static function get_latest($params){
-    $bbs_table_id = $params['id'];
+    $table_name = $params['table'];
     $cnt = isset($params["cnt"]) ? $params["cnt"]: 5;
 
-    $list = Articles::where('bbs_table_id', $bbs_table_id)->limit($cnt)->orderBy('created_at', 'desc');//->paginate($this->itemsPerPage);
+    $list = Articles::
+    select('bbs_articles.id', 'bbs_articles.writer', 'bbs_articles.title', 'bbs_articles.created_at')
+    ->join('bbs_tables', function($join) {
+      $join->on('bbs_tables.id', '=', 'bbs_articles.bbs_table_id');
+      
+    })->where('bbs_tables.table_name', $table_name)->limit($cnt)->orderBy('bbs_articles.created_at', 'desc');//->paginate($this->itemsPerPage);
     return $list->get();
   }
 

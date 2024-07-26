@@ -6,22 +6,29 @@ use Illuminate\Http\Request;
 
 use Auth;
 
+use App\Http\Controllers\Controller;
+
+use Pondol\Bbs\BbsService;
 
 use Pondol\Bbs\Models\BbsArticles as Articles;
 use Pondol\Bbs\Models\BbsConfig;
+use Pondol\Bbs\BbsBase;
 
-class BbsController extends \Pondol\Bbs\BbsBaseController
+class BbsController extends Controller
 {
-  public function __construct()
-  {
-    parent::__construct();
 
+  use BbsBase;
+
+  public function __construct(
+    BbsService $bbsSvc 
+  )
+  {
+    $this->bbsSvc = $bbsSvc;
     $this->middleware('auth');
-    // $this->itemsPerPage = 10; // change table list count;
+
     $this->middleware(function ($request, $next) {
       $value = config('bbs.admin_roles'); // administrator
       if (Auth::check()) {
-        // if(!BbsService::hasRoles($value))
         if(!$this->bbsSvc->hasRoles($value))
           return redirect('');
       } else {
@@ -57,8 +64,8 @@ class BbsController extends \Pondol\Bbs\BbsBaseController
     // print_r($result)
     // exit;
     $this->getLayout($result['cfg']);
-    return view('bbs.admin.templates.'.$result['cfg']->skin_admin.'.index', $result);
-  }
+    return view('bbs.templates.admin.'.$result['cfg']->skin_admin.'.index', $result);
+  }// bbs.admin.templates
 
   /**
    * 사용자 정의 (이곳에서 사용자 정의 처리) 기조 BbsController.php에 있는 내용을 가졍옮
@@ -75,19 +82,19 @@ class BbsController extends \Pondol\Bbs\BbsBaseController
 
     if(isset($result['error'])) {
       if ($result['error'] == 'password') {
-        return view('bbs.admin.templates.'.$result['cfg']->skin_admin.'.password-confirm', ['tbl_name'=>$tbl_name, 'article'=>$article->id]);
+        return view('bbs.templates.admin.'.$result['cfg']->skin_admin.'.password-confirm', ['tbl_name'=>$tbl_name, 'article'=>$article->id]);
       }
     }
     // 레이아웃 정보 가져오기
     $this->getLayout($result['cfg']);
-    return view('bbs.admin.templates.'.$result['cfg']->skin_admin.'.show', $result);
+    return view('bbs.templates.admin.'.$result['cfg']->skin_admin.'.show', $result);
   }
 
   public function _create(Request $request, $tbl_name) {
     $result =  $this->create($request, $tbl_name);
     // 레이아웃 정보 가져오기
     $this->getLayout($result['cfg']);
-    return view('bbs.admin.templates.'.$result['cfg']->skin_admin.'.create', $result);
+    return view('bbs.templates.admin.'.$result['cfg']->skin_admin.'.create', $result);
   }
 
   public function _store(Request $request, $tbl_name) {
@@ -111,7 +118,7 @@ class BbsController extends \Pondol\Bbs\BbsBaseController
   public function _edit(Request $request, $tbl_name, Articles $article) {
     $result =  $this->edit($request, $tbl_name, $article);
     $this->getLayout($result['cfg']);
-    return view('bbs.admin.templates.'.$result['cfg']->skin_admin.'.create', $result);
+    return view('bbs.templates.admin.'.$result['cfg']->skin_admin.'.create', $result);
   }
 
   public function _update(Request $request, $tbl_name, Articles $article) {
@@ -121,7 +128,12 @@ class BbsController extends \Pondol\Bbs\BbsBaseController
 
   public function _destroy(Request $request, $tbl_name, Articles $article) {
     $result =  $this->destroy($request, $tbl_name, $article);
-    return redirect()->route('bbs.admin.tbl.index', [$tbl_name]);
+    
+    if($request->ajax()){
+      return response()->json($result, 200);//500, 203
+    } else {
+      return redirect()->route('bbs.admin.tbl.index', [$tbl_name]);
+    }
   }
 
   public function _passwordConfirm(Request $request, $tbl_name, Articles $article) {

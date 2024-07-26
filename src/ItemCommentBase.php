@@ -12,15 +12,6 @@ use Pondol\Bbs\Models\BbsConfig;
 
 trait ItemCommentBase {
 
-  // protected $bbsSvc;
-  // protected $cfg;
-  // protected $laravel_ver;
-  // public function __construct() {
-  //   // $this->bbsSvc = \App::make('Pondol\Bbs\BbsService');
-  //   // $laravel = app();
-  //   // $this->laravel_ver = $laravel::VERSION;
-  // }
-
   public function index($request, $item) {
     $comment = BbsItemComment::where('bbs_item_comments.item', $item);
     return $comment;

@@ -44,7 +44,7 @@ trait AdminBase {
   public function createForm(Request $request, Tables $table)
   {
     // front 용
-    $skin_dir =  resource_path('views/bbs/templates/');
+    $skin_dir =  resource_path('views/bbs/templates/admin');
     $tmp_skins = array_map('basename',\File::directories($skin_dir));
     //키를 text로 변경
     foreach($tmp_skins as $v){
@@ -52,7 +52,7 @@ trait AdminBase {
     }
 
     // 관리자용
-    $skin_dir =  resource_path('views/bbs/admin/templates/');
+    $skin_dir =  resource_path('views/bbs/templates/user');
     $tmp_skins = array_map('basename',\File::directories($skin_dir));
     //키를 text로 변경
     foreach($tmp_skins as $v){

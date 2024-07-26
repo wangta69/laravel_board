@@ -5,6 +5,7 @@ return [
     'layout' => '관리자 환경 설정',
     'layout-extends' => '관리자용 Blade Extends',
     'layout-section' => '관리자용 contents section',
+    'configure' => '환경설정',
     'bbs'=>[
       'edit'=>'게시판 수정',
       'create'=>'게시판 생성',
@@ -42,7 +43,8 @@ return [
   
   'message' => [
     'LOGIN' => '로그인 후 이용가능합니다.',
-    'confirm-delete' => '삭제하시겠습니까?'
+    'confirm-delete' => '삭제하시겠습니까?',
+    'deleted-content' => '삭제된 내용입니다.'
   ],
   'bbs'=>[
     'title'=>[
@@ -54,14 +56,24 @@ return [
       'views' => '조회수',
       'attached' => '첨부파일',
       'no-data' => '디스플레이할 데이타가 없습니다.',
+      'comment-placeholder' => '댓글을 입력해 주세요.',
+      'comments' => '댓글목록.',
+      'status' => [
+        'answerd' => '답변완료',
+        'ready' => '대기중',
+      ]
     ],
     'button'=>[
+      'create' => '글쓰기',
       'write' => '글쓰기',
       'store' => '작성완료',
       'search' => '검색',
       'modify' => '수정',
+      'update' => '수정',
       'delete' => '삭제',
       'list' => '목록',
+      'cancel' => '취소',
+      'reple-create' => '댓글',
     ]
   ]
 ];
