@@ -46,7 +46,7 @@ class CreateAllPondolBbsTables extends Migration
         $table->tinyInteger('order')->unsigned()->default(0)->comment('카테고리 출력 순서');
         $table->timestamps();
         $table->index('bbs_table_id');
-        $table->foreign('bbs_table_id')->references('id')->on('bbs_tables')->onDelete('cascade');
+        $table->foreignId('bbs_table_id')->references('id')->on('bbs_tables')->onDelete('cascade');
       });
     }
 
@@ -65,7 +65,7 @@ class CreateAllPondolBbsTables extends Migration
         $table->softDeletes();
         $table->index('order_num');
         $table->index('bbs_articles_id');
-        $table->foreign('bbs_articles_id')->references('id')->on('bbs_articles')->onDelete('cascade');
+        $table->foreignId('bbs_articles_id')->references('id')->on('bbs_articles')->onDelete('cascade');
       });
     }
 
@@ -97,7 +97,7 @@ class CreateAllPondolBbsTables extends Migration
         $table->integer('rank')->unsigned();
         $table->timestamps();
 
-        $table->foreign('bbs_articles_id')->references('id')->on('bbs_articles');
+        $table->foreignId('bbs_articles_id')->references('id')->on('bbs_articles');
       });
     }
 
