@@ -16,7 +16,7 @@ class CreateAllPondolBbsTables extends Migration
     // Create Articles Table
     if (!Schema::hasTable('bbs_articles')) {
       Schema::create('bbs_articles', function(BluePrint $table) {
-        $table->increments('id');
+        $table->id();
         $table->bigInteger('user_id')->nullable()->unsigned();
         $table->string('writer', '20')->nullable();
         $table->string('password', '20')->nullable();
@@ -63,7 +63,7 @@ class CreateAllPondolBbsTables extends Migration
     // Create BBS Categories table
     if (!Schema::hasTable('bbs_categories')) {
       Schema::create('bbs_categories', function(BluePrint $table) {
-        $table->increments('id');
+        $table->id();
         $table->bigInteger('bbs_table_id')->unsigned()->index();
         $table->string('name', '20');
         $table->tinyInteger('order')->unsigned()->default(0)->comment('카테고리 출력 순서');
@@ -75,7 +75,7 @@ class CreateAllPondolBbsTables extends Migration
     // Create Comments Table
     if (!Schema::hasTable('bbs_comments')) {
       Schema::create('bbs_comments', function(BluePrint $table) {
-        $table->increments('id');
+        $table->id();
         $table->bigInteger('user_id')->nullable()->unsigned();
         $table->string('writer', '20')->nullable();
         $table->bigInteger('bbs_articles_id')->index()->unsigned();
@@ -92,7 +92,7 @@ class CreateAllPondolBbsTables extends Migration
     // Create BBS Config table
     if (!Schema::hasTable('bbs_config')) {
       Schema::create('bbs_config', function(BluePrint $table) {
-        $table->increments('id');
+        $table->id();
         $table->string('k', '255');
         $table->string('v', '50');
         $table->timestamps();
@@ -109,7 +109,7 @@ class CreateAllPondolBbsTables extends Migration
     // Create Files Table
     if (!Schema::hasTable('bbs_files')) {
       Schema::create('bbs_files', function(BluePrint $table) {
-        $table->increments('id');
+        $table->id();
         $table->bigInteger('bbs_articles_id')->unsigned()->index();
         $table->string('file_name')->comment('original file name');
         $table->string('path_to_file')->comment('saved file path from storage');
