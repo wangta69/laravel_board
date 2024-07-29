@@ -22,7 +22,7 @@ class CreateAllPondolBbsTables extends Migration
         $table->string('password', '20')->nullable();
         $table->bigInteger('bbs_table_id')->unsigned();
         $table->bigInteger('bbs_category_id')->unsigned()->nullable();
-        $table->integer('order_num')->comment('정렬번호');
+        $table->integer('order_num')->index()->comment('정렬번호');
         $table->bigInteger('parent_id')->unsigned()->comment('부모 id');
         $table->smallInteger('comment_cnt')->default(0)->unsigned()->comment('전체 댓글 표시');
         $table->string('reply_depth', '25')->nullable()->comment('reply 일경우 depth A AA B..');
@@ -33,7 +33,6 @@ class CreateAllPondolBbsTables extends Migration
         $table->integer('hit')->unsigned()->default(0);
         $table->timestamps();
         $table->softDeletes();
-        $table->index('order_num');
       });
     }
 
@@ -41,11 +40,10 @@ class CreateAllPondolBbsTables extends Migration
     if (!Schema::hasTable('bbs_categories')) {
       Schema::create('bbs_categories', function(BluePrint $table) {
         $table->increments('id');
-        $table->bigInteger('bbs_table_id')->unsigned();
+        $table->bigInteger('bbs_table_id')->unsigned()->index();
         $table->string('name', '20');
         $table->tinyInteger('order')->unsigned()->default(0)->comment('카테고리 출력 순서');
         $table->timestamps();
-        $table->index('bbs_table_id');
         $table->foreignId('bbs_table_id')->references('id')->on('bbs_tables')->onDelete('cascade');
       });
     }
@@ -56,15 +54,13 @@ class CreateAllPondolBbsTables extends Migration
         $table->increments('id');
         $table->bigInteger('user_id')->nullable()->unsigned();
         $table->string('writer', '20')->nullable();
-        $table->bigInteger('bbs_articles_id')->unsigned();
-        $table->integer('order_num')->comment('정렬번호');
+        $table->bigInteger('bbs_articles_id')->index()->unsigned();
+        $table->integer('order_num')->index()->comment('정렬번호');
         $table->bigInteger('parent_id')->unsigned()->comment('부모 id');
         $table->string('reply_depth', '25')->nullable()->comment('reply 일경우 depth A AA B..');
         $table->text('content')->nullable()->comment('사용자가 삭제할때 자식이 있을 경우 이곳을 null로 처리한다.');
         $table->timestamps();
         $table->softDeletes();
-        $table->index('order_num');
-        $table->index('bbs_articles_id');
         $table->foreignId('bbs_articles_id')->references('id')->on('bbs_articles')->onDelete('cascade');
       });
     }
