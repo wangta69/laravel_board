@@ -31,6 +31,12 @@ composer require wangta69/laravel_board
 php artisan storage:link
 ```
 
+### publish all Resoucres
+```
+php artisan vendor:publish --provider="Pondol\Bbs\BbsServiceProvider"
+php artisan vendor:publish --provider="Pondol\Editor\EditorServiceProvider"
+```
+
 ## How to Use
 ### Set Security for Admin.
 > After Install, Goto App/Http/Controllers/Bbs/Admin and you can find controllers for Admin.<br>
@@ -49,14 +55,17 @@ If you have rolls not yet,  do 'php artisan make:model Role -m' <br />
 > link for user : http://YourDomain//bbs/[table name] <br>
 
 ### functions
-### bbs_get_thumb
-### bbs_get_latest
+#### bbs_get_thumb
+> realtime thumbnail generator
+```
+<img src="{{bbs_get_thumb($article->image, 205, 205) }}" alt="{{$article->title}}">
+```
+#### bbs_get_latest
 > if you want some data to dispay from bbs, follow below explain 
 ```
-use Pondol\Bbs\BbsService;
 public function Anything()
 {
-	$pds = BbsService::bbs_get_latest(array('table'=>'free', 'cnt'=>4));
+	$notice = bbs_get_latest(array('table'=>'notice', 'cnt'=>5));
 }
 ```
 
