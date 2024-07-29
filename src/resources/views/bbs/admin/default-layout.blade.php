@@ -1,4 +1,4 @@
-@extends('bbs.layouts.default')
+@extends('bbs::layouts.default')
 @section('title', 'HOME')
 
 @section('head')

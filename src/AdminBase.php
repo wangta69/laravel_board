@@ -61,8 +61,9 @@ trait AdminBase {
 
     $editors = ['none'=>'None', 'smartEditor'=>'Smart Editor'];
     $categoris = [];
-    if ($table) { // 카테고리를 가져온다.
-    }
+
+    // set default value;
+    $table->lists = $table->lists ?? 10;
 
     $cfg = $this->admin_extends();
     return view('bbs::admin.create', [
@@ -89,7 +90,9 @@ trait AdminBase {
       'name' => 'required',
       'table_name' => 'required|unique:bbs_tables',
       'skin' => 'required',
-      'lists' => 'required'
+      'lists' => 'required',
+      'section' => 'required',
+      'extends' => 'required'
       //'username' => 'required|unique:users|min:2|max:8',
     ]);
 

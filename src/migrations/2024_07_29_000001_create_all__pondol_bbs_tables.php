@@ -100,7 +100,7 @@ class CreateAllPondolBbsTables extends Migration
 
       DB::table('bbs_config')->insert(
         [
-          ['k' => 'extends','v' => 'bbs.admin.default-layout'],
+          ['k' => 'extends','v' => 'bbs::admin.default-layout'],
           ['k' => 'section','v' => 'bbs-content']
         ]
       );

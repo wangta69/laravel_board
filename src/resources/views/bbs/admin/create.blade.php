@@ -16,14 +16,14 @@
           <div class='form-group row mt-1'>
             <label for='name' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.title')</label>
             <div class='col-sm-10'>
-              <input type="text" name="name" class="form-control" id="name" placeholder="bbs title like 'free bbs for child'" value="{{isset($table) ? $table->name : old('name')}}">
+              <input type="text" name="name" class="form-control" id="name" placeholder="bbs title like 'free bbs for child'" value="{{isset($table) &&  $table->name ? $table->name : old('name')}}">
             </div>
           </div>
 
           <div class='form-group row mt-1'>
             <label for='table_name' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.name')</label>
             <div class='col-sm-10'>
-              <input type="text" name="table_name" id="table_name" class="form-control" placeholder="bbs name like 'free'" value="{{isset($table) ? $table->table_name : old('table_name')}}">
+              <input type="text" name="table_name" id="table_name" class="form-control" placeholder="bbs name like 'free'" value="{{isset($table) && $table->table_name ? $table->table_name : old('table_name')}}">
 
             </div>
           </div>
@@ -53,14 +53,14 @@
           <div class='form-group row mt-1'>
             <label for='skin' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.blade-extends')</label>
             <div class='col-sm-10'>
-              <input type="text" name="extends" id="extends" class="form-control" placeholder="extends" value="{{isset($table) ? $table->extends : old('extends')}}">
+              <input type="text" name="extends" id="extends" class="form-control" placeholder="extends" value="{{isset($table) && $table->extends ? $table->extends : old('extends')}}">
             </div>
           </div>
 
           <div class='form-group row mt-1'>
             <label for='skin' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.blade-section')</label>
             <div class='col-sm-10'>
-              <input type="text" name="section" id="section" class="form-control" placeholder="extesectionnds" value="{{isset($table) ? $table->section : old('section')}}">
+              <input type="text" name="section" id="section" class="form-control" placeholder="extesectionnds" value="{{isset($table) && $table->section ? $table->section : old('section')}}">
             </div>
           </div>
 
@@ -215,7 +215,7 @@
           <div class='form-group row mt-1'>
             <label for='lists' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.lists-per-page')</label>
             <div class='col-sm-10'>
-              <input type="text" name="lists" id="lists" class="form-control" value="{{isset($table) ? $table->lists : old('lists')}}">
+              <input type="text" name="lists" id="lists" class="form-control" value="{{isset($table) && $table->lists ? $table->lists : old('lists')}}">
             </div>
           </div>
         </div> <!-- .card-body -->
