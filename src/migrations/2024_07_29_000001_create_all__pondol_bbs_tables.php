@@ -36,15 +36,39 @@ class CreateAllPondolBbsTables extends Migration
       });
     }
 
+    // Create BBS Config table
+    if (!Schema::hasTable('bbs_tables')) {
+      Schema::create('bbs_tables', function(BluePrint $table) {
+        $table->id();
+        $table->string('name');
+        $table->string('table_name', '20')->unique();
+        $table->string('skin', '20');
+        $table->string('skin_admin', '20');
+        $table->string('section', '50');
+        $table->string('extends', '50');
+        $table->tinyInteger('lists')->unsigned()->default(10)->comment('reply 기능 활성');
+        $table->string('editor', '20')->comment('none, smartEditor');
+        $table->tinyInteger('enable_reply')->unsigned()->default(0)->comment('articles count displayed on index');
+        $table->tinyInteger('enable_comment')->unsigned()->default(0)->comment('comment 기능 활성');
+        $table->tinyInteger('enable_qna')->unsigned()->default(0)->comment('1대1 기능 활성(관리자 및 글쓴이만 확인)');
+        $table->tinyInteger('enable_password')->unsigned()->default(0)->comment('비회원 운영시 패스워드 입력');
+        $table->string('auth_list', '10')->default('none')->comment('none: nonmember, login:logined member, role:has role member');
+        $table->string('auth_write', '10')->default('none')->comment('none: nonmember, login:logined member, role:has role member');
+        $table->string('auth_read', '10')->default('none')->comment('none: nonmember, login:logined member, role:has role member');
+        $table->timestamps();
+        $table->softDeletes();
+      });
+    }
+
     // Create BBS Categories table
     if (!Schema::hasTable('bbs_categories')) {
       Schema::create('bbs_categories', function(BluePrint $table) {
         $table->increments('id');
-        // $table->bigInteger('bbs_table_id')->unsigned()->index();
+        $table->bigInteger('bbs_table_id')->unsigned()->index();
         $table->string('name', '20');
         $table->tinyInteger('order')->unsigned()->default(0)->comment('카테고리 출력 순서');
         $table->timestamps();
-        $table->foreignId('bbs_table_id')->references('id')->on('bbs_tables')->onDelete('cascade');
+        $table->foreign('bbs_table_id')->references('id')->on('bbs_tables')->onDelete('cascade');
       });
     }
 
@@ -54,14 +78,14 @@ class CreateAllPondolBbsTables extends Migration
         $table->increments('id');
         $table->bigInteger('user_id')->nullable()->unsigned();
         $table->string('writer', '20')->nullable();
-        // $table->bigInteger('bbs_articles_id')->index()->unsigned();
+        $table->bigInteger('bbs_articles_id')->index()->unsigned();
         $table->integer('order_num')->index()->comment('정렬번호');
         $table->bigInteger('parent_id')->unsigned()->comment('부모 id');
         $table->string('reply_depth', '25')->nullable()->comment('reply 일경우 depth A AA B..');
         $table->text('content')->nullable()->comment('사용자가 삭제할때 자식이 있을 경우 이곳을 null로 처리한다.');
         $table->timestamps();
         $table->softDeletes();
-        $table->foreignId('bbs_articles_id')->references('id')->on('bbs_articles')->onDelete('cascade');
+        $table->foreign('bbs_articles_id')->references('id')->on('bbs_articles')->onDelete('cascade');
       });
     }
 
@@ -86,14 +110,14 @@ class CreateAllPondolBbsTables extends Migration
     if (!Schema::hasTable('bbs_files')) {
       Schema::create('bbs_files', function(BluePrint $table) {
         $table->increments('id');
-        // $table->bigInteger('bbs_articles_id')->unsigned()->index();
+        $table->bigInteger('bbs_articles_id')->unsigned()->index();
         $table->string('file_name')->comment('original file name');
         $table->string('path_to_file')->comment('saved file path from storage');
         $table->string('name_on_disk')->comment('saved file name');
         $table->integer('rank')->unsigned();
         $table->timestamps();
 
-        $table->foreignId('bbs_articles_id')->references('id')->on('bbs_articles');
+        $table->foreign('bbs_articles_id')->references('id')->on('bbs_articles');
       });
     }
 
@@ -125,29 +149,7 @@ class CreateAllPondolBbsTables extends Migration
     }
 
 
-    // Create BBS Config table
-    if (!Schema::hasTable('bbs_tables')) {
-      Schema::create('bbs_tables', function(BluePrint $table) {
-        $table->id();
-        $table->string('name');
-        $table->string('table_name', '20')->unique();
-        $table->string('skin', '20');
-        $table->string('skin_admin', '20');
-        $table->string('section', '50');
-        $table->string('extends', '50');
-        $table->tinyInteger('lists')->unsigned()->default(10)->comment('reply 기능 활성');
-        $table->string('editor', '20')->comment('none, smartEditor');
-        $table->tinyInteger('enable_reply')->unsigned()->default(0)->comment('articles count displayed on index');
-        $table->tinyInteger('enable_comment')->unsigned()->default(0)->comment('comment 기능 활성');
-        $table->tinyInteger('enable_qna')->unsigned()->default(0)->comment('1대1 기능 활성(관리자 및 글쓴이만 확인)');
-        $table->tinyInteger('enable_password')->unsigned()->default(0)->comment('비회원 운영시 패스워드 입력');
-        $table->string('auth_list', '10')->default('none')->comment('none: nonmember, login:logined member, role:has role member');
-        $table->string('auth_write', '10')->default('none')->comment('none: nonmember, login:logined member, role:has role member');
-        $table->string('auth_read', '10')->default('none')->comment('none: nonmember, login:logined member, role:has role member');
-        $table->timestamps();
-        $table->softDeletes();
-      });
-    }
+
   }
     
 
