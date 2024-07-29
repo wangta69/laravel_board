@@ -1,5 +1,6 @@
 @extends($cfg->extends)
 @section('title', $article->title)
+@section('keywords', $article->keywords)
 @section ($cfg->section)
 <div class="container">
   <div class="bbs show">

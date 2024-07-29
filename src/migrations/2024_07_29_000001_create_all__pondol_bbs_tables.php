@@ -28,6 +28,7 @@ class CreateAllPondolBbsTables extends Migration
         $table->string('reply_depth', '25')->nullable()->comment('reply 일경우 depth A AA B..');
         $table->string('text_type', '5')->comment('html, br');
         $table->string('title', '255');
+        $table->string('keywords', '100')->nullable()->comment('키워드(laravel, php, ..) 로 컴마로 구분');
         $table->text('content');
         $table->string('image', '255')->nullable();
         $table->integer('hit')->unsigned()->default(0);
