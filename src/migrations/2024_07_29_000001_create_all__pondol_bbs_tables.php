@@ -40,7 +40,7 @@ class CreateAllPondolBbsTables extends Migration
     if (!Schema::hasTable('bbs_categories')) {
       Schema::create('bbs_categories', function(BluePrint $table) {
         $table->increments('id');
-        $table->bigInteger('bbs_table_id')->unsigned()->index();
+        // $table->bigInteger('bbs_table_id')->unsigned()->index();
         $table->string('name', '20');
         $table->tinyInteger('order')->unsigned()->default(0)->comment('카테고리 출력 순서');
         $table->timestamps();
@@ -54,7 +54,7 @@ class CreateAllPondolBbsTables extends Migration
         $table->increments('id');
         $table->bigInteger('user_id')->nullable()->unsigned();
         $table->string('writer', '20')->nullable();
-        $table->bigInteger('bbs_articles_id')->index()->unsigned();
+        // $table->bigInteger('bbs_articles_id')->index()->unsigned();
         $table->integer('order_num')->index()->comment('정렬번호');
         $table->bigInteger('parent_id')->unsigned()->comment('부모 id');
         $table->string('reply_depth', '25')->nullable()->comment('reply 일경우 depth A AA B..');
@@ -86,7 +86,7 @@ class CreateAllPondolBbsTables extends Migration
     if (!Schema::hasTable('bbs_files')) {
       Schema::create('bbs_files', function(BluePrint $table) {
         $table->increments('id');
-        $table->bigInteger('bbs_articles_id')->unsigned()->index();
+        // $table->bigInteger('bbs_articles_id')->unsigned()->index();
         $table->string('file_name')->comment('original file name');
         $table->string('path_to_file')->comment('saved file path from storage');
         $table->string('name_on_disk')->comment('saved file name');
