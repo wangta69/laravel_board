@@ -93,8 +93,8 @@ class CreateAllPondolBbsTables extends Migration
     if (!Schema::hasTable('bbs_config')) {
       Schema::create('bbs_config', function(BluePrint $table) {
         $table->id();
-        $table->string('k', '255');
-        $table->string('v', '50');
+        $table->string('k', '20');
+        $table->string('v', '20');
         $table->timestamps();
       });
 

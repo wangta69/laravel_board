@@ -1,4 +1,5 @@
 @extends($cfg->extends)
+@section('title', $article->title)
 @section ($cfg->section)
 <div class="container">
   <div class="bbs show">
