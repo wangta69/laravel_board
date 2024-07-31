@@ -17,9 +17,41 @@ trait ItemCommentBase {
     return $comment;
   }  
 
-  public function store($comment, $item_id, $parent_id)
+  public function store($request, $item, $item_id, $parent_id)
   {
+    $user = $request->user();
+    if (!$user) {
+      if($request->ajax()){
+        return Response::json(['error'=>trans('bbs::messages.message.LOGIN')], 203);
+      } else {
+        
+        return redirect()->back()->withErrors(['error'=>['message'=>trans('bbs::messages.message.LOGIN')]]);
+      }
+    }
+    // $comment_id = $request->input('comment_id', 0);
+    // $parent_id = 0;
+    if(!$item || !$item_id)
+      abort(404, "Exception Message");
 
+    $validator = Validator::make($request->all(), [
+      'content' => 'required|min:2',
+    ]); // |max:255
+
+    if ($validator->fails()) {
+      if($request->ajax()){
+        return Response::json(['error'=>'validationErrors', 'validation'=>$validator->errors()], 203);
+      } else {
+        return redirect()->back()->withErrors($validator->errors());
+      }
+      
+    }
+
+    $comment = new BbsItemComment;
+    $comment->item = $item;
+    $comment->item_id = $item_id;//firt fill then update
+    $comment->writer = $request->get('writer');
+    $comment->content = $request->get('content');
+    $comment->rating = $request->get('rating');
     //본글에 대한 답변인지 댓글의 댓글인지 구분
 
     if($parent_id){
@@ -42,6 +74,7 @@ trait ItemCommentBase {
     
     $comment->parent_id = 0;//firt fill then update
     // $comment->parent_id = $parent_id  ? $parent_id : $comment->id;
+   
     $comment->save();
 
     $comment->parent_id = $parent_id  ? $parent_id : $comment->id;
@@ -50,11 +83,10 @@ trait ItemCommentBase {
 
     return ['error'=>false];
 
-
   }
 
   // update
-  public function update(Request $request, $tbl_name, $article, Comments $comment){
+  public function update($request, $tbl_name, $article, $comment){
 
     if(!$tbl_name || !$comment->id)
       return Response::json(['result'=>false, "code"=>"001", 'message'=>'필요값이 충분하지 않습니다.'], 203);
@@ -65,15 +97,16 @@ trait ItemCommentBase {
     // |max:255
 
     if ($validator->fails())
-      return Response::json(['result'=>false, "code"=>"002", 'message'=>$validator->errors()], 203);
+      return ['error'=>true, 'message'=>$validator->errors()];
 
     if (!$comment->isOwner(Auth::user()))
-      return Response::json(['result'=>false, "code"=>"003", 'message'=>'본인이 작성한 글만 수정가능합니다.'], 203);
+      return ['error'=>'본인이 작성한 글만 수정가능합니다.'];
 
     $comment->content = $request->get('content');
+    $comment->rating = $request->get('rating');
     $comment->save();
 
-    return Response::json(['result'=>true, "code"=>"000", 'message'=>''], 200);
+    return ['error'=>false];
 
   }
 
@@ -118,7 +151,7 @@ trait ItemCommentBase {
     * @return \Illuminate\Http\Response
     * ajax로 처러되며 리턴도 json type으로 처리
     */
-  public function destroy(Request $request, $tbl_name, Articles $article, Comments $comment)
+  public function destroy($article, $comment)
   {
 
     if (!$comment->isOwner(Auth::user())) {
@@ -132,7 +165,7 @@ trait ItemCommentBase {
     $article->save();
 
     //return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
-    return Response::json(['error'=>false, "code"=>"000", 'comment'=>$comment], 200);
+    return ['error'=>false];
   }
 
   protected function admin_extends() {

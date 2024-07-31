@@ -54,6 +54,7 @@ return [
       'writer' => 'Writer',
       'views' => 'Views',
       'attached' => 'Files',
+      'keywords' => 'Keywords',
       'no-data' => 'There is no data to display.',
       'comment-placeholder' => 'Comment...',
       'comments' => 'Comments.',

@@ -16,7 +16,6 @@
 composer require wangta69/laravel_board
 ```
 
-
 ## Setup
 - design : bootstrp 5.x
 - jquery : 3.6.x

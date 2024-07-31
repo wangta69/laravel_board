@@ -55,6 +55,7 @@ return [
       'writer' => '작성자',
       'views' => '조회수',
       'attached' => '첨부파일',
+      'keywords' => '키워드',
       'no-data' => '디스플레이할 데이타가 없습니다.',
       'comment-placeholder' => '댓글을 입력해 주세요.',
       'comments' => '댓글목록.',

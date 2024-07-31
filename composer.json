@@ -1,7 +1,7 @@
 {
     "name": "wangta69/laravel_board",
     "description": "BBS bulletin board system",
-    "keywords": ["laravel", "bbs", "pondol" , "board", "게시판", "korea"],
+    "keywords": ["laravel", "bbs", "pondol" , "board", "게시판", "korea", "라라벨"],
     "homepage": "https://www.onstory.fun/doc/programming/laravel/package.laravelboard",
     "license": "MIT",
     "authors": [

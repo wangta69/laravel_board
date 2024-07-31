@@ -64,7 +64,11 @@ class BbsController extends Controller
     // print_r($result)
     // exit;
     $this->getLayout($result['cfg']);
+    // echo 'bbs.templates.admin.'.$result['cfg']->skin_admin.'.index';
+    // exit;
+    // return view('bbs.templates.admin.basic-gallery.index', $result);
     return view('bbs.templates.admin.'.$result['cfg']->skin_admin.'.index', $result);
+    
   }// bbs.admin.templates
 
   /**

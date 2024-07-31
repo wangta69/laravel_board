@@ -68,6 +68,12 @@
                 </ul>
               </td>
             </tr>
+            <tr>
+              <th> @lang('bbs::messages.bbs.title.keywords')</th>
+              <td>
+                <input type="text" name="keywords" value="{{  isset($article) ? $article->keywords : old('keywords') }}" class='form-control input-sm' id='writer'>
+              </td>
+            </tr>
         </table>
       </div><!-- .card-body -->
       <div class="card-footer">

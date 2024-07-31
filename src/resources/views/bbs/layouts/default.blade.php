@@ -1,4 +1,4 @@
-@include ('bbs::layouts.partials.header')
+@include ('bbs.layouts.partials.header')
 @yield ('styles')
 
 <div class='container'>

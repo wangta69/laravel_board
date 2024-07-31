@@ -131,6 +131,7 @@ class CreateAllPondolBbsTables extends Migration
         $table->bigInteger('user_id')->nullable()->unsigned();
         $table->string('writer', '20');
         $table->bigInteger('item_id')->unsigned();
+        $table->tinyInteger('rating')->unsigned()->nullable()->comment('점수');
         $table->integer('order_num')->comment('정렬번호');
         $table->bigInteger('parent_id')->unsigned()->comment('부모 id');
         $table->string('reply_depth', '25')->comment('reply 일경우 depth A AA B..');

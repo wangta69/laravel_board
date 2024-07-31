@@ -1,6 +1,8 @@
 <div class="comment-wrap">
   @foreach ($comments as $v)
   <hr>
+  <input type="hidden" class="rating"/>
+
   <article class="comment-article depth-{{strlen($v->reply_depth)}}" user-attr-comment-id="{{ $v->id }}">
     <blockquote class="comment">{{ $v->content }}</blockquote>
 
@@ -29,6 +31,14 @@
           <button type="submit" class="btn btn-success" style="width:70px; height: 70px;">저장</button>
         </div>
         <div style="margin-right: 80px;">
+        
+        <div class="rate-box">
+          <input type="radio" name="rating" value="5" id="item-rate-5"><label for="item-rate-5">☆</label>
+          <input type="radio" name="rating" value="4" id="item-rate-4"><label for="item-rate-4">☆</label> 
+          <input type="radio" name="rating" value="3" id="item-rate-3"><label for="item-rate-3">☆</label> 
+          <input type="radio" name="rating" value="2" id="item-rate-2"><label for="item-rate-2">☆</label> 
+          <input type="radio" name="rating" value="1" id="item-rate-1"><label for="item-rate-1">☆</label>
+        </div>
           <textarea name="content" maxlength="10000" required="" class="form-control input-sm"
                 style="height:120px;" placeholder="궁금한 점을 남겨주세요"></textarea>
         </div>
@@ -40,6 +50,7 @@
 
   <div id="re-comment" style="display: none; margin: 20px;">
     <!--  " -->
+
     <section class="comment-input">
       <div class="container-fluid">
         <div style="float:right;">
@@ -48,6 +59,7 @@
           <!-- <button type="button" class="btn btn-default comment-reply-cancel"
               style="width:70px; height: 70px;">취소</button> -->
         </div>
+        
         <div style="margin-right: 80px;">
           <textarea name="content" required="" class="form-control input-sm"
               style="height:70px;"></textarea>
@@ -91,15 +103,58 @@
 .comment-article.depth-4 {
   padding-left: 60px;
 }
+
+.rate-box {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+
+.rate-box > input {
+    display: none
+}
+
+.rate-box > label {
+    position: relative;
+    width: 1em;
+    font-size: 30px;
+    font-weight: 300;
+    color: #FFD600;
+    cursor: pointer
+}
+
+.rate-box > label::before {
+    content: "\2605";
+    position: absolute;
+    opacity: 0
+}
+
+.rate-box > label:hover:before,
+.rate-box > label:hover~label::before {
+    opacity: 1 !important
+}
+
+.rate-box > input:checked~label::before {
+    opacity: 1
+}
+
+.rate-box : hover > input:checked~labelbefore {
+    opacity: 0.4
+}
+
 </style>
 @endsection
 @section('scripts')
 @parent
 <script src="/assets/pondol/bbs/bbs.js"></script>
+<script src="//dreyescat.github.io/bootstrap-rating/bootstrap-rating.js"></script>
+
 <script>
 var item = "{{$item}}"; 
 var item_id = {{$item_id}};
 $(function(){
+  $('.rating').rating();
+  $('input').rating();
   $(".add-comment").on('click', function(){
     $recomment = $( "#re-comment" ).clone().removeAttr( "id" ).show();
     $(this).parents('.re-comment').html($recomment);

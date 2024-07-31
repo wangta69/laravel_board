@@ -184,7 +184,7 @@ trait BbsBase  {
     $article->password = $request->get('password');
     $article->content = $request->get('content');
     $article->text_type = $request->input('text_type', 'br');
-
+    $article->keywords = $request->input('keywords');
     $article->save();
     $article->parent_id = $parent_id ? $parent_id : $article->id;
     $article->save();
@@ -250,6 +250,7 @@ trait BbsBase  {
       return redirect()->back()->withErrors($validator->errors());
 
     $article->title = $request->get('title');
+    $article->keywords = $request->input('keywords');
     $article->writer = $request->get('writer') ? $request->get('writer') : $article->writer;
     $article->content = $request->get('content');
     $article->save();
