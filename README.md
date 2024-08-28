@@ -8,6 +8,8 @@
 
 [Homepage](https://www.onstory.fun/doc/programming/laravel/package.laravelboard)
 
+[Demo](https://www.onstory.fun/community)
+
 [goto old version 2.x](./documents/5.x.md)
 
 
