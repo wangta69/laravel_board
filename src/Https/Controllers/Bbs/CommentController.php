@@ -12,12 +12,12 @@ use App\Http\Controllers\Controller;
 
 use Pondol\Bbs\Models\BbsArticles as Articles;
 use Pondol\Bbs\Models\BbsComments as Comments;
-use Pondol\Bbs\CommentBase;
+use Pondol\Bbs\Traits\CommentTrait;
 use Pondol\Bbs\BbsService;
 
 class CommentController  extends Controller {
 
-  use CommentBase;
+  use CommentTrait;
 
   protected $cfg;
   public function __construct(BbsService $bbsSvc) {

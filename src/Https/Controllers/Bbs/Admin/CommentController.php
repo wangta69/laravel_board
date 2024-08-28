@@ -5,12 +5,12 @@ use Illuminate\Http\Request;
 use Auth;
 use App\Http\Controllers\Controller;
 use Pondol\Bbs\Models\BbsArticles as Articles;
-use Pondol\Bbs\CommentBase;
+use Pondol\Bbs\Traits\CommentTrait;
 use Pondol\Bbs\BbsService;
 class CommentController extends Controller
 {
 
-  use CommentBase;
+  use CommentTrait;
     /**
    * Create a new controller instance.
    *

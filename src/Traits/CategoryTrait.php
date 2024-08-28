@@ -1,5 +1,5 @@
 <?php
-namespace Pondol\Bbs;
+namespace Pondol\Bbs\Traits;
 
 use Illuminate\Http\Request;
 
@@ -14,7 +14,7 @@ use Pondol\Bbs\Models\BbsCategories as Category;
 
 
 // class CategoryBaseController extends \App\Http\Controllers\Controller {
-trait CategoryBase {
+trait CategoryTrait {
   protected $bbsSvc;
   protected $cfg;
   // public function __construct() {}

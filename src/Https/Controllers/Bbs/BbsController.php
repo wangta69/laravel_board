@@ -19,12 +19,12 @@ use Pondol\Bbs\Models\BbsComments as Comments;
 use Pondol\Bbs\Models\BbsFiles as Files;
 
 use Pondol\Image\GetHttpImage;
-use Pondol\Bbs\BbsBase;
+use Pondol\Bbs\Traits\BbsTrait;
 use Pondol\Bbs\BbsService;
 
 class BbsController extends Controller {
 
-  use BbsBase;
+  use BbsTrait;
   protected $bbsSvc;
   protected $cfg;
   protected $laravel_ver;

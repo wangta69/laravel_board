@@ -1,5 +1,5 @@
 <?php
-namespace Pondol\Bbs;
+namespace Pondol\Bbs\Traits;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -10,7 +10,7 @@ use Auth;
 use Pondol\Bbs\Models\BbsItemComment;
 use Pondol\Bbs\Models\BbsConfig;
 
-trait ItemCommentBase {
+trait ItemCommentTrait {
 
   public function index($request, $item) {
     $comment = BbsItemComment::where('bbs_item_comments.item', $item);

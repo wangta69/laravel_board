@@ -4,10 +4,10 @@ use App\Http\Controllers\Controller;
 
 use Auth;
 use Pondol\Bbs\BbsService;
-use Pondol\Bbs\AdminBase;
+use Pondol\Bbs\Traits\AdminTrait;
 class AdminController extends Controller
 {
-  use AdminBase;
+  use AdminTrait;
 
   public function __construct(
     BbsService $bbsSvc 

@@ -10,13 +10,13 @@ use Auth;
 
 use App\Http\Controllers\Controller;
 use Pondol\Bbs\Models\BbsItemComment;
-use Pondol\Bbs\ItemCommentBase;
+use Pondol\Bbs\Traits\ItemCommentTrait;
 
 
 // use Pondol\Bbs\BbsService;
 
 class ItemCommentController extends Controller {
-  use ItemCommentBase;
+  use ItemCommentTrait;
   protected $cfg;
   public function __construct() {
 

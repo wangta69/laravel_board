@@ -16,13 +16,13 @@ use Pondol\Bbs\Models\BbsArticles as Articles;
 use Pondol\Bbs\Models\BbsComments as Comments;
 use Pondol\Bbs\Models\BbsFiles as Files;
 use App\Notifications\CountChanged;
-use Pondol\Bbs\BbsBase;
+use Pondol\Bbs\Traits\BbsTrait;
 use Pondol\Bbs\BbsService;
 
 class ApiController extends Controller {
 
 
-  use BbsBase;
+  use BbsTrait;
   protected $bbsSvc;
   protected $deaultUrlParams;
   // protected $cfg;

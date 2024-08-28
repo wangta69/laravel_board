@@ -1,5 +1,5 @@
 <?php
-namespace Pondol\Bbs;
+namespace Pondol\Bbs\Traits;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -21,7 +21,7 @@ use Pondol\Bbs\Models\BbsFiles as Files;
 use Pondol\Bbs\BbsService;
 
 
-trait BbsBase  {
+trait BbsTrait  {
 
   // protected $bbsSvc;
   // protected $cfg;

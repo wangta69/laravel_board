@@ -12,12 +12,12 @@ use Pondol\Bbs\BbsService;
 
 use Pondol\Bbs\Models\BbsArticles as Articles;
 use Pondol\Bbs\Models\BbsConfig;
-use Pondol\Bbs\BbsBase;
+use Pondol\Bbs\Traits\BbsTrait;
 
 class BbsController extends Controller
 {
 
-  use BbsBase;
+  use BbsTrait;
 
   public function __construct(
     BbsService $bbsSvc 

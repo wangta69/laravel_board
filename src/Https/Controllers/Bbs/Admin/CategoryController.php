@@ -4,11 +4,11 @@ use App\Http\Controllers\Controller;
 
 use Auth;
 use Pondol\Bbs\BbsService;
-use Pondol\Bbs\CategoryBase;
+use Pondol\Bbs\Traits\CategoryTrait;
 class CategoryController extends Controller
 {
 
-  use CategoryBase;
+  use CategoryTrait;
     /**
    * Create a new controller instance.
    *

@@ -1,9 +1,9 @@
-# Why wizboard for laravel
+# Waht is pondol's Laravel Board
 
 > 한국형 라라벨용 게시판 입니다. <br />
 현재 진행중인 프로젝트에 사용하려고 간단하게 만들고 테스트 중입니다. <br />
  
-> This package was testec Laravel 8.x
+> This package was tested on Laravel 8.x
 
 
 [Homepage](https://www.onstory.fun/doc/programming/laravel/package.laravelboard)

@@ -1,5 +1,5 @@
 <?php
-namespace Pondol\Bbs;
+namespace Pondol\Bbs\Traits;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -12,7 +12,7 @@ use Pondol\Bbs\Models\BbsTables as Tables;
 use Pondol\Bbs\Models\Role;
 use Pondol\Bbs\Models\BbsConfig;
 
-trait AdminBase {
+trait AdminTrait {
   protected $cfg;
   protected $itemsPerPage = 10;
 

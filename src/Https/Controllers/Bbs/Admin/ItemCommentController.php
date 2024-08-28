@@ -6,12 +6,12 @@ use Auth;
 use Pondol\Bbs\BbsService;
 use App\Http\Controllers\Controller;
 // use Pondol\Bbs\Models\BbsItemComment;
-use Pondol\Bbs\ItemCommentBase;
+use Pondol\Bbs\Traits\ItemCommentTrait;
 
 class ItemCommentController extends Controller
 {
 
-  use ItemCommentBase;
+  use ItemCommentTrait;
   // protected $itemsPerPage = 10;
 
    /**
