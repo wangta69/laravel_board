@@ -162,7 +162,15 @@ class CreateAllPondolBbsTables extends Migration
    */
   public function down()
   {
-    Schema::table('articles_files', function($table) {
+    Schema::table('bbs_categories', function($table) {
+      $table->dropForeign('bbs_categories_bbs_table_id_foreign');
+    });
+
+    Schema::table('bbs_comments', function($table) {
+      $table->dropForeign('bbs_comments_bbs_articles_id_foreign');
+    });
+
+    Schema::table('bbs_files', function($table) {
       $table->dropForeign('bbs_files_bbs_articles_id_foreign');
     });
 
