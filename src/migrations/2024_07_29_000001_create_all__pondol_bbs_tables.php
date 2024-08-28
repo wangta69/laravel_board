@@ -32,7 +32,6 @@ class CreateAllPondolBbsTables extends Migration
         $table->text('content');
         $table->string('image', '255')->nullable();
         $table->integer('hit')->unsigned()->default(0);
-        $table->string('keywords', '100')->nullable()->comment('키워드');
         $table->timestamps();
         $table->softDeletes();
       });
