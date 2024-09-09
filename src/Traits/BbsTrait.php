@@ -41,7 +41,7 @@ trait BbsTrait  {
   public function index(Request $request, $tbl_name)
   {
 
-    \DB::enableQueryLog();
+    // \DB::enableQueryLog();
     $preIndex = $this->preIndex($tbl_name);
     $articles = $preIndex->articles;
     $cfg = $preIndex->cfg;
@@ -86,7 +86,7 @@ trait BbsTrait  {
 
     $articles = $articles->paginate($cfg->lists)
       ->appends(request()->query());
-      print_r(\DB::getQueryLog());
+    //  print_r(\DB::getQueryLog());
     return ['error'=> false, 'articles' =>$articles, 'cfg'=>$cfg];
   }
 
