@@ -59,6 +59,7 @@ return [
       'no-data' => '디스플레이할 데이타가 없습니다.',
       'comment-placeholder' => '댓글을 입력해 주세요.',
       'comments' => '댓글목록.',
+      'title_content' => '제목 + 내용',
       'status' => [
         'answerd' => '답변완료',
         'ready' => '대기중',

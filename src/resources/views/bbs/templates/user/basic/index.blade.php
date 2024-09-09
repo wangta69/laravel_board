@@ -11,8 +11,8 @@
           <div class="col-5 float-end">
             <div  class=" input-group">
               <select name="f" id="" class="form-select" >
-                <option value="title" @if (request()->get('f') == 'title') selected @endif>Title</option>
-                <option value="content" @if (request()->get('f') == 'content') selected @endif>Contents</option>
+                <option value="" @if (request()->get('f') == '') selected @endif>@lang('bbs::messages.bbs.title.title_content')</option>
+                <option value="writer" @if (request()->get('f') == 'writer') selected @endif>@lang('bbs::messages.bbs.title.writer')</option>
               </select>
               <input type="text" name="s" placeholder="Keyword Search" value="{{request()->get('s')}}"  class="form-control"/>
               <button type="submit" class="btn btn-primary">@lang('bbs::messages.bbs.button.search')</button>

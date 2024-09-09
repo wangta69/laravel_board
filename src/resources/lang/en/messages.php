@@ -58,6 +58,7 @@ return [
       'no-data' => 'There is no data to display.',
       'comment-placeholder' => 'Comment...',
       'comments' => 'Comments.',
+      'title_content' => 'Title + Content',
       'status' => [
         'answerd' => 'Answerd',
         'ready' => 'Ready',

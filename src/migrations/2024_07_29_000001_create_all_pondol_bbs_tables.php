@@ -32,6 +32,7 @@ class CreateAllPondolBbsTables extends Migration
         $table->text('content');
         $table->string('image', '255')->nullable();
         $table->integer('hit')->unsigned()->default(0);
+        $table->fullText(['title', 'content']);
         $table->timestamps();
         $table->softDeletes();
       });
@@ -162,6 +163,10 @@ class CreateAllPondolBbsTables extends Migration
    */
   public function down()
   {
+    Schema::table('bbs_articles', function($table) {
+      $table->dropFullText(['title', 'content']); // removing full-text index
+    });
+    
     Schema::table('bbs_categories', function($table) {
       $table->dropForeign('bbs_categories_bbs_table_id_foreign');
     });
