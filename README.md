@@ -10,33 +10,30 @@
 
 [Demo](https://www.onstory.fun/community)
 
-[goto old version 2.x](./documents/5.x.md)
+[version 2.x installation](./documents/5.x.md)
+[version 8.1.x installation](./documents/8.1.x.md)
+
+
 
 
 ## Installation
+> over ver 8.2 
 ```
 composer require wangta69/laravel_board
+php artisan bbs:install
 ```
 
-## Setup
+## resources
 - design : bootstrp 5.x
 - jquery : 3.6.x
 
-### publish stuff
-```
- php artisan vendor:publish
-```
 
-### create storage soft link
+<!-- breeze install
 ```
-php artisan storage:link
-```
+composer require laravel/breeze:1.9.2   // 라라벨 8.x 일경우
+php artisan breeze:install
+``` -->
 
-### publish all Resoucres
-```
-php artisan vendor:publish --provider="Pondol\Bbs\BbsServiceProvider"
-php artisan vendor:publish --provider="Pondol\Editor\EditorServiceProvider"
-```
 
 ## How to Use
 ### Set Security for Admin.

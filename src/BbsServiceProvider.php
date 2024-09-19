@@ -24,6 +24,14 @@ class BbsServiceProvider extends ServiceProvider {
    */
   public function register()
   {
+
+    if ($this->app->runningInConsole()) {
+      $this->commands([
+        Console\InstallCommand::class,
+        // Console\InstallCommand::class,
+      ]);
+    }
+
     // $this->app->bind('bbs', function($app) {
     $this->app->singleton('bbs', function($app) {
       return new Bbs;
@@ -54,7 +62,7 @@ class BbsServiceProvider extends ServiceProvider {
 
     $this->loadMigrationsFrom(__DIR__.'/migrations/');
       //$this->artisan('migrate');
-      \Artisan::call('migrate');
+      // \Artisan::call('migrate');
 
       //if you use this one you have to command php artisan migrate
       //$this->publishes([

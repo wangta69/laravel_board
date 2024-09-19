@@ -3,6 +3,7 @@
 namespace Pondol\Bbs\Console;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Schema;
 // use Illuminate\Filesystem\Filesystem;
 // use Illuminate\Support\Str;
 // use Symfony\Component\Process\PhpExecutableFinder;
@@ -54,9 +55,18 @@ class InstallCommand extends Command
       '--force'=> true,
       '--provider' => 'Pondol\Bbs\BbsServiceProvider'
     ]);
+
+    // users 테이블이 있는지 확인
+    // $user_password = $this->ask('Password for administrator?'); 
+    if (!Schema::hasTable('users')) {
+      $this->info('no users table. Install laravel/breeze or other auth');
+    };
+
+    \Artisan::call('migrate');
+
     $this->info('The laravel board installed successfully.');
 
-    $this->comment('Please execute the "php artisan migrate" commands to build market database.');
+    // $this->comment('Please execute the "php artisan migrate" commands to build market database.');
   }
 
 
