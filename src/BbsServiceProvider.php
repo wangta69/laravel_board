@@ -88,7 +88,7 @@ class BbsServiceProvider extends ServiceProvider {
       __DIR__.'/resources/views/bbs/components' => resource_path('views/bbs/components'),
       __DIR__.'/resources/views/bbs/templates' => resource_path('views/bbs/templates'),
       // controllers;
-      __DIR__.'/Https/Controllers/Bbs/' => app_path('Http/Controllers/Bbs')
+      __DIR__.'/Http/Controllers/Bbs/' => app_path('Http/Controllers/Bbs')
     ]);
     
     // - loadViews  : 상기와 다른 점음  resources/views/bbs 에 없을 경우 아래 것에서 처리한다. for user modify
