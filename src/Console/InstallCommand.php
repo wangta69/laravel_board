@@ -1,13 +1,7 @@
 <?php
-
 namespace Pondol\Bbs\Console;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Schema;
-// use Illuminate\Filesystem\Filesystem;
-// use Illuminate\Support\Str;
-// use Symfony\Component\Process\PhpExecutableFinder;
-// use Symfony\Component\Process\Process;
 
 class InstallCommand extends Command
 {
@@ -59,9 +53,8 @@ class InstallCommand extends Command
     }
 
     \Artisan::call('migrate');
-    $this->info("The pondol's laravel board installed successfully.");
+    $this->info("The pondol's laravel bbs installed successfully.");
 
-    // $this->comment('Please execute the "php artisan migrate" commands to build market database.');
   }
 
 }
