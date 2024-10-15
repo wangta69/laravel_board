@@ -19,7 +19,7 @@
 ## Installation
 > over ver 8.2 
 ```
-composer require wangta69/laravel_board
+composer require wangta69/laravel-board
 php artisan pondol:install-bbs
 ```
 
