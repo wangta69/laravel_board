@@ -64,5 +64,4 @@ class InstallCommand extends Command
     // $this->comment('Please execute the "php artisan migrate" commands to build market database.');
   }
 
-
 }
