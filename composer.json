@@ -1,5 +1,5 @@
 {
-    "name": "wangta69/laravel_board",
+    "name": "wangta69/laravel-board",
     "description": "BBS bulletin board system",
     "keywords": ["laravel", "bbs", "pondol" , "board", "게시판", "korea", "라라벨"],
     "homepage": "https://www.onstory.fun/doc/programming/laravel/package.laravelboard",
@@ -16,7 +16,8 @@
       "php": ">=7.0.0",
       "kyslik/column-sortable": "^6.0",
       "wangta69/php-thumbnail": "^1",
-      "wangta69/laravel-editor": "^8"
+      "wangta69/laravel-editor": "^8",
+      "wangta69/laravel-auth": "^0"
     },
     "autoload": {
       "files": [

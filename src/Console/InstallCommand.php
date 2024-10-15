@@ -18,8 +18,8 @@ class InstallCommand extends Command
    *
    * @var string
    */
-  protected $signature = 'bbs:install';
-
+  // protected $signature = 'bbs:install';
+  protected $signature = 'pondol:install-bbs {type=full}'; // full, simple, skip, only
   /**
    * The console command description.
    *
@@ -35,36 +35,31 @@ class InstallCommand extends Command
 
   public function handle()
   {
-    return $this->installLaravelEditor();
+    $type = $this->argument('type');
+    return $this->installLaravelBoard($type);
   }
 
-
-  private function installLaravelEditor()
+  /**
+   * @params String $type simple: editor와 bbs만 인스톨 
+   */
+  private function installLaravelBoard($type)
   {
-    // soft link
-    \Artisan::call('storage:link');
+    if ($type === 'skip') return; // 타 컴포저에서 테스트 시
 
-    // editor
-    \Artisan::call('vendor:publish',  [
-      '--force'=> true,
-      '--provider' => 'Pondol\Editor\EditorServiceProvider'
-    ]);
-    $this->info('The laravel editor installed successfully.'); 
+
+    $this->call('pondol:install-editor'); // soft storage link and editor resource publish
 
     \Artisan::call('vendor:publish',  [
       '--force'=> true,
       '--provider' => 'Pondol\Bbs\BbsServiceProvider'
     ]);
 
-    // users 테이블이 있는지 확인
-    // $user_password = $this->ask('Password for administrator?'); 
-    if (!Schema::hasTable('users')) {
-      $this->info('no users table. Install laravel/breeze or other auth');
-    };
+    if($type === 'full') { // auth system 인스톨
+      $this->call('pondol:install-auth simple');
+    }
 
     \Artisan::call('migrate');
-
-    $this->info('The laravel board installed successfully.');
+    $this->info("The pondol's laravel board installed successfully.");
 
     // $this->comment('Please execute the "php artisan migrate" commands to build market database.');
   }
