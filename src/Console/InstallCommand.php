@@ -49,7 +49,7 @@ class InstallCommand extends Command
     ]);
 
     if($type === 'full') { // auth system 인스톨
-      $this->call('pondol:install-auth simple');
+      $this->call('pondol:install-auth', ['type'=> 'simple']);
     }
 
     \Artisan::call('migrate');
