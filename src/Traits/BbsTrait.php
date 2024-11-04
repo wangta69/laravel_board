@@ -38,7 +38,7 @@ trait BbsTrait  {
    * @param String $tbl_name
    * @return \Illuminate\Http\Response
    */
-  public function index(Request $request, $tbl_name)
+  public function _index($request, $tbl_name)
   {
 
     // \DB::enableQueryLog();
@@ -69,11 +69,11 @@ trait BbsTrait  {
       }
     }
 
-    $adminrole = config('bbs.admin_roles'); // administrator
+    $adminrole = config('pondol-bbs.admin_roles'); // administrator
 
     // 관리자 권한 및 본인에게만 데이타를 보여 준다.
     if ($cfg->enable_qna == '1') {
-      $adminrole = config('bbs.admin_roles'); // administrator
+      $adminrole = config('pondol-bbs.admin_roles'); // administrator
       $hasrole = BbsService::hasRoles($adminrole);
       if (!$hasrole) { // admin 권한을 가지고 있지 않은 경우 본인 글만 디스플레이 한다.
         if (!$user) { // 로그인 페이지로 이동
@@ -93,7 +93,7 @@ trait BbsTrait  {
   /**
    * index를 가져올 전처리 작업 (select 등 다양한 경우에 대비하기위해 index를 가져오기 전에 먼저 선 작업을 한다.)
    */
-  public function preIndex($tbl_name) {
+  public function _preIndex($tbl_name) {
     $obj = new \stdClass();
     $obj->cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
     $obj->articles = Articles::where('bbs_table_id', $obj->cfg->id);
@@ -103,7 +103,7 @@ trait BbsTrait  {
   /**
   * API 호출시 직접 데이타 처리
   */
-  public function indexApi(Request $request, $tbl_name)
+  public function _indexApi($request, $tbl_name)
   {
     $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
 
@@ -121,7 +121,7 @@ trait BbsTrait  {
    * @param String $tbl_name
    * @return \Illuminate\Http\Response
    */
-  public function create(Request $request, $tbl_name)
+  public function _create($request, $tbl_name)
   {
 
     $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
@@ -141,7 +141,7 @@ trait BbsTrait  {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-  public function store(Request $request, $tbl_name)
+  public function _store($request, $tbl_name)
   {
 
     $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
@@ -235,9 +235,9 @@ trait BbsTrait  {
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-  public function update(Request $request, $tbl_name, Articles $article)
+  public function _update($request, $tbl_name, $article)
   {
-    $isAdmin = BbsService::hasRoles(config('bbs.admin_roles'));
+    $isAdmin = BbsService::hasRoles(config('pondol-bbs.admin_roles'));
     $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
 
     //check permission
@@ -380,9 +380,9 @@ trait BbsTrait  {
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-  public function show(Request $request, $tbl_name, Articles $article)
+  public function _show($request, $tbl_name, $article)
   {
-    $isAdmin = BbsService::hasRoles(config('bbs.admin_roles'));
+    $isAdmin = BbsService::hasRoles(config('pondol-bbs.admin_roles'));
     $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
 
     // 시간되면 이 부분은 좀더 고도화 필요
@@ -409,7 +409,7 @@ trait BbsTrait  {
     return ['error'=>false, 'article' => $article, 'cfg'=>$cfg, 'isAdmin'=>$isAdmin];
   }
 
-  public function passwordConfirm(Request $request, $tbl_name, Articles $article)
+  public function _passwordConfirm($request, $tbl_name, $article)
   {
 
     $validator = Validator::make($request->all(), [
@@ -433,7 +433,7 @@ trait BbsTrait  {
     }
   }
 
-  public function viewApi($tbl_name, $article, Request $request)
+  public function _viewApi($tbl_name, $article, $request)
   {
     $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
 
@@ -448,7 +448,7 @@ trait BbsTrait  {
     return response()->json(['error'=>false, 'article' => $content], 200);//500, 203
   }
 
-  public function comment(Request $request, $tbl_name, Articles $article)
+  public function _comment($request, $tbl_name, $article)
   {
     $comment = $article->comment[0];
     $comment->content = htmlentities($comment->content);
@@ -464,9 +464,9 @@ trait BbsTrait  {
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-  public function edit(Request $request, $tbl_name, Articles $article)
+  public function _edit($request, $tbl_name, $article)
   {
-    $isAdmin = BbsService::hasRoles(config('bbs.admin_roles'));
+    $isAdmin = BbsService::hasRoles(config('pondol-bbs.admin_roles'));
     $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
 
     if ($article->isOwner(Auth::user()) || $isAdmin) {
@@ -485,10 +485,10 @@ trait BbsTrait  {
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-  public function destroy(Request $request, $tbl_name, Articles $article)
+  public function _destroy($request, $tbl_name, $article)
   {
     
-    $isAdmin = BbsService::hasRoles(config('bbs.admin_roles'));
+    $isAdmin = BbsService::hasRoles(config('pondol-bbs.admin_roles'));
     $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
 
 
@@ -511,9 +511,9 @@ trait BbsTrait  {
     /**
      * file download from storage
      */
-  public function download($id){
+  public function _download($file){
     //get file name
-    $file = Files::findOrFail($id);
+    // $file = Files::findOrFail($id);
 
     $file_path = storage_path() .'/app/'. $file->path_to_file;
 

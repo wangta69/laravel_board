@@ -9,7 +9,7 @@ use View;
 use Validator;
 
 use Pondol\Bbs\Models\BbsTables as Tables;
-use Pondol\Bbs\Models\Role;
+use Pondol\Auth\Models\Role\Role;
 use Pondol\Bbs\Models\BbsConfig;
 
 trait AdminTrait {
@@ -21,14 +21,15 @@ trait AdminTrait {
    *
    * @return \Illuminate\Http\Response
    */
-  public function index(Request $request)
+  public function _index(Request $request)
   {
 
     // 등록된 게시판 리스트 불러오기
     $list = Tables::orderBy('created_at', 'desc')->paginate($this->itemsPerPage);
 
     $cfg = $this->admin_extends();
-    return view('bbs::admin.index', ['list' => $list, 'cfg' => $cfg]);
+
+    return ['list' => $list, 'cfg' => $cfg];
   }
 
   /*
@@ -36,7 +37,7 @@ trait AdminTrait {
    *
    * @return \Illuminate\Http\Response
    */
-  public function createForm(Request $request, Tables $table)
+  public function _createForm($request, $table)
   {
     // front 용
     $skin_dir =  resource_path('views/bbs/templates/admin');
@@ -54,21 +55,21 @@ trait AdminTrait {
       $skins_admin[$v] = $v;
     }
 
-    $editors = ['none'=>'None', 'smartEditor'=>'Smart Editor'];
     $categoris = [];
 
     // set default value;
     $table->lists = $table->lists ?? 10;
+    $table->extends = $table->extends ?? 'bbs::layouts.default';
+    $table->section = $table->section ?? 'content';
 
     $cfg = $this->admin_extends();
-    return view('bbs::admin.create', [
+    return [
       'table'=>$table,
       'cfg'=>$cfg,
       'skins' => $skins,
       'skins_admin' => $skins_admin,
-      'editors' => $editors,
       'roles' => Role::get(),
-    ]);
+    ];
   }
 
     /*
@@ -77,8 +78,12 @@ trait AdminTrait {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-  public function store(Request $request)
+  public function _store($request)
   {
+
+    $obj = new \stdClass;
+    $obj->error = false;
+
     $reserved_table_name = ['admin', 'root'];
 
     $validator = Validator::make($request->all(), [
@@ -99,7 +104,11 @@ trait AdminTrait {
       }
     });
 
-    if ($validator->fails()) return redirect()->back()->withInput()->withErrors($validator->errors());
+    if ($validator->fails()) {
+      $obj->error = 'validator';
+      $obj->validator = $validator;
+      return $obj;
+    }
 
     $table = new Tables;
     $table->name = $request->get('name');
@@ -120,17 +129,12 @@ trait AdminTrait {
     $table->save();
 
     //set roles
-    $table->roles_read()->detach();
+    $table->roles_list()->detach();
+    $this->add_roles($table, 'list', $request->get('roles-list'));
+    $this->add_roles($table, 'read', $request->get('roles-read'));
+    $this->add_roles($table, 'write', $request->get('roles-write'));
 
-    if ($this->has_roles($request->get('roles-read'))) {
-      $table->roles_read()->attach($request->get('roles-read'));
-    }
-
-    if ($this->has_roles($request->get('roles-write'))) {
-      $table->roles_write()->attach($request->get('roles-write'));
-    }
-
-    return redirect()->route('bbs.admin.index');
+    return $obj;
   }
 
 
@@ -141,8 +145,10 @@ trait AdminTrait {
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-  public function update(Request $request, Tables $table)
+  public function _update($request, $table)
   {
+    $obj = new \stdClass;
+    $obj->error = false;
 
     $validator = Validator::make($request->all(), [
       'name' => 'required',
@@ -153,7 +159,11 @@ trait AdminTrait {
       return strtolower($input->table_name) != strtolower($table->table_name);
     });
 
-    if ($validator->fails()) return redirect()->back()->withErrors($validator->errors());
+    if ($validator->fails()) {
+      $obj->error = 'validator';
+      $obj->validator = $validator;
+      return $obj;
+    }
 
     $table->name = $request->name;
     $table->table_name = $request->table_name;
@@ -174,26 +184,39 @@ trait AdminTrait {
     $table->save();
 
     //set roles
-    $table->roles_read()->detach();
+    $table->roles_list()->detach();
+    $this->add_roles($table, 'list', $request->get('roles-list'));
+    $this->add_roles($table, 'read', $request->get('roles-read'));
+    $this->add_roles($table, 'write', $request->get('roles-write'));
 
-    if ($this->has_roles($request->get('roles-read'))) {
-      $table->roles_read()->attach($request->get('roles-read'));
-    }
-
-    if ($this->has_roles($request->get('roles-write'))) {
-      $table->roles_write()->attach($request->get('roles-write'));
-    }
-
-    return redirect()->route('bbs.admin.index', []);
+    return $obj;
   }
 
-  public function configUpdate(Request $request) {
+  public function _configUpdate($request) {
     BbsConfig::where('k', 'extends')->update(['v'=>$request->extends]);
     BbsConfig::where('k', 'section')->update(['v'=>$request->section]);
-    return redirect()->route('bbs.admin.index', []);
   }
 
 
+  private function add_roles($table, $type, $roles) {
+    switch($type) {
+      case 'list':
+        if ($this->has_roles($roles)) {
+          $table->roles_list()->attach($roles);
+        }
+        break;
+      case 'read':
+        if ($this->has_roles($roles)) {
+          $table->roles_read()->attach($roles);
+        }
+        break;
+      case 'write':
+        if ($this->has_roles($roles)) {
+          $table->roles_write()->attach($roles);
+        }
+        break;
+    }
+  }
   /**
    * role has a value or not
    * @return Boolean
@@ -207,7 +230,6 @@ trait AdminTrait {
           return false;
       }
     }
-
     return true;
   }
 
@@ -217,7 +239,7 @@ trait AdminTrait {
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-  public function show(Request $request, Tables $table)
+  public function _show($request, $table)
   {
     $skin_dir =  resource_path('views/bbs/templates/');
     $tmp_skins = array_map('basename',\File::directories($skin_dir));
@@ -227,7 +249,7 @@ trait AdminTrait {
       $skins[$v] = $v;
     }
 
-    return view('bbs::admin.create', ['cfg'=> $table, 'skins' => $skins, 'roles' => Role::get()]);
+    return ['cfg'=> $table, 'skins' => $skins, 'roles' => Role::get()];
   }
 
   /*
@@ -236,7 +258,7 @@ trait AdminTrait {
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-  public function edit($id)
+  public function _edit($id)
   {
   }
 
@@ -246,16 +268,10 @@ trait AdminTrait {
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-  public function destroy(Request $request, $id)
+  public function _destroy($id)
   {
     $cfg = Tables::findOrFail($id);
     $cfg->delete();
-
-    if($request->ajax()){
-      return response()->json(['result'=>true, "code"=>"000"], 200);
-    }else{
-      return redirect()->route('bbs.admin.index', []);
-    }
   }
 
   private function admin_extends() {

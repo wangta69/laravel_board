@@ -41,8 +41,8 @@
             <tr>
               <th> @lang('bbs::messages.bbs.title.content')</th>
               <td>
-                @if($cfg->editor == 'smartEditor')
-                  @include ('editor::smart-editor.editor', ['name'=>'content', 'id'=>'content-id', 'value'=>isset($article) ? $article->content : old('content'), 'attr'=>['class'=>'form-control input-sm']])
+                @if($cfg->editor)
+                  @include ('editor::default', ['name'=>'content', 'id'=>'content-id', 'value'=>isset($article) ? $article->content : old('content'), 'attr'=>['class'=>'form-control input-sm']])
                 @else
                   <textarea name="content" class="form-control">{{  isset($article) ? $article->content : old('content') }}</textarea>
                 @endif

@@ -13,7 +13,7 @@
               <col width='120' />
               <col width='120' />
               <col width='120' />
-              <col width='200' />
+              <col width='350' />
           </colgroup>
           <thead>
             <tr>
@@ -45,7 +45,8 @@
                   </td>
                   <td class='text-center'>
                       <a href="{{route('bbs.admin.show', [ $board->id]) }}" class="btn btn-secondary btn-sm">Edit</a>
-                      <a href="{{route('bbs.admin.tbl.index', [$board->table_name]) }}" class="btn btn-secondary btn-sm">View</a>
+                      <a href="{{route('bbs.admin.tbl.index', [$board->table_name]) }}" class="btn btn-primary btn-sm">View[Admin]</a>
+                      <a href="{{route('bbs.index', [$board->table_name]) }}" class="btn btn-primary btn-sm">View[Front]</a>
                       <button type="button" class="btn btn-danger btn-sm btn-delete">Delete</button>
                   </td>
               </tr>
@@ -90,34 +91,33 @@
   </div><!-- .bbs.admin -->
 </div><!-- .container -->
 @stop
+
 @section ('styles')
 @parent
 <style>
   @include ('bbs::admin.css.style')
 </style>
 @stop
+
 @section ('scripts')
 @parent
 <script>
   $(function () {
     $(".btn-delete").on('click', function () {
+
       $this = $(this).parents(".data-row");
       var board_id = $this.attr("user-attr-board-id");
 
-      if (confirm('are you sure?')) {
-        $.ajax({
-          url: '/bbs/admin/' + board_id + '/delete',
-          type: 'POST',
-          data: {
-            '_token': $('meta[name=csrf-token]').attr("content"),
-            '_method': 'DELETE',
-          },
-          success: function (result) {
-            // Do something with the result
-            $this.remove();
-          }
-        });
-      }
+      ROUTE.ajaxroute('DELETE', {
+        route: 'bbs.admin.destroy', 
+        segments: [board_id], 
+        data: params
+      }, function(resp) {
+        $this.remove();
+        if(resp.error === false) {
+          window.location.reload();
+        }
+      })
     })
   })
 

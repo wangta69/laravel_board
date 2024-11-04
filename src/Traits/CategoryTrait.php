@@ -1,25 +1,18 @@
 <?php
 namespace Pondol\Bbs\Traits;
 
-use Illuminate\Http\Request;
-
 use Route;
 use View;
 use Validator;
 
 use Pondol\Bbs\Models\BbsCategories as Category;
-// use Pondol\Bbs\Models\Role;
-// use Pondol\Bbs\BbsService;
 
-
-
-// class CategoryBaseController extends \App\Http\Controllers\Controller {
 trait CategoryTrait {
   protected $bbsSvc;
   protected $cfg;
   // public function __construct() {}
 
-  public function addCategory(Request $request, $tableId) {
+  public function _addCategory($tableId, $request) {
     // 카테고리 테이블의 bbs_table_id에서 max order를 구한 후 + 1하여 저장한다.
     $max = Category::where('bbs_table_id', $tableId)->max('order');
 
@@ -30,16 +23,16 @@ trait CategoryTrait {
     $category->name = $request->category;
     $category->order = $order;
     $category->save();
-    return response()->json([
+    return [
       'error' => false,
       'id' => $category->id
-    ], 200);
+    ];
   }
 
   /**
    *  $category 를 입력받아서 현재 카테고리가 속한 table_id를 구한 후 방향에 딸 새로 정렬한다.
    */
-  public function updateOrder($category, $direction, Request $request) {
+  public function _updateOrder($category, $direction) {
     $cat = Category::find($category); // $cat->order;
 //    $categories = Category::where('bbs_table_id', $cat->bbs_table_id);
     switch ($direction) {
@@ -65,12 +58,10 @@ trait CategoryTrait {
         break;
     }
 
-    return response()->json([
-        'error' => false
-    ], 200);
+    return ['error' => false];
   }
 
-  public function deleteCategory($category, Request $request) {
+  public function _deleteCategory($category) {
     $cat = Category::find($category); // $cat->order;
     $cat->delete();
 
@@ -86,8 +77,6 @@ trait CategoryTrait {
       $order++;
     }
 
-    return response()->json([
-      'error' => false
-    ], 200);
+    return ['error' => false];
   }
 }

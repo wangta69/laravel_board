@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Bbs\Admin;
+namespace Pondol\Bbs\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 
@@ -24,24 +24,24 @@ class BbsController extends Controller
   )
   {
     $this->bbsSvc = $bbsSvc;
-    $this->middleware('auth');
+    // $this->middleware('auth');
 
-    $this->middleware(function ($request, $next) {
-      $value = config('bbs.admin_roles'); // administrator
-      if (Auth::check()) {
-        if(!$this->bbsSvc->hasRoles($value))
-          return redirect('');
-      } else {
-        return redirect('');
-      }
-      return $next($request);
-    });
+    // $this->middleware(function ($request, $next) {
+    //   $value = config('pondol-bbs.admin_roles'); // administrator
+    //   if (Auth::check()) {
+    //     if(!$this->bbsSvc->hasRoles($value))
+    //       return redirect('');
+    //   } else {
+    //     return redirect('');
+    //   }
+    //   return $next($request);
+    // });
   }
 
   /**
    * 게시물 리스트
    */
-  public function _index(Request $request, $tbl_name) {
+  public function index(Request $request, $tbl_name) {
     // 사용자 정의 시작
     // 아래처럼 게시판별 필요한 추가 내용이 있을 경우 처리한다.
       // if ($cfg->table_name === 'qna') {
@@ -52,7 +52,7 @@ class BbsController extends Controller
       // }
     // 사용자 정의 끝
 
-    $result =  $this->index($request, $tbl_name);
+    $result =  $this->_index($request, $tbl_name);
 
     if(isset($result['error'])) {
       if ($result['error'] == 'login') {
@@ -80,9 +80,9 @@ class BbsController extends Controller
   /**
    * 게시물 보기
    */
-  public function _show(Request $request, $tbl_name, Articles $article) {
+  public function show(Request $request, $tbl_name, Articles $article) {
 
-    $result =  $this->show($request, $tbl_name, $article);
+    $result =  $this->_show($request, $tbl_name, $article);
 
     if(isset($result['error'])) {
       if ($result['error'] == 'password') {
@@ -94,17 +94,17 @@ class BbsController extends Controller
     return view('bbs.templates.admin.'.$result['cfg']->skin_admin.'.show', $result);
   }
 
-  public function _create(Request $request, $tbl_name) {
-    $result =  $this->create($request, $tbl_name);
+  public function create(Request $request, $tbl_name) {
+    $result =  $this->_create($request, $tbl_name);
     // 레이아웃 정보 가져오기
     $this->getLayout($result['cfg']);
     return view('bbs.templates.admin.'.$result['cfg']->skin_admin.'.create', $result);
   }
 
-  public function _store(Request $request, $tbl_name) {
+  public function store(Request $request, $tbl_name) {
 
     // if ($validator->fails()) return ['error'=>'validation', 'errors'=>$validator->errors()];
-    $result =  $this->store($request, $tbl_name);
+    $result =  $this->_store($request, $tbl_name);
     if(isset($result['error'])) {
       if ($result['error'] == 'validation') {
         return redirect()->back()->withInput()->withErrors($result['errors']);
@@ -119,19 +119,19 @@ class BbsController extends Controller
     }
   }
 
-  public function _edit(Request $request, $tbl_name, Articles $article) {
-    $result =  $this->edit($request, $tbl_name, $article);
+  public function edit(Request $request, $tbl_name, Articles $article) {
+    $result =  $this->_edit($request, $tbl_name, $article);
     $this->getLayout($result['cfg']);
     return view('bbs.templates.admin.'.$result['cfg']->skin_admin.'.create', $result);
   }
 
-  public function _update(Request $request, $tbl_name, Articles $article) {
-    $result =  $this->update($request, $tbl_name, $article);
+  public function update(Request $request, $tbl_name, Articles $article) {
+    $result =  $this->_update($request, $tbl_name, $article);
     return redirect()->route('bbs.admin.tbl.show', $result);
   }
 
-  public function _destroy(Request $request, $tbl_name, Articles $article) {
-    $result =  $this->destroy($request, $tbl_name, $article);
+  public function destroy(Request $request, $tbl_name, Articles $article) {
+    $result =  $this->_destroy($request, $tbl_name, $article);
     
     if($request->ajax()){
       return response()->json($result, 200);//500, 203
@@ -140,8 +140,8 @@ class BbsController extends Controller
     }
   }
 
-  public function _passwordConfirm(Request $request, $tbl_name, Articles $article) {
-    $result =  $this->passwordConfirm($request, $tbl_name, $article);
+  public function passwordConfirm(Request $request, $tbl_name, Articles $article) {
+    $result =  $this->_passwordConfirm($request, $tbl_name, $article);
 
     if(isset($result['error'])) {
       if ($result['error'] == 'validation') {
@@ -162,5 +162,9 @@ class BbsController extends Controller
           $cfg->section = $v->v; break;
       }
     }
+  }
+
+  public function preIndex($tbl_name) {
+    return $this->_preIndex($tbl_name);
   }
 }

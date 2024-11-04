@@ -15,10 +15,6 @@ trait CommentTrait {
 
   // protected $bbsSvc;
   protected $cfg;
-  // public function __construct() {
-  //   $this->bbsSvc = \App::make('Pondol\Bbs\BbsService');
-  // }
-
 
 /*
     * Store Comment to BBS
@@ -27,7 +23,7 @@ trait CommentTrait {
     * @param  \Illuminate\Http\Request  $request
     * @return \Illuminate\Http\Response
     */
-  public function store($request, $tbl_name, $article, $comment_id)
+  public function _store($request, $tbl_name, $article, $comment_id)
   {
     $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
 
@@ -69,7 +65,7 @@ trait CommentTrait {
   }
 
   // update
-  public function update($request, $comment){
+  public function _update($request, $comment){
     $comment->content = $request->get('content');
     $comment->save();
     return ['error'=>false];
@@ -115,7 +111,7 @@ trait CommentTrait {
     * @return \Illuminate\Http\Response
     * ajax로 처러되며 리턴도 json type으로 처리
     */
-  public function destroy($article, $comment)
+  public function _destroy($article, $comment)
   {
     // find child
 

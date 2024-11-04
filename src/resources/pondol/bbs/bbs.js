@@ -22,27 +22,6 @@ var BBS = {
     return this._comment_id;
   },
 
-  ajaxroute: function(type, route, data, callback) {
-    var routedata = $.param( route);
-    $.ajax({
-      url: '/bbs/route-url',
-      type: 'GET',
-      data: routedata,
-      success: function(url) {
-        data._token = csrf_token;
-        console.log(url);
-        $.ajax({
-          url: url,
-          type: type,
-          data: data,
-          success: function(resp) {
-            callback(resp);
-          }
-        });
-      }
-    });
-  },
-
   createFileElement: function() {
     var ele = `<li class="mt-1">` + 
     `<input type="file" name="uploads[]" class="form-control">`;
@@ -50,7 +29,7 @@ var BBS = {
     return ele;
   },
 };
-
+/*
 var csrf_token = $("meta[name=csrf-token]" ).attr("content");
 // delete comment
 $(".comment-delete").on('click', function(){
@@ -147,3 +126,5 @@ $( ".re_comment" ).on( "click", ".comment-reply-create", function() {
     }
   });
 });
+
+*/

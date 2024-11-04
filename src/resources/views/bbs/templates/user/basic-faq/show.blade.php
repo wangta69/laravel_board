@@ -22,7 +22,7 @@
           <div class="col-10">
             <ul class="link">
               @foreach ($article->files as $file)
-              <li>{{ link_to_route('bbs.file.download', $file->file_name, $file->id) }}</li>
+              <li><a href="{{ route('bbs.file.download', [ $file->id]) }}">{{$file->file_name}}</a></li>
               @endforeach
             </ul>
           </div>
@@ -42,7 +42,7 @@
     </div><!-- .card -->
   </div> <!-- .bbs show -->
   @if ($cfg->enable_comment == 1)
-  @include ('bbs.templates.user.'.$cfg->skin.'.comment')
+  @include ('bbs::templates.user.basic.comment')
   @endif
 </div><!-- .container -->
 @stop
@@ -54,18 +54,18 @@
 
 @section ('scripts')
 @parent
-<script src="/assets/pondol/bbs/bbs.js"></script>
+<script src="/pondol/route.js"></script>
+<script src="/pondol/bbs/bbs.js"></script>
 <script>
 BBS.tbl_name = "{{$cfg->table_name}}";
 BBS.article_id = {{$article-> id}};
 $(function(){
   $('.btn-delete').on('click', function(){
     if(confirm('@lang('bbs::messages.message.confirm-delete')')) {
-      BBS.ajaxroute('delete', {
-      'name': 'bbs.destroy', 
-      'params[0]': '{{$cfg->table_name}}', 
-      'params[1]': {{$article->id}}, 
-      }, {}, function(resp) {
+      ROUTE.ajaxroute('delete', {
+        route: 'bbs.destroy', 
+        segments: ['{{$cfg->table_name}}',  {{$article->id}}]
+      }, function(resp) {
         if(resp.error) {
           alert(resp.error)
         } else {

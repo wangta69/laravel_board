@@ -130,10 +130,11 @@ $(".btn-comment-update").on('click', function(){
   var param = $(this).attr('user-attr-file-id');
 
 
-  BBS.ajaxroute('put', 
-    {'name': 'bbs.comment.update', 'params[0]': BBS.tbl_name, 'params[1]': BBS.article_id, 'params[2]': BBS.comment_id}, 
-    {content:$("textarea[name=content]", $this).val()}, 
-    function(resp) {
+  ROUTE.ajaxroute('put', {
+    route: 'bbs.comment.update', 
+    segments: [BBS.tbl_name, BBS.article_id, BBS.comment_id], 
+    data: {content:$("textarea[name=content]", $this).val()}
+  }, function(resp) {
       if(resp.error) {
         alert(resp.error);
       } else {
@@ -156,9 +157,10 @@ $(".btn-comment-delete").on('click', function(){
   BBS.comment_id = $this.attr("user-attr-comment-id");
   var param = $(this).attr('user-attr-file-id');
   if(confirm('@lang('bbs::messages.message.confirm-delete')')) {
-    BBS.ajaxroute('delete', 
-      {'name': 'bbs.comment.destroy', 'params[0]': BBS.tbl_name, 'params[1]': BBS.article_id, 'params[2]': BBS.comment_id}, {}, 
-      function(resp) {
+    ROUTE.ajaxroute('delete', {
+      route: 'bbs.comment.destroy', 
+      segments: [BBS.tbl_name, BBS.article_id, BBS.comment_id]
+    }, function(resp) {
         if(resp.error) {
           alert(resp.error);
         } else {
@@ -188,10 +190,11 @@ $( ".re_comment" ).on( "click", ".comment-reply-store", function() {
   BBS.comment_id = $this.attr("user-attr-comment-id");
   var param = $(this).attr('user-attr-file-id');
 
-  BBS.ajaxroute('post', 
-    {'name': 'bbs.comment.destroy', 'params[0]': BBS.tbl_name, 'params[1]': BBS.article_id, 'params[2]': BBS.comment_id}, 
-    {content:$("textarea[name=content]", $this).val()}, 
-    function(resp) {
+  ROUTE.ajaxroute('post', {
+    route: 'bbs.comment.destroy', 
+    segments: [BBS.tbl_name, BBS.article_id, BBS.comment_id], 
+    data: {content:$("textarea[name=content]", $this).val()}
+  }, function(resp) {
       if(resp.error) {
         alert(resp.error);
       } else {

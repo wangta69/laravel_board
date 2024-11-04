@@ -82,5 +82,6 @@
 
 @section ('scripts')
 @parent
-<script src="/assets/pondol/bbs/bbs.js"></script>
+<script src="/pondol/route.js"></script>
+<script src="/pondol/bbs/bbs.js"></script>
 @stop

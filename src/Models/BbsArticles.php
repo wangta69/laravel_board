@@ -37,7 +37,7 @@ class BbsArticles extends Model
     public function user() {
         $auth = config('auth.providers.users.model');
         return $this->belongsTo($auth);
-    //    return $this->belongsTo(config('bbs.user'));
+    //    return $this->belongsTo(config('pondol-bbs.user'));
     }
 
     public function table()

@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Bbs;
+namespace Pondol\Bbs\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -41,8 +41,8 @@ class BbsController extends Controller {
   * @param String $tbl_name
   * @return \Illuminate\Http\Response
   */
-  public function _index(Request $request, $tbl_name) {
-    $result =  $this->index($request, $tbl_name);
+  public function index(Request $request, $tbl_name) {
+    $result =  $this->_index($request, $tbl_name);
 
     if(!$result['error']) {
       return view('bbs.templates.user.'.$result['cfg']->skin.'.index', $result);
@@ -57,8 +57,8 @@ class BbsController extends Controller {
      * @param String $tbl_name
      * @return \Illuminate\Http\Response
      */
-  public function _create(Request $request, $tbl_name) {
-    $result =  $this->create($request, $tbl_name);
+  public function create(Request $request, $tbl_name) {
+    $result =  $this->_create($request, $tbl_name);
     return view('bbs.templates.user.'.$result['cfg']->skin.'.create', $result);
   }
   /*
@@ -68,8 +68,8 @@ class BbsController extends Controller {
   * @param  \Illuminate\Http\Request  $request
   * @return \Illuminate\Http\Response
   */
-  public function _store(Request $request, $tbl_name) {
-    $result =  $this->store($request, $tbl_name);
+  public function store(Request $request, $tbl_name) {
+    $result =  $this->_store($request, $tbl_name);
     if(isset($result['error'])) {
       return $this->errorHandle($result['error']);
 
@@ -84,8 +84,8 @@ class BbsController extends Controller {
   * @param  int  $id
   * @return \Illuminate\Http\Response
   */
-  public function _edit(Request $request, $tbl_name, Articles $article) {
-    $result =  $this->edit($request, $tbl_name, $article);
+  public function edit(Request $request, $tbl_name, Articles $article) {
+    $result =  $this->_edit($request, $tbl_name, $article);
     if($result['error']) {
       return redirect()->route('bbs.index', [$tbl_name]);
     }else {
@@ -93,15 +93,17 @@ class BbsController extends Controller {
     }
   }
 
-  public function _update(Request $request, $tbl_name, Articles $article) {
-    $result =  $this->update($request, $tbl_name, $article);
+  public function update(Request $request, $tbl_name, Articles $article) {
+
+    return;
+    $result =  $this->_update($request, $tbl_name, $article);
     // exit;
     return redirect()->route('bbs.show', [$result[0], $result[1]]);
   }
 
-  public function _destroy(Request $request, $tbl_name, Articles $article) {
+  public function destroy(Request $request, $tbl_name, Articles $article) {
     
-    $result =  $this->destroy($request, $tbl_name, $article);
+    $result =  $this->_destroy($request, $tbl_name, $article);
 
     if($request->ajax()){
       return response()->json($result, 200);//500, 203
@@ -118,8 +120,8 @@ class BbsController extends Controller {
   * @return \Illuminate\Http\Response
   */
 
-  public function _show(Request $request, $tbl_name, Articles $article) {
-    $result =  $this->show($request, $tbl_name, $article);
+  public function show(Request $request, $tbl_name, Articles $article) {
+    $result =  $this->_show($request, $tbl_name, $article);
     if ($result['error']) {
       return $this->errorHandle($result['error']);
     }
@@ -162,8 +164,8 @@ class BbsController extends Controller {
   /**
    * file download from storage
    */
-  public function _download($file){
-    $result = $this->download($file);
+  public function download(Files $file){
+    $result = $this->_download($file);
     if ($result['error']) {
       return $this->errorHandle($result['error']);
     } else {
@@ -292,11 +294,12 @@ class BbsController extends Controller {
         return redirect()->back()->withInput()->withErrors($result['errors']);
         break;
       case 'login':
-        return redirect()->route(config('bbs.route.login'));
+        return redirect()->route(config('pondol-bbs.route.login'));
         break;
     }
+  }
 
-
-    
+  public function preIndex($tbl_name) {
+    return $this->_preIndex($tbl_name);
   }
 }

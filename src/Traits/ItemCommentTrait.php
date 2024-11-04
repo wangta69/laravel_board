@@ -12,12 +12,12 @@ use Pondol\Bbs\Models\BbsConfig;
 
 trait ItemCommentTrait {
 
-  public function index($request, $item) {
+  public function _index($request, $item) {
     $comment = BbsItemComment::where('bbs_item_comments.item', $item);
     return $comment;
   }  
 
-  public function store($request, $item, $item_id, $parent_id)
+  public function _store($request, $item, $item_id, $parent_id)
   {
     $user = $request->user();
     if (!$user) {
@@ -86,7 +86,7 @@ trait ItemCommentTrait {
   }
 
   // update
-  public function update($request, $tbl_name, $article, $comment){
+  public function _update($request, $tbl_name, $article, $comment){
 
     if(!$tbl_name || !$comment->id)
       return Response::json(['result'=>false, "code"=>"001", 'message'=>'필요값이 충분하지 않습니다.'], 203);
@@ -151,7 +151,7 @@ trait ItemCommentTrait {
     * @return \Illuminate\Http\Response
     * ajax로 처러되며 리턴도 json type으로 처리
     */
-  public function destroy($article, $comment)
+  public function _destroy($article, $comment)
   {
 
     if (!$comment->isOwner(Auth::user())) {

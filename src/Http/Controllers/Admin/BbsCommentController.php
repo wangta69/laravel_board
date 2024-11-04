@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Bbs\Admin;
+namespace Pondol\Bbs\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 

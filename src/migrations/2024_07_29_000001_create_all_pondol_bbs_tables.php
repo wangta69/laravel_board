@@ -2,7 +2,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-
 class CreateAllPondolBbsTables extends Migration
 {
   /**
@@ -29,7 +28,7 @@ class CreateAllPondolBbsTables extends Migration
         $table->string('text_type', '5')->comment('html, br');
         $table->string('title', '255');
         $table->string('keywords', '100')->nullable()->comment('키워드(laravel, php, ..) 로 컴마로 구분');
-        $table->text('content');
+        $table->longText('content');
         $table->string('image', '255')->nullable();
         $table->integer('hit')->unsigned()->default(0);
         $table->fullText(['title', 'content']);
@@ -49,7 +48,7 @@ class CreateAllPondolBbsTables extends Migration
         $table->string('section', '50');
         $table->string('extends', '50');
         $table->tinyInteger('lists')->unsigned()->default(10)->comment('reply 기능 활성');
-        $table->string('editor', '20')->comment('none, smartEditor');
+        $table->tinyInteger('editor')->unsigned()->default(0)->comment('0: disable, 1: enable');
         $table->tinyInteger('enable_reply')->unsigned()->default(0)->comment('articles count displayed on index');
         $table->tinyInteger('enable_comment')->unsigned()->default(0)->comment('comment 기능 활성');
         $table->tinyInteger('enable_qna')->unsigned()->default(0)->comment('1대1 기능 활성(관리자 및 글쓴이만 확인)');
@@ -146,13 +145,11 @@ class CreateAllPondolBbsTables extends Migration
     if (!Schema::hasTable('bbs_roles')) {
       Schema::create('bbs_roles', function(BluePrint $table) {
         $table->bigInteger('bbs_tables_id')->unsigned();
+        $table->bigInteger('read_list_id')->unsigned()->nullable();
         $table->bigInteger('read_role_id')->unsigned()->nullable();
         $table->bigInteger('write_role_id')->unsigned()->nullable();
       });
     }
-
-
-
   }
     
 

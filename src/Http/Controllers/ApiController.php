@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Bbs;
+namespace Pondol\Bbs\Http\Controllers;
 
 // use App\Http\Controllers\Controller;
 use Pondol\Bbs\BbsController;

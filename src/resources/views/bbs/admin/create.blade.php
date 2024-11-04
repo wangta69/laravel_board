@@ -16,14 +16,16 @@
           <div class='form-group row mt-1'>
             <label for='name' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.title')</label>
             <div class='col-sm-10'>
-              <input type="text" name="name" class="form-control" id="name" placeholder="bbs title like 'free bbs for child'" value="{{isset($table) &&  $table->name ? $table->name : old('name')}}">
+              <x-pondol::text name="name" class="form-control" id="name" placeholder="bbs title like 'free bbs for child'" 
+              value="{{isset($table) &&  $table->name ? $table->name : old('name')}}" />
             </div>
           </div>
 
           <div class='form-group row mt-1'>
             <label for='table_name' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.name')</label>
             <div class='col-sm-10'>
-              <input type="text" name="table_name" id="table_name" class="form-control" placeholder="bbs name like 'free'" value="{{isset($table) && $table->table_name ? $table->table_name : old('table_name')}}">
+            <x-pondol::text name="table_name" id="table_name" class="form-control" placeholder="bbs name like 'free'"
+             value="{{isset($table) && $table->table_name ? $table->table_name : old('table_name')}}" />
 
             </div>
           </div>
@@ -31,72 +33,91 @@
           <div class='form-group row mt-1'>
             <label for='skin' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.skin-user')</label>
             <div class='col-sm-10'>
-              <select name="skin" class="form-select" id="skin">
-                @foreach($skins as $k=>$v)
-                <option value="{{$k}}" @if(isset($table) && $table->skin == $k) selected @endif>{{$v}}</option>
-                @endforeach
-              </select>
+              <x-pondol::select name="skin" class="form-select" id="skin" 
+                :options="$skins" 
+                value="{{ old('skin', isset($table) &&  $table->skin ? $table->skin : '')}}" />
+            </div>
+          </div>
+          <div class='row'>
+            <div class='col-sm-2'></div>
+            <div class='col-sm-10'>
+              {{resource_path('views/bbs/templates/user')}}
             </div>
           </div>
 
+
           <div class='form-group row mt-1'>
-            <label for='skin' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.skin-admin')</label>
+            <label for='skin_admin' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.skin-admin')</label>
             <div class='col-sm-10'>
-              <select name="skin_admin" class="form-select" id="skin_admin">
-                @foreach($skins_admin as $k=>$v)
-                <option value="{{$k}}" @if(isset($table) && $table->skins_admin == $k) selected @endif>{{$v}}</option>
-                @endforeach
-              </select>
+            <x-pondol::select name="skin_admin" class="form-select" id="skin_admin" 
+                :options="$skins_admin" 
+                value="{{ old('skin_admin', isset($table) &&  $table->skin_admin ? $table->skin_admin : '')}}" />
+            </div>
+          </div>
+          <div class='row'>
+            <div class='col-sm-2'></div>
+            <div class='col-sm-10'>
+              {{resource_path('views/bbs/templates/admin')}}
             </div>
           </div>
 
           <div class='form-group row mt-1'>
             <label for='skin' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.blade-extends')</label>
             <div class='col-sm-10'>
-              <input type="text" name="extends" id="extends" class="form-control" placeholder="extends" value="{{isset($table) && $table->extends ? $table->extends : old('extends')}}">
+            <x-pondol::text name="extends" id="extends" class="form-control" placeholder="extends" 
+            value="{{isset($table) && $table->extends ? $table->extends : old('extends')}}" />
             </div>
           </div>
 
           <div class='form-group row mt-1'>
             <label for='skin' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.blade-section')</label>
             <div class='col-sm-10'>
-              <input type="text" name="section" id="section" class="form-control" placeholder="extesectionnds" value="{{isset($table) && $table->section ? $table->section : old('section')}}">
+            <x-pondol::text name="section" id="section" class="form-control" placeholder="extesectionnds" 
+            value="{{isset($table) && $table->section ? $table->section : old('section')}}" />
             </div>
           </div>
 
           <div class='form-group row mt-1'>
             <label for='editor' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.editor')</label>
-            <div class='col-sm-10'>
-              <select name="editor" class="form-select" id="editor">
-                @foreach($editors as $k=>$v)
-                <option value="{{$k}}" @if(isset($table) && $table->editor == $k) selected @endif>{{$v}}</option>
-                @endforeach
-              </select>
+            <div class='col-sm-10 row'>
+              <div class="col-auto">
+                <x-pondol::radio class="form-check-input" name="editor" value="0" 
+                  checked="{{ old('editor', isset($table) &&  $table->editor ? $table->editor :'0')}}"/>
+                <label class="form-check-label">Disable</label>
+
+              </div>
+              <div class="col-auto">
+                <x-pondol::radio class="form-check-input" name="editor" value="1" 
+                  checked="{{ old('editor', isset($table) &&  $table->editor ? $table->editor :'0')}}" />
+                <label class="form-check-label">Enable</label>
+              </div>
             </div>
           </div>
-
           <div class='form-group row mt-1'>
             <label for='roles-list' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.auth-list')</label>
             <div class='col-sm-10 row'>
               <div class="col-auto">
-                <input class="form-check-input" type="radio" name="auth_list" value="none">
+                <x-pondol::radio class="form-check-input" name="auth_list" value="none"
+                  checked="{{ old('auth_list', isset($table) &&  $table->auth_list ? $table->auth_list :'login')}}" />
                 <label class="form-check-label"> @lang('bbs::messages.admin.bbs.a-none')</label>
               </div>
               <div class="col-auto">
-                <input class="form-check-input" type="radio" name="auth_list" value="login" checked>
+                <x-pondol::radio class="form-check-input" name="auth_list" value="login" 
+                  checked="{{ old('auth_list', isset($table) &&  $table->auth_list ? $table->auth_list :'login')}}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.a-login')</label>
               </div>
               <div class="col-auto">
-                <input class="form-check-input" type="radio" name="auth_list" value="role">
+              <x-pondol::radio class="form-check-input" name="auth_list" value="role"
+                checked="{{ old('auth_list', isset($table) &&  $table->auth_list ? $table->auth_list :'login')}}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.a-role')</label>
               </div>
-              <select id="roles-list" name="roles-list[]" class="form-select" multiple="multiple"
-                style="width: 100%; display:none;" autocomplete="off">
-                @foreach($roles as $role)
-                <option @if(isset($table) && $table->roles_list->find($role->id)) selected="selected" @endif
-                    value="{{ $role->id }}">{{ $role->name }}</option>
-                @endforeach
-              </select>
+
+              <x-pondol::select id="roles-list" name="roles-list[]" class="form-select" multiple
+                style="width: 100%; display:none;" autocomplete="off"
+                :options="$roles" 
+                option-label="name" 
+                option-value="id" 
+                :value="$table->roles_list" />
             </div>
           </div>
 
@@ -104,27 +125,30 @@
             <label for='roles-read' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.auth-read')</label>
             <div class='col-sm-10 row'>
               <div class="col-auto">
-                <input class="form-check-input" type="radio" name="auth_read" value="none">
+                <x-pondol::radio class="form-check-input" name="auth_read" value="none"
+                  checked="{{ old('auth_read', isset($table) &&  $table->auth_read ? $table->auth_read :'login')}}" />
                 <label class="form-check-label"> @lang('bbs::messages.admin.bbs.a-none')</label>
               </div>
 
               <div class="col-auto">
-                <input class="form-check-input" type="radio" name="auth_read" value="login" checked>
+                <x-pondol::radio class="form-check-input" name="auth_read" value="login" 
+                  checked="{{ old('auth_read', isset($table) &&  $table->auth_read ? $table->auth_read :'login')}}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.a-login')</label>
               </div>
 
               <div class="col-auto">
-                <input class="form-check-input" type="radio" name="auth_read" value="role">
+                <x-pondol::radio class="form-check-input" name="auth_read" value="role"
+                  checked="{{ old('auth_read', isset($table) &&  $table->auth_read ? $table->auth_read :'login')}}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.a-role')</label>
               </div>
 
-              <select id="roles-read" name="roles-read[]" class="form-select" multiple="multiple"
-                style="width: 100%; display:none;" autocomplete="off">
-                @foreach($roles as $role)
-                <option @if(isset($table) && $table->roles_read->find($role->id)) selected="selected" @endif
-                    value="{{ $role->id }}">{{ $role->name }}</option>
-                @endforeach
-              </select>
+              <x-pondol::select id="roles-read" name="roles-read[]" class="form-select" multiple="multiple"
+                style="width: 100%; display:none;" autocomplete="off"
+                :options="$roles" 
+                option-label="name" 
+                option-value="id" 
+                :value="$table->roles_read"
+                />
             </div>
           </div>
 
@@ -132,46 +156,58 @@
             <label for='roles-write' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.auth-write')</label>
             <div class='col-sm-10 row'>
               <div class="col-auto">
-                  <input class="form-check-input" type="radio" name="auth_write" value="none">
-                  <label class="form-check-label"> @lang('bbs::messages.admin.bbs.a-none')</label>
+                <x-pondol::radio class="form-check-input" name="auth_write" value="none"
+                  checked="{{ old('auth_write', isset($table) &&  $table->auth_write ? $table->auth_write :'login')}}" />
+                <label class="form-check-label"> @lang('bbs::messages.admin.bbs.a-none')</label>
               </div>
               <div class="col-auto">
-                  <input class="form-check-input" type="radio" name="auth_write" value="login" checked>
-                  <label class="form-check-label">@lang('bbs::messages.admin.bbs.a-login')</label>
+                <x-pondol::radio class="form-check-input" name="auth_write" value="login" 
+                  checked="{{ old('auth_write', isset($table) &&  $table->auth_write ? $table->auth_write :'login')}}" />
+                <label class="form-check-label">@lang('bbs::messages.admin.bbs.a-login')</label>
               </div>
               <div class="col-auto">
-                  <input class="form-check-input" type="radio" name="auth_write" value="role">
-                  <label class="form-check-label">@lang('bbs::messages.admin.bbs.a-role')</label>
+                <x-pondol::radio class="form-check-input" name="auth_write" value="role"
+                  checked="{{ old('auth_write', isset($table) &&  $table->auth_write ? $table->auth_write :'login')}}" />
+                <label class="form-check-label">@lang('bbs::messages.admin.bbs.a-role')</label>
               </div>
-              <select id="roles-write" name="roles-write[]" class="form-select" multiple="multiple"
-                style="width: 100%; display:none;" autocomplete="off">
-                @foreach($roles as $role)
-                <option @if(isset($table) && $table->roles_write->find($role->id)) selected="selected" @endif
-                    value="{{ $role->id }}">{{ $role->name }}</option>
-                @endforeach
-              </select>
+         
+              <x-pondol::select id="roles-write" name="roles-write[]" class="form-select" multiple="multiple"
+                style="width: 100%; display:none;" autocomplete="off"
+                :options="$roles" 
+                option-label="name" 
+                option-value="id" 
+                :value="$table->roles_write"
+                />
             </div>
           </div>
-
+    
           <div class='form-group row mt-1'>
             <label for='roles-write' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.option')</label>
             <div class='col-sm-10 row'>
+              {{-- 
               <div class="col-auto">
-                <input class="form-check-input" type="checkbox" name="enable_reply" value="1" @if(isset($table) && $table->enable_reply == 1) checked @endif>
+                <x-pondol::checkbox class="form-check-input" name="enable_reply" value="1" 
+                  checked="{{ old('enable_reply', isset($table) &&  $table->enable_reply ? $table->enable_reply :'')}}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.enable-reply')</label>
               </div>
+              --}}
               <div class="col-auto">
-                <input class="form-check-input" type="checkbox" name="enable_comment" value="1" @if(isset($table) && $table->enable_comment == 1) checked @endif>
+                <x-pondol::checkbox class="form-check-input" name="enable_comment" value="1" 
+                  checked="{{ old('enable_comment', isset($table) &&  $table->enable_comment ? $table->enable_comment :'')}}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.enable-comment')</label>
               </div>
+              {{-- 
               <div class="col-auto">
-                <input class="form-check-input" type="checkbox" name="enable_qna" value="1" @if(isset($table) && $table->enable_qna == 1) checked @endif>
+                <x-pondol::checkbox class="form-check-input" name="enable_qna" value="1" 
+                  checked="{{ old('enable_qna', isset($table) &&  $table->enable_qna ? $table->enable_qna :'')}}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.enable-qna')</label>
               </div>
               <div class="col-auto">
-                <input class="form-check-input" type="checkbox" name="enable_password" value="1" @if(isset($table) && $table->enable_password == 1) checked @endif>
+                <x-pondol::checkbox class="form-check-input" name="enable_password" value="1" 
+                  checked="{{ old('enable_password', isset($table) &&  $table->enable_password ? $table->enable_password :'')}}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.enable-password')</label>
               </div><!-- 비회원 운영시 패스워드로 처리 -->
+              --}}
             </div>
           </div>
 
@@ -181,8 +217,9 @@
             <div class='col-sm-10'>
               <div class='row'>
                 <div class='col-6 input-group'>
-                  <input class="form-control" placeholder="@lang('bbs::messages.admin.bbs.category-name')" name="category" type="text">
-                  <button type="button" class="btn btn-info input-group-append" id="add-category">@lang('bbs::messages.button.create')</button>
+                    <x-pondol::text class="form-control" 
+                    :placeholder="trans('bbs::messages.admin.bbs.category-name')" name="category" />
+                  <button type="button" class="btn btn-info input-group-append" id="act-add-category">@lang('bbs::messages.button.create')</button>
                 </div>
                 <div class='col-6'>
                   <table class='table table-borderless table-striped' id="category-list">
@@ -196,7 +233,7 @@
                         </div>
                       </td>
                       <td>
-                        <button type="button" class="btn btn-danger btn-sm delete-category">@lang('bbs::messages.button.delete')</button>
+                        <button type="button" class="btn btn-danger btn-sm act-delete-category">@lang('bbs::messages.button.delete')</button>
                       </td>
                     </tr>
                     @empty
@@ -215,7 +252,8 @@
           <div class='form-group row mt-1'>
             <label for='lists' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.lists-per-page')</label>
             <div class='col-sm-10'>
-              <input type="text" name="lists" id="lists" class="form-control" value="{{isset($table) && $table->lists ? $table->lists : old('lists')}}">
+            <x-pondol::text name="lists" id="lists" class="form-control" 
+              value="{{isset($table) && $table->lists ? $table->lists : old('lists')}}" />
             </div>
           </div>
         </div> <!-- .card-body -->
@@ -235,7 +273,7 @@
               <button type="submit" class="btn btn-primary btn-sm">Create</button>
               @endif
 
-              <a href="{{ url()->previous()}}" class="btn btn-secondary btn-sm">List</a>
+              <a href="{{ route('bbs.admin.index') }}" class="btn btn-secondary btn-sm">List</a>
             </div>
           </div>
         </div><!-- .card-footer-->
@@ -254,53 +292,42 @@
 
 @section ('scripts')
 @parent
+<script src="/pondol/route.js"></script>
 <script>
 var table_id = '{{$table->id}}';
-var auth_list = '{{ isset($table->auth_list) ? $table->auth_list : 'login'}}';
-var auth_read = '{{ isset($table->auth_read) ? $table->auth_read : 'login'}}';
-var auth_write = '{{ isset($table->auth_write) ? $table->auth_write : 'login'}}';
+
 
 /**
   * @param Number id : catetory ID
   * @param String order : up | down
   */
 function setCategoryOrder(id, order) {
-  var url = '/bbs/admin/category/update/' + id + '/' + order;
-  $.ajax({
-    url: url,
-    method: 'PUT',
-    headers: {
-      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    },
-    success: function (res) {
-      if (res.error === false) {
-        // $( '.btn-active' ).removeClass( 'active' );
-        // $('.btn-active').eq(i).addClass('active');
-        //    window.location.reload();
-      } else {
-        //    alert(res.error);
-      }
-      // window.location.reload();
+  ROUTE.ajaxroute('PUT', {
+    route: 'bbs.admin.category.update', 
+    segments: [id, order]
+  }, function(resp) {
+    if(resp.error === false) {
     }
-  });
+  })
 }
 
-$(function () {
-  $("input[name=auth_list]").val([auth_list]);
-  $("input[name=auth_read]").val([auth_read]);
-  $("input[name=auth_write]").val([auth_write]);
-
-  if (auth_list == 'role') {
+function init() {
+  if ($('input[name="auth_list"]:checked').val() == 'role') {
     $("#roles-list").show();
   }
 
-  if (auth_read == 'role') {
+  if ($('input[name="auth_read"]:checked').val() == 'role') {
     $("#roles-read").show();
   }
 
-  if (auth_write == 'role') {
+  if ($('input[name="auth_write"]:checked').val() == 'role') {
     $("#roles-write").show();
   }
+
+}
+
+$(function () {
+
 
   $("input[name='auth_list']").change(function () {
     $("#roles-list").hide();
@@ -322,21 +349,18 @@ $(function () {
 
   // 카테고리 관련 시작
   // 카테고리 등록
-  $("#add-category").click(function () {
+  
+  $("#act-add-category").click(function () {
     var category = $("input[name='category']").val();
     var url = '/bbs/admin/category/add/' + table_id
-    $.ajax({
-      url: url,
-      method: 'POST',
-      data: {
-        category
-      },
-      headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-      },
-      success: function (res) {
-        if (res.error === false) {
-          var addLine = '<tr user-attr-id="' + category + '">';
+
+    ROUTE.ajaxroute('POST', {
+      route: 'bbs.admin.category.store', 
+      segments: [table_id],
+      data: {category: category}
+    }, function(resp) {
+      if(resp.error === false) {
+        var addLine = '<tr user-attr-id="' + category + '">';
           addLine = addLine + '<td>' + category + '</td>';
           addLine = addLine + '<td>';
           addLine = addLine + '<div class="order-btn">';
@@ -346,7 +370,7 @@ $(function () {
           addLine = addLine + '</td>';
           addLine = addLine + '<td>';
           addLine = addLine +
-            '<button type="button" class="btn btn-danger btn-sm delete-category">삭제</button>';
+            '<button type="button" class="btn btn-danger btn-sm act-delete-category">삭제</button>';
           addLine = addLine + '</td>';
           addLine = addLine + '</tr>';
           $("#category-list").append(addLine);
@@ -355,35 +379,29 @@ $(function () {
         } else {
             //    alert(res.error);
         }
-          // window.location.reload();
-      }
-    });
-  });
+    })
+  })
 
   // 카테고리 삭제
-  $(".delete-category").click(function () {
+  $(".act-delete-category").on('click', function () {
     var $tr = $(this).parents('tr');
     var categoryId = $tr.attr('user-attr-id');
 
     if (confirm('카테고리를 삭제하시겠습니까?')) {
       var url = '/bbs/admin/category/delete/' + categoryId;
-      $.ajax({
-        url: url,
-        method: 'DELETE',
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        success: function (res) {
-          $tr.remove();
-          if (res.error === false) {} else {
-              //    alert(res.error);
-          }
+
+      ROUTE.ajaxroute('DELETE', {
+        route: 'bbs.admin.category.destroy', 
+        segments: [categoryId]
+      }, function(resp) {
+        $tr.remove();
+        if(resp.error === false) {
         }
-      });
+      })
     }
   })
 
-  $(".up").click(function (e) {
+  $(".up").on('click', function (e) {
     var $tr = $(this).parents('tr');
     var categoryId = $tr.attr('user-attr-id');
 
@@ -392,13 +410,15 @@ $(function () {
     setCategoryOrder(categoryId, 'up');
   });
 
-  $(".down").click(function (e) {
+  $(".down").on('click', function (e) {
     var $tr = $(this).parents('tr');
     var categoryId = $tr.attr('user-attr-id');
     setCategoryOrder(categoryId, 'down');
     $tr.next().after($tr);
   });
   // 카테고리 관련 끝
+
+  init();
 });
 </script>
 @stop

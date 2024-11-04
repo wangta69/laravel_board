@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Bbs;
+namespace Pondol\Bbs\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -29,9 +29,9 @@ class ItemCommentController extends Controller {
     * @param  \Illuminate\Http\Request  $request
     * @return \Illuminate\Http\Response
     */
-  public function _store(Request $request, $item, $item_id, $parent_id=0)
+  public function store(Request $request, $item, $item_id, $parent_id=0)
   {
-    $result = $this->store($request, $item, $item_id, $parent_id);
+    $result = $this->_store($request, $item, $item_id, $parent_id);
 
     if($request->ajax()){
       return Response::json($result, 200);
@@ -41,9 +41,9 @@ class ItemCommentController extends Controller {
   }
 
   // update
-  public function _update(Request $request, $tbl_name, $article, Comments $comment){
+  public function update(Request $request, $tbl_name, $article, Comments $comment){
 
-    $this->update($request, $tbl_name, $article, $comment);
+    $this->_update($request, $tbl_name, $article, $comment);
     if($request->ajax()){
       return Response::json($result, 200);
     }
@@ -62,10 +62,10 @@ class ItemCommentController extends Controller {
     * @return \Illuminate\Http\Response
     * ajax로 처러되며 리턴도 json type으로 처리
     */
-  public function _destroy(Request $request, $tbl_name, Articles $article, Comments $comment)
+  public function destroy(Request $request, $tbl_name, Articles $article, Comments $comment)
   {
 
-    $this->destroy($article, $comment);
+    $this->_destroy($article, $comment);
     if($request->ajax()){
       return Response::json($result, 200);
     }

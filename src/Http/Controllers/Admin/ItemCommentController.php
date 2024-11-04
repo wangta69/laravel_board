@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Bbs\Admin;
+namespace Pondol\Bbs\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Auth;
 use Pondol\Bbs\BbsService;
@@ -22,18 +22,18 @@ class ItemCommentController extends Controller
   public function __construct(BbsService $bbsSvc )
   {
     $this->bbsSvc = $bbsSvc;
-    $this->middleware('auth');
+    // $this->middleware('auth');
 
-    $this->middleware(function ($request, $next) {
-      $value = config('bbs.admin_roles'); // administrator
-      if (Auth::check()) {
-        if(!$this->bbsSvc->hasRoles($value))
-          return redirect('');
-      } else {
-        return redirect('');
-      }
-      return $next($request);
-    });
+    // $this->middleware(function ($request, $next) {
+    //   $value = config('pondol-bbs.admin_roles'); // administrator
+    //   if (Auth::check()) {
+    //     if(!$this->bbsSvc->hasRoles($value))
+    //       return redirect('');
+    //   } else {
+    //     return redirect('');
+    //   }
+    //   return $next($request);
+    // });
   }
 
   /**

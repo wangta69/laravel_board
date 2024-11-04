@@ -13,7 +13,7 @@ function bbs_get_thumb($file, $width=null, $height=null){
  */
 function bbs_image_url_from_storage($path){ 
   $ext = substr($path, strrpos($path, '.') + 1);
-  $bbs_allowed_image = config('bbs.allowed_images');
+  $bbs_allowed_image = config('pondol-bbs.allowed_images');
   if(in_array(strtolower($ext), $bbs_allowed_image)) {
     return str_replace(["public"], ["/storage"], $path);
   } else {

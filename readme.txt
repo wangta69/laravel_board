@@ -2,7 +2,7 @@
 
 <?php
 
-namespace App\Http\Controllers\Bbs;
+namespace Pondol\Bbs\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Auth;

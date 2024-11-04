@@ -41,8 +41,8 @@
             <tr>
               <th> @lang('bbs::messages.bbs.title.content')</th>
               <td>
-                @if($cfg->editor == 'smartEditor')
-                  @include ('editor::smart-editor.editor', ['name'=>'content', 'id'=>'content-id', 'value'=>isset($article) ? $article->content : old('content'), 'attr'=>['class'=>'form-control input-sm']])
+                @if($cfg->editor)
+                  @include ('editor::default', ['name'=>'content', 'id'=>'content-id', 'value'=>isset($article) ? $article->content : old('content'), 'attr'=>['class'=>'form-control input-sm']])
                 @else
                   <textarea name="content" class="form-control">{{  isset($article) ? $article->content : old('content') }}</textarea>
                 @endif
@@ -58,7 +58,7 @@
                   <li class="mt-1">
                     <input type="file" name="uploads[]" class="form-control" style="display: none;"> 
                     <label class="align-top">{{$file->file_name}}</label> 
-                    <button type="button" class="btn-close delete-file" aria-label="Delete"  user-attr-file-id="{{$file->id}}"></button>
+                    <button type="button" class="btn-close act-delete-file" aria-label="Delete"  user-attr-file-id="{{$file->id}}"></button>
                   </li>
                 @empty
                   <li class="mt-1">
@@ -87,7 +87,8 @@
 
 @section ('scripts')
 @parent
-<script src="/assets/pondol/bbs/bbs.js"></script>
+<script src="/pondol/route.js"></script>
+<script src="/pondol/bbs/bbs.js"></script>
 <script>
   $(function(){
     // 첨부파일 추가
@@ -96,13 +97,14 @@
     })
 
     // 첨부파일 삭제
-    $(".delete-file").click('on', function() {
+    $(".act-delete-file").click('on', function() {
       var param = $(this).attr('user-attr-file-id');
       var $delElem = $(this).parents('li');
-      BBS.ajaxroute('delete', {'name': 'bbs.file.delete', 'params[0]': param}, {}, function(resp) {
+      ROUTE.ajaxroute('delete', {
+        route: 'bbs.file.delete', segments: [param]
+      }, function(resp) {
         $delElem.remove();
       })
-    })
   })
 </script>
 @stop

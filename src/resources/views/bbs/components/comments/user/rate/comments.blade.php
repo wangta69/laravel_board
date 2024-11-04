@@ -146,7 +146,8 @@
 @endsection
 @section('scripts')
 @parent
-<script src="/assets/pondol/bbs/bbs.js"></script>
+<script src="/pondol/route.js"></script>
+<script src="/pondol/bbs/bbs.js"></script>
 <script src="//dreyescat.github.io/bootstrap-rating/bootstrap-rating.js"></script>
 
 <script>
@@ -169,10 +170,12 @@ $(function(){
     var params = {};
     params.content = $(this).parents('.comment-input').find($('textarea[name=content]')).eq(0).val();
     var comment_id = $(this).parents(".comment-article").attr("user-attr-comment-id");
-    console.log(params);
-    var routeInfo = {'name': 'bbs.item.comment.store', 'params[0]': item, 'params[1]': item_id, 'params[2]': comment_id};
-    BBS.ajaxroute('post', routeInfo, params, function(resp) {
-      console.log(resp);
+    // var routeInfo = {route: 'bbs.item.comment.store', segments:[item, item_id, comment_id], data:params};
+    ROUTE.ajaxroute('post', {
+      route: 'bbs.item.comment.store', 
+      segments: [item, item_id, comment_id], 
+      data: params
+    }, function(resp) {
       if(resp.error === false) {
         window.location.reload();
       }

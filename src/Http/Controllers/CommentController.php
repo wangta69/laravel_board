@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Bbs;
+namespace Pondol\Bbs\Http\Controllers;
 
 
 use Illuminate\Http\Request;
@@ -32,7 +32,7 @@ class CommentController  extends Controller {
     * @param  \Illuminate\Http\Request  $request
     * @return \Illuminate\Http\Response
     */
-  public function _store(Request $request, $tbl_name, Articles $article, $comment_id)
+  public function store(Request $request, $tbl_name, Articles $article, $comment_id)
   {
 
     // $parent_id = 0;
@@ -46,7 +46,7 @@ class CommentController  extends Controller {
     if ($validator->fails()) return redirect()->back()->withErrors($validator->errors());
 
 
-    $result = $this->store($request, $tbl_name, $article, $comment_id);
+    $result = $this->_store($request, $tbl_name, $article, $comment_id);
 
     if($request->ajax()){
       return Response::json($result, 200);
@@ -55,7 +55,7 @@ class CommentController  extends Controller {
   }
 
   // update
-  public function _update(Request $request, $tbl_name, $article, Comments $comment){
+  public function update(Request $request, $tbl_name, $article, Comments $comment){
 
     if(!$tbl_name || !$comment->id)
       return Response::json(['result'=>false, "code"=>"001", 'message'=>'필요값이 충분하지 않습니다.'], 203);
@@ -71,7 +71,7 @@ class CommentController  extends Controller {
     if (!$comment->isOwner(Auth::user()))
       return Response::json(['result'=>false, "code"=>"003", 'message'=>'본인이 작성한 글만 수정가능합니다.'], 203);
 
-    $result = $this->update($request, $comment);
+    $result = $this->_update($request, $comment);
 
     return Response::json($result, 200);
 
@@ -88,14 +88,14 @@ class CommentController  extends Controller {
     * @return \Illuminate\Http\Response
     * ajax로 처러되며 리턴도 json type으로 처리
     */
-  public function _destroy(Request $request, $tbl_name, Articles $article, Comments $comment)
+  public function destroy(Request $request, $tbl_name, Articles $article, Comments $comment)
   {
 
     if (!$comment->isOwner(Auth::user())) {
       return Response::json(['error'=>'본인이 작성한 글만 삭제가능합니다.', "code"=>"001"], 200);
     }
 
-    $result = $this->destroy($article, $comment);
+    $result = $this->_destroy($article, $comment);
 
     return Response::json($result, 200);
   }
