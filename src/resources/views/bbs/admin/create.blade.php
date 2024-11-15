@@ -16,6 +16,7 @@
           <div class='form-group row mt-1'>
             <label for='name' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.title')</label>
             <div class='col-sm-10'>
+
               <x-pondol::text name="name" class="form-control" id="name" placeholder="bbs title like 'free bbs for child'" 
               value="{{isset($table) &&  $table->name ? $table->name : old('name')}}" />
             </div>
@@ -35,7 +36,7 @@
             <div class='col-sm-10'>
               <x-pondol::select name="skin" class="form-select" id="skin" 
                 :options="$skins" 
-                value="{{ old('skin', isset($table) &&  $table->skin ? $table->skin : '')}}" />
+                value="{{ old('skin', $table->skin)}}" />
             </div>
           </div>
           <div class='row'>
@@ -51,7 +52,7 @@
             <div class='col-sm-10'>
             <x-pondol::select name="skin_admin" class="form-select" id="skin_admin" 
                 :options="$skins_admin" 
-                value="{{ old('skin_admin', isset($table) &&  $table->skin_admin ? $table->skin_admin : '')}}" />
+                value="{{ old('skin_admin', $table->skin_admin )}}" />
             </div>
           </div>
           <div class='row'>
@@ -82,13 +83,13 @@
             <div class='col-sm-10 row'>
               <div class="col-auto">
                 <x-pondol::radio class="form-check-input" name="editor" value="0" 
-                  checked="{{ old('editor', isset($table) &&  $table->editor ? $table->editor :'0')}}"/>
+                curval="{{ old('editor', isset($table) &&  $table->editor ? $table->editor :'0')}}"/>
                 <label class="form-check-label">Disable</label>
 
               </div>
               <div class="col-auto">
                 <x-pondol::radio class="form-check-input" name="editor" value="1" 
-                  checked="{{ old('editor', isset($table) &&  $table->editor ? $table->editor :'0')}}" />
+                curval="{{ old('editor', isset($table) &&  $table->editor ? $table->editor :'0')}}" />
                 <label class="form-check-label">Enable</label>
               </div>
             </div>
@@ -98,17 +99,17 @@
             <div class='col-sm-10 row'>
               <div class="col-auto">
                 <x-pondol::radio class="form-check-input" name="auth_list" value="none"
-                  checked="{{ old('auth_list', isset($table) &&  $table->auth_list ? $table->auth_list :'login')}}" />
+                curval="{{ old('auth_list', isset($table) &&  $table->auth_list ? $table->auth_list :'login')}}" />
                 <label class="form-check-label"> @lang('bbs::messages.admin.bbs.a-none')</label>
               </div>
               <div class="col-auto">
                 <x-pondol::radio class="form-check-input" name="auth_list" value="login" 
-                  checked="{{ old('auth_list', isset($table) &&  $table->auth_list ? $table->auth_list :'login')}}" />
+                curval="{{ old('auth_list', isset($table) &&  $table->auth_list ? $table->auth_list :'login')}}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.a-login')</label>
               </div>
               <div class="col-auto">
               <x-pondol::radio class="form-check-input" name="auth_list" value="role"
-                checked="{{ old('auth_list', isset($table) &&  $table->auth_list ? $table->auth_list :'login')}}" />
+              curval="{{ old('auth_list', isset($table) &&  $table->auth_list ? $table->auth_list :'login')}}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.a-role')</label>
               </div>
 
@@ -126,19 +127,19 @@
             <div class='col-sm-10 row'>
               <div class="col-auto">
                 <x-pondol::radio class="form-check-input" name="auth_read" value="none"
-                  checked="{{ old('auth_read', isset($table) &&  $table->auth_read ? $table->auth_read :'login')}}" />
+                  curval="{{ old('auth_read', $table->auth_read ? $table->auth_read :'login')}}" />
                 <label class="form-check-label"> @lang('bbs::messages.admin.bbs.a-none')</label>
               </div>
 
               <div class="col-auto">
                 <x-pondol::radio class="form-check-input" name="auth_read" value="login" 
-                  checked="{{ old('auth_read', isset($table) &&  $table->auth_read ? $table->auth_read :'login')}}" />
+                curval="{{ old('auth_read', isset($table) &&  $table->auth_read ? $table->auth_read :'login')}}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.a-login')</label>
               </div>
 
               <div class="col-auto">
                 <x-pondol::radio class="form-check-input" name="auth_read" value="role"
-                  checked="{{ old('auth_read', isset($table) &&  $table->auth_read ? $table->auth_read :'login')}}" />
+                curval="{{ old('auth_read', isset($table) &&  $table->auth_read ? $table->auth_read :'login')}}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.a-role')</label>
               </div>
 
@@ -157,17 +158,17 @@
             <div class='col-sm-10 row'>
               <div class="col-auto">
                 <x-pondol::radio class="form-check-input" name="auth_write" value="none"
-                  checked="{{ old('auth_write', isset($table) &&  $table->auth_write ? $table->auth_write :'login')}}" />
+                curval="{{ old('auth_write', isset($table) &&  $table->auth_write ? $table->auth_write :'login')}}" />
                 <label class="form-check-label"> @lang('bbs::messages.admin.bbs.a-none')</label>
               </div>
               <div class="col-auto">
                 <x-pondol::radio class="form-check-input" name="auth_write" value="login" 
-                  checked="{{ old('auth_write', isset($table) &&  $table->auth_write ? $table->auth_write :'login')}}" />
+                curval="{{ old('auth_write', isset($table) &&  $table->auth_write ? $table->auth_write :'login')}}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.a-login')</label>
               </div>
               <div class="col-auto">
                 <x-pondol::radio class="form-check-input" name="auth_write" value="role"
-                  checked="{{ old('auth_write', isset($table) &&  $table->auth_write ? $table->auth_write :'login')}}" />
+                curval="{{ old('auth_write', isset($table) &&  $table->auth_write ? $table->auth_write :'login')}}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.a-role')</label>
               </div>
          
@@ -184,27 +185,25 @@
           <div class='form-group row mt-1'>
             <label for='roles-write' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.option')</label>
             <div class='col-sm-10 row'>
-              {{-- 
-              <div class="col-auto">
-                <x-pondol::checkbox class="form-check-input" name="enable_reply" value="1" 
-                  checked="{{ old('enable_reply', isset($table) &&  $table->enable_reply ? $table->enable_reply :'')}}" />
-                <label class="form-check-label">@lang('bbs::messages.admin.bbs.enable-reply')</label>
-              </div>
-              --}}
               <div class="col-auto">
                 <x-pondol::checkbox class="form-check-input" name="enable_comment" value="1" 
-                  checked="{{ old('enable_comment', isset($table) &&  $table->enable_comment ? $table->enable_comment :'')}}" />
+                  curval="{{ old('enable_comment', $table->enable_comment)}}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.enable-comment')</label>
               </div>
               {{-- 
               <div class="col-auto">
+                <x-pondol::checkbox class="form-check-input" name="enable_reply" value="1" 
+                curval="{{ old('enable_reply', $table->enable_reply)}}" />
+                <label class="form-check-label">@lang('bbs::messages.admin.bbs.enable-reply')</label>
+              </div>
+              <div class="col-auto">
                 <x-pondol::checkbox class="form-check-input" name="enable_qna" value="1" 
-                  checked="{{ old('enable_qna', isset($table) &&  $table->enable_qna ? $table->enable_qna :'')}}" />
+                curval="{{ old('enable_qna', $table->enable_qna)}}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.enable-qna')</label>
               </div>
               <div class="col-auto">
                 <x-pondol::checkbox class="form-check-input" name="enable_password" value="1" 
-                  checked="{{ old('enable_password', isset($table) &&  $table->enable_password ? $table->enable_password :'')}}" />
+                curval="{{ old('enable_password', $table->enable_password)}}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.enable-password')</label>
               </div><!-- 비회원 운영시 패스워드로 처리 -->
               --}}

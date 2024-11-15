@@ -19,18 +19,6 @@ class CommentController extends Controller
   public function __construct(BbsService $bbsSvc )
   {
     $this->bbsSvc = $bbsSvc;
-    // $this->middleware('auth');
-
-    // $this->middleware(function ($request, $next) {
-    //   $value = config('pondol-bbs.admin_roles'); // administrator
-    //   if (Auth::check()) {
-    //     if(!$this->bbsSvc->hasRoles($value))
-    //       return redirect('');
-    //   } else {
-    //     return redirect('');
-    //   }
-    //   return $next($request);
-    // });
   }
 
   public function store(Request $request, $tbl_name, Articles $article, $comment_id) {

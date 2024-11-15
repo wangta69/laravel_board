@@ -24,18 +24,6 @@ class BbsController extends Controller
   )
   {
     $this->bbsSvc = $bbsSvc;
-    // $this->middleware('auth');
-
-    // $this->middleware(function ($request, $next) {
-    //   $value = config('pondol-bbs.admin_roles'); // administrator
-    //   if (Auth::check()) {
-    //     if(!$this->bbsSvc->hasRoles($value))
-    //       return redirect('');
-    //   } else {
-    //     return redirect('');
-    //   }
-    //   return $next($request);
-    // });
   }
 
   /**
