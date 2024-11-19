@@ -118,7 +118,7 @@ trait AdminTrait {
     $table->extends = $request->get('extends');
     $table->section = $request->get('section');
     $table->lists = $request->input('lists', 10);
-    $table->editor = $request->get('editor');
+    $table->editor = $request->input('editor', 0);
     $table->auth_list = $request->get('auth_list');
     $table->auth_write = $request->get('auth_write');
     $table->auth_read = $request->get('auth_read');
@@ -172,7 +172,7 @@ trait AdminTrait {
     $table->extends = $request->extends;
     $table->section = $request->get('section');
     $table->lists = $request->input('lists', 10);
-    $table->editor = $request->get('editor');
+    $table->editor = $request->input('editor', 0);
     $table->auth_list= $request->get('auth_list');
     $table->auth_write = $request->get('auth_write');
     $table->auth_read = $request->get('auth_read');

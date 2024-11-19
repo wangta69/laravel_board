@@ -145,7 +145,7 @@ class CreateAllPondolBbsTables extends Migration
     if (!Schema::hasTable('bbs_roles')) {
       Schema::create('bbs_roles', function(BluePrint $table) {
         $table->bigInteger('bbs_tables_id')->unsigned();
-        $table->bigInteger('read_list_id')->unsigned()->nullable();
+        $table->bigInteger('list_role_id')->unsigned()->nullable();
         $table->bigInteger('read_role_id')->unsigned()->nullable();
         $table->bigInteger('write_role_id')->unsigned()->nullable();
       });

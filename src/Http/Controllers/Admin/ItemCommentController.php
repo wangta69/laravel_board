@@ -27,8 +27,8 @@ class ItemCommentController extends Controller
   /**
    * 게시물 리스트
    */
-  public function _index(Request $request, $item) {
-    $comments =  $this->index($request, $item)->select(
+  public function index(Request $request, $item) {
+    $comments =  $this->_index($request, $item)->select(
       'bbs_item_comments.user_id', 'bbs_item_comments.writer', 'bbs_item_comments.content', 'bbs_item_comments.created_at'
     );
     // 아래와 같이 사용자정의를 하여 각각의 데이타를 가져와야 한다.

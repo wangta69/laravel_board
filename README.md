@@ -6,7 +6,7 @@
 > This package was tested on Laravel 8.x
 
 
-[Homepage](https://www.onstory.fun/doc/programming/laravel/package.laravelboard)
+[공식문서](https://www.onstory.fun/doc/programming/laravel/package.laravelboard)
 
 [Demo](https://www.onstory.fun/community)
 
