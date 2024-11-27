@@ -83,7 +83,7 @@ class BbsController extends Controller
   }
 
   public function create(Request $request, $tbl_name) {
-    $result =  $this->_create($request, $tbl_name);
+    $result =  $this->_create($request, $tbl_name); // ['error'=>false, 'cfg'=>$cfg, 'article' => new Articles]
     // 레이아웃 정보 가져오기
     $this->getLayout($result['cfg']);
     return view('bbs.templates.admin.'.$result['cfg']->skin_admin.'.create', $result);
@@ -152,7 +152,7 @@ class BbsController extends Controller
     }
   }
 
-  public function preIndex($tbl_name) {
-    return $this->_preIndex($tbl_name);
-  }
+  // public function preIndex($tbl_name) {
+  //   return $this->_preIndex($tbl_name);
+  // }
 }

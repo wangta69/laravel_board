@@ -32,14 +32,27 @@
             <col width='120' />
             <col width='' />
           </colgroup>
+          @if(count($cfg->category))
+            <tr>
+              <th> @lang('bbs::messages.bbs.title.category')</th>
+              <td>
+              <select name="category" class="form-select">
+              @foreach($cfg->category as  $v)
+                <option value="{{$v->id}}">{{$v->name}}</option>
+              @endforeach
+              </select>
+              </td>
+            </tr>
+            @endif
             <tr>
               <th> @lang('bbs::messages.bbs.title.title')</th>
               <td>
-                <input type="text" name="title" value="{{  isset($article) ? $article->title : old('title') }}" class='form-control input-sm' id='title'>
+                <input type="text" name="title" value="{{  old('title', isset($article) ? $article->title: '' ) }} " class='form-control input-sm' id='title'>
               </td>
             </tr>
             <tr>
-              <th> @lang('bbs::messages.bbs.title.content')</th>
+              <th> @lang('bbs::messages.bbs.title.content') <br>
+              <input type="checkbox" class="form-check-input" name="no_content" value="1"> 내용없음</th>
               <td>
                 @if($cfg->editor)
                   @include ('editor::default', ['name'=>'content', 'id'=>'content-id', 'value'=>isset($article) ? $article->content : old('content'), 'attr'=>['class'=>'form-control input-sm']])

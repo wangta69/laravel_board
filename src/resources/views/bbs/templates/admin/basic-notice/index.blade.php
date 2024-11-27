@@ -37,7 +37,16 @@
             </tr>
           </thead>
           <tbody>
-
+          @foreach($top_articles as $index => $article)
+          <tr>
+              <td class='text-center'></td>
+              <td>
+                  <a href="{{ route('bbs.admin.tbl.show', [$cfg->table_name, $article->id]) }}">{{$article->title}}</a>
+              </td>
+              <td class='text-center'>{{ date('Y-m-d', strtotime($article->created_at)) }}</td>
+              <td class='text-center'>{{ number_format($article->hit) }}</td>
+            </tr>
+            @endforeach
             @forelse ($articles as $index => $article)
             <tr>
               <td class='text-center'>
@@ -54,14 +63,12 @@
               <td colspan="4">@lang('bbs::messages.bbs.title.no-data')</td>
             </tr>
             @endforelse
-        </tbody>
-      </table>
-
-      <div class='navigation'>
-          {!! $articles->render() !!}
+          </tbody>
+        </table>
       </div>
-
-
+      <div class='navigation'>
+        {{-- $articles->render() --}}
+        {{ $articles->links("pagination::bootstrap-4") }}
       </div>
       <div class="card-footer">
         @if ($cfg->hasPermission('write'))

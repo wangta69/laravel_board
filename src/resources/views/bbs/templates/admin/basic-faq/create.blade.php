@@ -32,6 +32,18 @@
             <col width='120' />
             <col width='' />
           </colgroup>
+          @if(count($cfg->category))
+            <tr>
+              <th> @lang('bbs::messages.bbs.title.category')</th>
+              <td>
+              <select name="category" class="form-select">
+              @foreach($cfg->category as  $v)
+                <option value="{{$v->id}}">{{$v->name}}</option>
+              @endforeach
+              </select>
+              </td>
+            </tr>
+            @endif
             <tr>
               <th> @lang('bbs::messages.bbs.title.title')</th>
               <td>

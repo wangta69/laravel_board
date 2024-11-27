@@ -31,7 +31,7 @@
 
             <!-- 겔러리의 경우 첨부된 파일을 모두 보여준다. -->
             @foreach ($article->files as $file)
-              <div><img src="{{ bbs_image_url_from_storage($file->path_to_file) }}" alt="{{$file->file_name}}"></div>
+              <div><img src="{{ bbs_image_url_from_storage($file->path_to_file) }}" alt="{{$file->file_name}}" style="max-width: 100%;"></div>
             @endforeach
         </div>
       </div><!-- .card-body -->

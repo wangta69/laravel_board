@@ -54,14 +54,12 @@
               <td colspan="4">@lang('bbs::messages.bbs.title.no-data')</td>
             </tr>
             @endforelse
-        </tbody>
-      </table>
-
-      <div class='navigation'>
-          {!! $articles->render() !!}
+          </tbody>
+        </table>
       </div>
-
-
+      <div class='navigation'>
+        {{-- $articles->render() --}}
+        {{ $articles->links("pagination::bootstrap-4") }}
       </div>
       <div class="card-footer">
         @if ($cfg->hasPermission('write'))

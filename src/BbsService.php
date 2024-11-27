@@ -59,8 +59,6 @@ class BbsService
       $paramData->dec = decrypt($data);
     }
     return $paramData;
-    // $rtn['']
-  //  return $data==null ? $default_arr:decrypt($data);
   }
 
   public static function hasRole($role)

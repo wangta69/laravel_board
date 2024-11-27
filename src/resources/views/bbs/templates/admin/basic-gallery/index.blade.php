@@ -36,10 +36,11 @@
 
           @endforeach
         </div><!-- .gallery -->
-        <div class='navigation'>
-          {!! $articles->render() !!}
-        </div>
       </div><!-- .card-body -->
+      <div class='navigation'>
+        {{-- $articles->render() --}}
+        {{ $articles->links("pagination::bootstrap-4") }}
+      </div>
       <div class="card-footer">
         @if ($cfg->hasPermission('write'))
         <a href="{{ route('bbs.admin.tbl.create', [$cfg->table_name]) }}" role='button' class='btn btn-sm btn-primary'>@lang('bbs::messages.bbs.button.write')</a>

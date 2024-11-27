@@ -17,4 +17,6 @@ return [
     'as' => 'bbs.api.',
     'middleware' => []
   ],
+  'login_route_name' => 'login',
+  'admin_roles'=>'administrator'
 ];

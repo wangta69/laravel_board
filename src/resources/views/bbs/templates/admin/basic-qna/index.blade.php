@@ -40,6 +40,16 @@
             </tr>
           </thead>
           <tbody>
+            @foreach($top_articles as $index => $article)
+            <tr>
+              <td class='text-center'></td>
+              <td><a href="{{ route('bbs.admin.tbl.show', [$cfg->table_name, $article->id]) }}">{{$article->title}}</a></td>
+              <td><a href="{{ route('bbs.admin.tbl.show', [$cfg->table_name, $article->id]) }}">{{$article->writer}}</a></td>
+              <td class='text-center'>{{ date('Y-m-d', strtotime($article->created_at)) }}</td>
+              <td class='text-center'>{{ number_format($article->hit) }}</td>
+              <td class='text-center'></td>
+            </tr>
+            @endforeach
             @forelse($articles as $index => $article)
             <tr>
               <td class='text-center'>
@@ -60,19 +70,19 @@
             @endforelse
           </tbody>
         </table>
-
-        <div class='navigation'>
-            {!! $articles->render() !!}
-        </div>
-
-        <div class='btn-area text-right'>
-
-            @if ($cfg->hasPermission('write'))
-            <a href="{{ route('bbs.admin.tbl.create', [$cfg->table_name]) }}" role='button' class='btn btn-sm btn-primary'>글쓰기</a>
-            @endif
-        </div>
-    </div>
-</div>
+      </div><!-- .card-body -->
+      <div class='navigation'>
+        {{-- $articles->render() --}}
+        {{ $articles->links("pagination::bootstrap-4") }}
+      </div>
+      <div class="card-footer">
+        @if ($cfg->hasPermission('write'))
+        <a href="{{ route('bbs.admin.tbl.create', [$cfg->table_name]) }}" role='button' class='btn btn-sm btn-primary'>@lang('bbs::messages.bbs.button.write')</a>
+        @endif
+      </div>
+    </div><!-- .card -->
+  </div><!-- .bbs index -->
+</div><!-- .container -->
 @stop
 
 @section ('styles')

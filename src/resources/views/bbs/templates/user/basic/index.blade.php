@@ -39,7 +39,17 @@
             </tr>
           </thead>
           <tbody>
-
+            @foreach($top_articles as $index => $article)
+            <tr>
+              <td class='text-center'></td>
+              <td>
+                <a href="{{ route('bbs.show', [$cfg->table_name, $article->id]) }}">{{$article->title}}</a>
+              </td>
+              <td class='text-center'>{{ $article->writer }}</td>
+              <td class='text-center'>{{ date('Y-m-d', strtotime($article->created_at)) }}</td>
+              <td class='text-center'>{{ number_format($article->hit) }}</td>
+            </tr>
+            @endforeach
             @forelse ($articles as $index => $article)
             <tr>
               <td class='text-center'>

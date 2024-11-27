@@ -47,7 +47,7 @@ class BbsController extends Controller {
     if(!$result['error']) {
       return view('bbs.templates.user.'.$result['cfg']->skin.'.index', $result);
     } else {
-      return $this->errorHandle($result['error']);
+      return $this->errorHandle($result);
     }
   }
 
@@ -71,7 +71,7 @@ class BbsController extends Controller {
   public function store(Request $request, $tbl_name) {
     $result =  $this->_store($request, $tbl_name);
     if(isset($result['error'])) {
-      return $this->errorHandle($result['error']);
+      return $this->errorHandle($result);
 
     }
     // return redirect()->route('admin.bbs.show', [$result[0], $result[1]]);
@@ -123,7 +123,7 @@ class BbsController extends Controller {
   public function show(Request $request, $tbl_name, Articles $article) {
     $result =  $this->_show($request, $tbl_name, $article);
     if ($result['error']) {
-      return $this->errorHandle($result['error']);
+      return $this->errorHandle($result);
     }
     else {
       return view('bbs.templates.user.'.$result['cfg']->skin.'.show', $result);
@@ -167,7 +167,7 @@ class BbsController extends Controller {
   public function download(Files $file){
     $result = $this->_download($file);
     if ($result['error']) {
-      return $this->errorHandle($result['error']);
+      return $this->errorHandle($result);
     } else {
       return Response::download($result['file_path'], $result['file']->file_name, [
         'Content-Length: '. filesize($result['file_path'],)
@@ -220,86 +220,19 @@ class BbsController extends Controller {
     return $rtn;
   }
 
-  /**
-   * 썸내일 생성용
-   * @param String $file  public/bbs/5/201804/37/filename.jpeg
-   */
-  // public static function get_thumb($file, $width=0, $height=0){
-  //   if ($file) {
-  //     if($width == 0 &&  $height == 0)
-  //       return str_replace(["public"], ["/storage"], $file);
 
-  //     $name = substr($file, strrpos($file, '/') + 1);
-  //     $thum_dir = substr($file, 0, -strlen($name)).$width."_".$height;
-  //     // return $name;
-  //     $thum_to_storage = storage_path() .'/app/'.$thum_dir;
-  //     //home/Web/coinvill-web/storage/app/public/bbs/5/201804/37/205x205/Srrf1axuyM1ZO9NaYM3lStoNLZyVvAfEgWMqWNUU.jpeg
-  //     //return $file;
-  //     //return $thum_to_storage."/".$name;
-
-
-  //     if(!file_exists($thum_to_storage."/".$name)){//thumbnail 이미지를 돌려준다.
-  //       $file_to_storage = storage_path() .'/app/'.$file;
-  //       $image = new GetHttpImage();
-  //       $image->read($file_to_storage)->set_size($width, $height)->copyimage()->save($thum_to_storage);
-  //     }
-
-  //     return str_replace(["public"], ["/storage"], $thum_dir)."/".$name;
-  //   }else
-  //     return '';
-
-  // }
-
-  /**
-   * 이미지 리사이징
-   * @param String $file  public/bbs/5/201804/37/filename.jpeg
-   */
-  public static function resizeImage($file, $width=0, $height=0) {
-
-    // echo 'width:'.$width.', height:'.$height.PHP_EOL;
-    if ($file) {
-        if($width == null &&  $height == null)
-          return str_replace(["public"], ["/storage"], $file);
-
-        $name = substr($file, strrpos($file, '/') + 1);
-        $thum_dir = substr($file, 0, -strlen($name)).$width."_".$height;
-        // return $name;
-        $thum_to_storage = storage_path() .'/app/'.$thum_dir;
-
-        if(!file_exists($thum_to_storage."/".$name)){//thumbnail 이미지를 돌려준다.
-          $file_to_storage = storage_path() .'/app/'.$file;
-          $image = new GetHttpImage();
-
-          try {
-            // $image->read($file_to_storage)->set_size($width, $height)->copyimage()->save($thum_to_storage);
-            
-            $result = $image->read($file_to_storage)->resize($width, $height)->copyimage2();
-            if ($result) {
-              $result->save($thum_to_storage);
-            }
-          } catch (\Exception $e) {
-          }
-      }
-
-      return str_replace(["public"], ["/storage"], $thum_dir)."/".$name;
-    }else
-      return '';
-  }
-
-
-
-  private function errorHandle($error) {
-    switch($error) {
+  private function errorHandle($result) {
+    switch($result['error']) {
       case 'validation':
         return redirect()->back()->withInput()->withErrors($result['errors']);
         break;
       case 'login':
-        return redirect()->route(config('pondol-bbs.route.login'));
+        return redirect()->route(config('pondol-bbs.login_route_name'));
         break;
     }
   }
 
-  public function preIndex($tbl_name) {
-    return $this->_preIndex($tbl_name);
-  }
+  // public function preIndex($tbl_name) {
+  //   return $this->_preIndex($tbl_name);
+  // }
 }

@@ -190,23 +190,6 @@
                   curval="{{ old('enable_comment', $table->enable_comment)}}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.enable-comment')</label>
               </div>
-              {{-- 
-              <div class="col-auto">
-                <x-pondol::checkbox class="form-check-input" name="enable_reply" value="1" 
-                curval="{{ old('enable_reply', $table->enable_reply)}}" />
-                <label class="form-check-label">@lang('bbs::messages.admin.bbs.enable-reply')</label>
-              </div>
-              <div class="col-auto">
-                <x-pondol::checkbox class="form-check-input" name="enable_qna" value="1" 
-                curval="{{ old('enable_qna', $table->enable_qna)}}" />
-                <label class="form-check-label">@lang('bbs::messages.admin.bbs.enable-qna')</label>
-              </div>
-              <div class="col-auto">
-                <x-pondol::checkbox class="form-check-input" name="enable_password" value="1" 
-                curval="{{ old('enable_password', $table->enable_password)}}" />
-                <label class="form-check-label">@lang('bbs::messages.admin.bbs.enable-password')</label>
-              </div><!-- 비회원 운영시 패스워드로 처리 -->
-              --}}
             </div>
           </div>
 

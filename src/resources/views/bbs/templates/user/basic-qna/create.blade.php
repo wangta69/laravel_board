@@ -1,5 +1,6 @@
 @extends($cfg->extends)
 @section ($cfg->section)
+
 <div class="container">
   <div class="bbs create">
     <h1 class='title'>
@@ -8,13 +9,13 @@
     <div class="card">
       @if (isset($article->id))
       <form method="post" 
-          action="{{ route('bbs.update', [$cfg->table_name, $article->id]) }}" 
+          action="{{ route('bbs.admin.tbl.update', [$cfg->table_name, $article->id]) }}" 
           enctype='multipart/form-data'>
           @method('PUT')
 
       @else
       <form method="post" 
-          action="{{ route('bbs.store', [$cfg->table_name]) }}" 
+          action="{{ route('bbs.admin.tbl.store', [$cfg->table_name]) }}" 
           enctype='multipart/form-data'>
       @endif
       @csrf
@@ -32,16 +33,22 @@
             <col width='120' />
             <col width='' />
           </colgroup>
+            @if(count($cfg->category))
+            <tr>
+              <th> @lang('bbs::messages.bbs.title.category')</th>
+              <td>
+                <x-pondol::select name="category" class="form-select" 
+                  :options="$cfg->category" 
+                  option-label="name" 
+                  option-value="id"
+                  value="{{ old('category', $article->bbs_category_id)}}" />
+              </td>
+            </tr>
+            @endif
             <tr>
               <th> @lang('bbs::messages.bbs.title.title')</th>
               <td>
                 <input type="text" name="title" value="{{  isset($article) ? $article->title : old('title') }}" class='form-control input-sm' id='title'>
-              </td>
-            </tr>
-            <tr>
-              <th> @lang('bbs::messages.bbs.title.writer')</th>
-              <td>
-                <input type="text" name="writer" value="{{  isset($article) ? $article->writer : old('writer') }}" class='form-control input-sm' id='writer'>
               </td>
             </tr>
             <tr>
@@ -78,7 +85,7 @@
       </div><!-- .card-body -->
       <div class="card-footer">
         <button type="submit" class="btn btn-primary btn-sm"> @lang('bbs::messages.bbs.button.store')</button>
-        <a href="{{ route('bbs.index', [$cfg->table_name]) }}" class='btn btn-default btn-sm'>@lang('bbs::messages.bbs.button.list')</a>
+        <a href="{{ route('bbs.admin.tbl.index', [$cfg->table_name]) }}" class='btn btn-default btn-sm'>@lang('bbs::messages.bbs.button.list')</a>
       </div><!-- .card-footer -->
       </form>
     </div><!-- .card -->
@@ -88,7 +95,7 @@
 
 @section ('styles')
 @parent
-@include ('bbs.templates.user.'.$cfg->skin.'.style')
+@include ('bbs.templates.admin.'.$cfg->skin_admin.'.style')
 @stop
 
 @section ('scripts')
@@ -107,10 +114,12 @@
       var param = $(this).attr('user-attr-file-id');
       var $delElem = $(this).parents('li');
       ROUTE.ajaxroute('delete', {
-        route: 'bbs.file.delete', segments: [param]
-      }, function(resp) {
+        route: 'bbs.file.delete', 
+        segments: [param]
+      },function(resp) {
         $delElem.remove();
       })
+    })
   })
 </script>
 @stop

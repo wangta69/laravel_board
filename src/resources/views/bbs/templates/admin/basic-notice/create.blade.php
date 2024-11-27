@@ -32,6 +32,26 @@
             <col width='120' />
             <col width='' />
           </colgroup>
+          @if(count($cfg->category))
+            <tr>
+              <th> @lang('bbs::messages.bbs.title.category')</th>
+              <td>
+              <select name="category" class="form-select">
+              @foreach($cfg->category as  $v)
+                <option value="{{$v->id}}">{{$v->name}}</option>
+              @endforeach
+              </select>
+              </td>
+            </tr>
+            @endif
+            <tr>
+              <th>@lang('bbs::messages.bbs.title.pin_to_top')</th>
+              <td>
+              <x-pondol::checkbox name="top" class="form-check-input" 
+                value="1"
+                curval="{{ old('top', $article->top)}}" />
+              </td>
+            </tr>
             <tr>
               <th> @lang('bbs::messages.bbs.title.title')</th>
               <td>

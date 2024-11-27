@@ -32,6 +32,18 @@
             <col width='120' />
             <col width='' />
           </colgroup>
+            @if(count($cfg->category))
+            <tr>
+              <th> @lang('bbs::messages.bbs.title.category')</th>
+              <td>
+                <x-pondol::select name="category" class="form-select" 
+                  :options="$cfg->category" 
+                  option-label="name" 
+                  option-value="id"
+                  value="{{ old('category', $article->bbs_category_id)}}" />
+              </td>
+            </tr>
+            @endif
             <tr>
               <th> @lang('bbs::messages.bbs.title.title')</th>
               <td>

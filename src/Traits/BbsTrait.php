@@ -17,20 +17,10 @@ use Pondol\Bbs\Models\BbsArticles as Articles;
 use Pondol\Bbs\Models\BbsComments as Comments;
 use Pondol\Bbs\Models\BbsFiles as Files;
 
-// use Pondol\Image\GetHttpImage;
 use Pondol\Bbs\BbsService;
 
 
 trait BbsTrait  {
-
-  // protected $bbsSvc;
-  // protected $cfg;
-  // protected $laravel_ver;
-  // public function __construct() {
-  //   $this->bbsSvc = \App::make('Pondol\Bbs\BbsService');
-  //   $laravel = app();
-  //   $this->laravel_ver = $laravel::VERSION;
-  // }
 
   /*
    * List Page
@@ -44,6 +34,7 @@ trait BbsTrait  {
     // \DB::enableQueryLog();
     $preIndex = $this->preIndex($tbl_name);
     $articles = $preIndex->articles;
+    $top_articles = Articles::where('bbs_table_id', $preIndex->cfg->id);
     $cfg = $preIndex->cfg;
 
     $f = $request->input('f', null); // Searching Field ex) title, content
@@ -54,9 +45,11 @@ trait BbsTrait  {
     if ($cfg->auth_list === 'login' &&  !$user) {
       return ['error'=>'login'];
     }
-
-    $articles->orderBy('order_num');
-
+    
+    // $top_articles = $all_articles->orderBy('order_num')->where('top', 1);
+    $articles->orderBy('order_num')->where('top', 0);
+    $top_articles = $top_articles->orderBy('order_num')->where('top', 1)->get();
+    
     if ($s) {
       if(!$f) {
         $articles = $articles->when($s, function ($query, $s) {
@@ -86,14 +79,14 @@ trait BbsTrait  {
 
     $articles = $articles->paginate($cfg->lists)
       ->appends(request()->query());
-    //  print_r(\DB::getQueryLog());
-    return ['error'=> false, 'articles' =>$articles, 'cfg'=>$cfg];
+    //  print_r(\DB::getQueryLog()); // 'top_articles'=>$top_articles, 
+    return ['error'=> false, 'articles'=>$articles, 'top_articles'=>$top_articles, 'cfg'=>$cfg];
   }
 
   /**
    * index를 가져올 전처리 작업 (select 등 다양한 경우에 대비하기위해 index를 가져오기 전에 먼저 선 작업을 한다.)
    */
-  public function _preIndex($tbl_name) {
+  private function preIndex($tbl_name) {
     $obj = new \stdClass();
     $obj->cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
     $obj->articles = Articles::where('bbs_table_id', $obj->cfg->id);
@@ -148,13 +141,17 @@ trait BbsTrait  {
 
     $validator = Validator::make($request->all(), [
       'title' => 'required|min:2|max:100',
-      'content' => 'required',
+      // 'content' => 'required',
     ], [
       'title.*' => '2글자 이상의 제목을 입력해 주세요',
       'content.required' => '내용을 입력해 주세요',
       'password.required' => '패스워드를 입력해 주세요'
     ]);
 
+    
+    $validator->sometimes('content', 'required', function ($input) use ($request) {
+      return !$request->no_content;
+    });
     $validator->sometimes('password', 'required', function ($input) use ($cfg) {
       return $cfg->enable_password == 1;
     });
@@ -194,6 +191,8 @@ trait BbsTrait  {
     $article->content = $request->get('content');
     $article->text_type = $request->input('text_type', 'br');
     $article->keywords = $request->input('keywords');
+    $article->bbs_category_id = $request->get('category');
+    $article->top = $request->input('top', 0);
     $article->save();
     $article->parent_id = $parent_id ? $parent_id : $article->id;
     $article->save();
@@ -262,6 +261,8 @@ trait BbsTrait  {
     $article->keywords = $request->input('keywords');
     $article->writer = $request->get('writer') ? $request->get('writer') : $article->writer;
     $article->content = $request->get('content');
+    $article->bbs_category_id = $request->get('category');
+    $article->top = $request->input('top', 0);
     $article->save();
 
     // Upload Attached files
@@ -388,17 +389,20 @@ trait BbsTrait  {
     // 시간되면 이 부분은 좀더 고도화 필요
     $user = $request->user();
     if ($cfg->auth_read === 'login' &&  !$user) {
-      // return redirect()->route('login');
       return ['error'=>'login'];
     }
 
-    if (!$isAdmin && $cfg->enable_password == 1 && $request->cookie('pass-'.$tbl_name.$article->id) != '1') {
-      return ['error'=>'password'];
+    if (!$isAdmin && $article->password && $request->cookie('pass-'.$tbl_name.$article->id) != '1') {
+      return ['error'=>'password', 'cfg'=>$cfg];
     }
 
     if ($request->cookie($tbl_name.$article->id) != '1') {
       $article->hit ++;
       $article->save();
+    }
+
+    if($article->text_type == 'br') {
+      $article->content = nl2br($article->content);
     }
 
     Cookie::queue(Cookie::make($tbl_name.$article->id, '1'));
@@ -409,13 +413,16 @@ trait BbsTrait  {
     return ['error'=>false, 'article' => $article, 'cfg'=>$cfg, 'isAdmin'=>$isAdmin];
   }
 
+  /**
+   * 패스워드가 설정되어 있을 경우 패스워드 입력창에서 넘어오는 패스워드를 확인하고 session을 설정
+   */
   public function _passwordConfirm($request, $tbl_name, $article)
   {
 
     $validator = Validator::make($request->all(), [
-        'password' => 'required',
+      'password' => 'required',
     ], [
-        'password.required' => '패스워드를 입력해 주세요'
+      'password.required' => '패스워드를 입력해 주세요'
     ]);
 
     
@@ -425,11 +432,10 @@ trait BbsTrait  {
         $validator->errors()->add('password', '일치하지 않은 패스워드입니다.');
       });
 
-      if ($validator->fails()) 
         return ['error'=>'validation', 'errors'=>$validator->errors()];
     } else {
       Cookie::queue(Cookie::make('pass-'.$tbl_name.$article->id, '1'));
-      return;
+      return ['error'=>false];
     }
   }
 

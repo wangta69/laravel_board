@@ -25,7 +25,7 @@ class CategoryController extends Controller
   }
 
   public function addCategory($tableId, Request $request) {
-    $result = $this->_addCategory($request, $tableId); // [error, id]
+    $result = $this->_addCategory($tableId, $request); // [error, id]
     return response()->json($result, 200);
   }
 
