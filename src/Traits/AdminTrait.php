@@ -10,7 +10,6 @@ use Validator;
 
 use Pondol\Bbs\Models\BbsTables as Tables;
 use Pondol\Auth\Models\Role\Role;
-use Pondol\Bbs\Models\BbsConfig;
 
 trait AdminTrait {
   protected $cfg;
@@ -23,13 +22,9 @@ trait AdminTrait {
    */
   public function _index(Request $request)
   {
-
     // 등록된 게시판 리스트 불러오기
     $list = Tables::orderBy('created_at', 'desc')->paginate($this->itemsPerPage);
-
-    $cfg = $this->admin_extends();
-
-    return ['list' => $list, 'cfg' => $cfg];
+    return ['list' => $list];
   }
 
   /*
@@ -60,10 +55,8 @@ trait AdminTrait {
     $table->extends = $table->extends ?? 'bbs::layouts.default';
     $table->section = $table->section ?? 'content';
 
-    $cfg = $this->admin_extends();
     return [
       'table'=>$table,
-      'cfg'=>$cfg,
       'skins' => $skins,
       'skins_admin' => $skins_admin,
       'roles' => Role::get(),
@@ -190,12 +183,6 @@ trait AdminTrait {
     return $obj;
   }
 
-  public function _configUpdate($request) {
-    BbsConfig::where('k', 'extends')->update(['v'=>$request->extends]);
-    BbsConfig::where('k', 'section')->update(['v'=>$request->section]);
-  }
-
-
   private function add_roles($table, $type, $roles) {
     switch($type) {
       case 'list':
@@ -272,13 +259,4 @@ trait AdminTrait {
     $cfg->delete();
   }
 
-  private function admin_extends() {
-    $config = BbsConfig::get();
-    $cfg = new \stdclass;
-    foreach($config as $v) {
-      $cfg->{$v->k} = $v->v;
-    }
-
-    return $cfg;
-  }
 }

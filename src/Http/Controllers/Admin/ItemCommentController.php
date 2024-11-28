@@ -42,14 +42,6 @@ class ItemCommentController extends Controller
 
     $comments =  $comments->orderBy('bbs_item_comments.id', 'desc')->paginate(20)->appends(request()->query());
     
-    // print_r($comments);
-    // if(isset($result['error'])) {
-    //   if ($result['error'] == 'login') {
-    //     return redirect()->route('login');
-    //   }
-    // }
-    // exit;
-    $cfg = $this->admin_extends();
-    return view('bbs.components.comments.admin.story.comments', ['comments'=>$comments, 'cfg'=>$cfg]);
+    return view('bbs::admin.comment.story', ['comments'=>$comments]);
   }
 }

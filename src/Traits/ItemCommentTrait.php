@@ -8,7 +8,6 @@ use Validator;
 use Auth;
 
 use Pondol\Bbs\Models\BbsItemComment;
-use Pondol\Bbs\Models\BbsConfig;
 
 trait ItemCommentTrait {
 
@@ -166,15 +165,5 @@ trait ItemCommentTrait {
 
     //return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
     return ['error'=>false];
-  }
-
-  protected function admin_extends() {
-    $config = BbsConfig::get();
-    $cfg = new \stdclass;
-    foreach($config as $v) {
-      $cfg->{$v->k} = $v->v;
-    }
-
-    return $cfg;
   }
 }

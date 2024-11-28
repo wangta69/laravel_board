@@ -11,7 +11,6 @@ use App\Http\Controllers\Controller;
 use Pondol\Bbs\BbsService;
 
 use Pondol\Bbs\Models\BbsArticles as Articles;
-use Pondol\Bbs\Models\BbsConfig;
 use Pondol\Bbs\Traits\BbsTrait;
 
 class BbsController extends Controller
@@ -51,7 +50,7 @@ class BbsController extends Controller
     // 레이아웃 정보 가져오기
     // print_r($result)
     // exit;
-    $this->getLayout($result['cfg']);
+    // $this->getLayout($result['cfg']);
     // echo 'bbs.templates.admin.'.$result['cfg']->skin_admin.'.index';
     // exit;
     // return view('bbs.templates.admin.basic-gallery.index', $result);
@@ -78,14 +77,14 @@ class BbsController extends Controller
       }
     }
     // 레이아웃 정보 가져오기
-    $this->getLayout($result['cfg']);
+    // $this->getLayout($result['cfg']);
     return view('bbs.templates.admin.'.$result['cfg']->skin_admin.'.show', $result);
   }
 
   public function create(Request $request, $tbl_name) {
     $result =  $this->_create($request, $tbl_name); // ['error'=>false, 'cfg'=>$cfg, 'article' => new Articles]
     // 레이아웃 정보 가져오기
-    $this->getLayout($result['cfg']);
+    // $this->getLayout($result['cfg']);
     return view('bbs.templates.admin.'.$result['cfg']->skin_admin.'.create', $result);
   }
 
@@ -109,7 +108,7 @@ class BbsController extends Controller
 
   public function edit(Request $request, $tbl_name, Articles $article) {
     $result =  $this->_edit($request, $tbl_name, $article);
-    $this->getLayout($result['cfg']);
+    // $this->getLayout($result['cfg']);
     return view('bbs.templates.admin.'.$result['cfg']->skin_admin.'.create', $result);
   }
 
@@ -140,17 +139,17 @@ class BbsController extends Controller
     return redirect()->route('bbs.admin.tbl.show', [$tbl_name, $article->id]);
   }
 
-  private function getLayout(&$cfg) {
-    $config = BbsConfig::get();
-    foreach($config as $v) {
-      switch($v->k) {
-        case 'extends':
-          $cfg->extends = $v->v; break;
-        case 'section':
-          $cfg->section = $v->v; break;
-      }
-    }
-  }
+  // private function getLayout(&$cfg) {
+  //   $config = BbsConfig::get();
+  //   foreach($config as $v) {
+  //     switch($v->k) {
+  //       case 'extends':
+  //         $cfg->extends = $v->v; break;
+  //       case 'section':
+  //         $cfg->section = $v->v; break;
+  //     }
+  //   }
+  // }
 
   // public function preIndex($tbl_name) {
   //   return $this->_preIndex($tbl_name);

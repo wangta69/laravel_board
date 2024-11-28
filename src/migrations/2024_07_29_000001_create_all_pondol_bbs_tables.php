@@ -91,23 +91,6 @@ class CreateAllPondolBbsTables extends Migration
       });
     }
 
-    // Create BBS Config table
-    if (!Schema::hasTable('bbs_config')) {
-      Schema::create('bbs_config', function(BluePrint $table) {
-        $table->id();
-        $table->string('k', '20');
-        $table->string('v', '50');
-        $table->timestamps();
-      });
-
-      DB::table('bbs_config')->insert(
-        [
-          ['k' => 'extends','v' => 'bbs::admin.default-layout'],
-          ['k' => 'section','v' => 'bbs-content']
-        ]
-      );
-    }
-
     // Create Files Table
     if (!Schema::hasTable('bbs_files')) {
       Schema::create('bbs_files', function(BluePrint $table) {
@@ -180,7 +163,6 @@ class CreateAllPondolBbsTables extends Migration
     Schema::dropIfExists('bbs_articles');
     Schema::dropIfExists('bbs_categories');
     Schema::dropIfExists('bbs_comments');
-    Schema::dropIfExists('bbs_config');
     Schema::dropIfExists('bbs_files');
     Schema::dropIfExists('bbs_item_comments');
     Schema::dropIfExists('bbs_roles');

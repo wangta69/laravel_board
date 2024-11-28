@@ -18,5 +18,6 @@ return [
     'middleware' => []
   ],
   'login_route_name' => 'login',
-  'admin_roles'=>'administrator'
+  'admin_roles'=>'administrator',
+  'component' => ['admin'=>['layout'=>'bbs::admin', 'lnb'=>'bbs::navigation']],
 ];

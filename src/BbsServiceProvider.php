@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Blade;
 use Pondol\Bbs\View\Components\ItemCommnents;
+use Pondol\Bbs\View\Components\BbsItemList;
 
 class BbsServiceProvider extends ServiceProvider {
 
@@ -24,10 +25,6 @@ class BbsServiceProvider extends ServiceProvider {
    */
   public function register()
   {
-    // $this->app->bind('bbs', function($app) {
-    // $this->app->singleton('bbs', function($app) {
-    //   return new Bbs;
-    // });
   }
 
   /**
@@ -61,17 +58,19 @@ class BbsServiceProvider extends ServiceProvider {
     // - first the published views (in case they have any changes)
     $this->publishes([
       // copy resource 파일
-      __DIR__.'/resources/views/bbs/components' => resource_path('views/bbs/components'),
-      __DIR__.'/resources/views/bbs/templates' => resource_path('views/bbs/templates'),
+      __DIR__.'/resources/views/components' => resource_path('views/bbs/components'),
+      __DIR__.'/resources/views/templates' => resource_path('views/bbs/templates'),
       __DIR__.'/resources/pondol/' => public_path('pondol'),
       // controllers;
       // __DIR__.'/Http/Controllers/Bbs/' => app_path('Http/Controllers/Bbs')
     ]);
     
     // - loadViews  : 상기와 다른 점음  resources/views/bbs 에 없을 경우 아래 것에서 처리한다. for user modify
-    $this->loadViewsFrom(__DIR__.'/resources/views/bbs', 'bbs');
+    $this->loadViewsFrom(__DIR__.'/resources/views', 'bbs');
 
     Blade::component('item-comments', ItemCommnents::class);
+    Blade::component('bbs-lists', BbsItemList::class);
+    
 
     // Language Files
     $this->loadTranslationsFrom(__DIR__.'/resources/lang', 'bbs');
