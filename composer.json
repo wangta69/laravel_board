@@ -16,10 +16,10 @@
       "php": ">=7.0.0",
       "kyslik/column-sortable": "^6.0",
       "wangta69/php-thumbnail": "^1",
-      "wangta69/laravel-pondol": "^0.0",
-      "wangta69/laravel-editor": "^8.5",
-      "wangta69/laravel-auth": "^2.0",
-      "wangta69/laravel-components": "^1.0"
+      "wangta69/laravel-pondol": "*",
+      "wangta69/laravel-editor": "*",
+      "wangta69/laravel-auth": "*",
+      "wangta69/laravel-components": "*"
     },
     "autoload": {
       "files": [
