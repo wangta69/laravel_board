@@ -49,7 +49,7 @@
                       <a href="{{route('bbs.admin.show', [ $board->id]) }}" class="btn btn-secondary btn-sm">Edit</a>
                       <a href="{{route('bbs.admin.tbl.index', [$board->table_name]) }}" class="btn btn-primary btn-sm">View[Admin]</a>
                       <a href="{{route('bbs.index', [$board->table_name]) }}" class="btn btn-primary btn-sm">View[Front]</a>
-                      <button type="button" class="btn btn-danger btn-sm btn-delete">Delete</button>
+                      <button type="button" class="btn btn-danger btn-sm act-delete">Delete</button>
                   </td>
               </tr>
               @endforeach
@@ -78,21 +78,23 @@
 @parent
 <script>
   $(function () {
-    $(".btn-delete").on('click', function () {
+    $(".act-delete").on('click', function () {
 
-      $this = $(this).parents(".data-row");
-      var board_id = $this.attr("user-attr-board-id");
+      if(confirm('Are you Sure?')) {
+        $this = $(this).parents(".data-row");
+        var board_id = $this.attr("user-attr-board-id");
 
-      ROUTE.ajaxroute('DELETE', {
-        route: 'bbs.admin.destroy', 
-        segments: [board_id], 
-        data: params
-      }, function(resp) {
-        $this.remove();
-        if(resp.error === false) {
-          window.location.reload();
-        }
-      })
+        ROUTE.ajaxroute('DELETE', {
+          route: 'bbs.admin.destroy', 
+          segments: [board_id], 
+          /* data: params */
+        }, function(resp) {
+          $this.remove();
+          if(resp.error === false) {
+            window.location.reload();
+          }
+        })
+      }
     })
   })
 
