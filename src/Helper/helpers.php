@@ -43,7 +43,7 @@ function resizeImage($file, $width=0, $height=0) {
 
       if(!file_exists($thum_to_storage."/".$name)){//thumbnail 이미지를 돌려준다.
         $file_to_storage = storage_path() .'/app/'.$file;
-        $image = new GetHttpImage();
+        $image = new Pondol\Image\GetHttpImage();
 
         try {
           // $image->read($file_to_storage)->set_size($width, $height)->copyimage()->save($thum_to_storage);

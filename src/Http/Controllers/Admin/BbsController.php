@@ -92,18 +92,19 @@ class BbsController extends Controller
 
     // if ($validator->fails()) return ['error'=>'validation', 'errors'=>$validator->errors()];
     $result =  $this->_store($request, $tbl_name);
-    if(isset($result['error'])) {
-      if ($result['error'] == 'validation') {
-        return redirect()->back()->withInput()->withErrors($result['errors']);
-      }
+
+    if($result['error']) {
+      return $this->errorHandle($result);
     }
 
-    $enable_password = $result[2]->enable_password;
-    if ($enable_password) {
-      return redirect()->route('bbs.admin.tbl.index', [$result[0]]);
-    } else {
-      return redirect()->route('bbs.admin.tbl.show', [$result[0], $result[1]]);
-    }
+    // $enable_password = $result[2]->enable_password;
+    // if ($enable_password) {
+    //   return redirect()->route('bbs.admin.tbl.index', [$result[0]]);
+    // } else {
+    //   return redirect()->route('bbs.admin.tbl.show', [$result[0], $result[1]]);
+    // }
+
+    return redirect()->route('bbs.admin.tbl.show', [$result['tbl_name'], $result['article']->id]);
   }
 
   public function edit(Request $request, $tbl_name, Articles $article) {
@@ -114,7 +115,24 @@ class BbsController extends Controller
 
   public function update(Request $request, $tbl_name, Articles $article) {
     $result =  $this->_update($request, $tbl_name, $article);
-    return redirect()->route('bbs.admin.tbl.show', $result);
+    if($result['error']) {
+      switch($result['error']) {
+        case 'login': 
+          return redirect()->route('login');
+          break;
+        case 'NotAuthenticated': 
+          return redirect()->back()->withErrors(['NotAuthenticated'=>'Not Authenticated']);
+          break;
+        case 'validation': 
+          return redirect()->back()->withErrors($result['errors']);
+          break;
+      }
+    } else {
+      return redirect()->route('bbs.admin.tbl.show', [$result->tbl_name, $result->article]);
+    }
+
+
+    
   }
 
   public function destroy(Request $request, $tbl_name, Articles $article) {
@@ -137,6 +155,18 @@ class BbsController extends Controller
     }
 
     return redirect()->route('bbs.admin.tbl.show', [$tbl_name, $article->id]);
+  }
+
+
+  private function errorHandle($result) {
+    switch($result['error']) {
+      case 'validation':
+        return redirect()->back()->withInput()->withErrors($result['errors']);
+        break;
+      case 'login':
+        return redirect()->route(config('pondol-bbs.login_route_name'));
+        break;
+    }
   }
 
   // private function getLayout(&$cfg) {

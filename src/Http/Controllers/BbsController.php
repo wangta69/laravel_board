@@ -18,6 +18,7 @@ use Pondol\Bbs\Models\BbsArticles as Articles;
 use Pondol\Bbs\Models\BbsComments as Comments;
 use Pondol\Bbs\Models\BbsFiles as Files;
 
+use Pondol\Meta\Facades\Meta;
 use Pondol\Image\GetHttpImage;
 use Pondol\Bbs\Traits\BbsTrait;
 use Pondol\Bbs\BbsService;
@@ -42,9 +43,12 @@ class BbsController extends Controller {
   * @return \Illuminate\Http\Response
   */
   public function index(Request $request, $tbl_name) {
-    $result =  $this->_index($request, $tbl_name);
-
+    $result =  $this->_index($request, $tbl_name); // ['error', 'articles', 'top_articles', 'cfg']
+    $meta = Meta::get()->suffix(function($suffix) use($result){
+      $suffix->title = $result['cfg']->name;
+    });
     if(!$result['error']) {
+      $result['meta']= $meta;
       return view('bbs.templates.user.'.$result['cfg']->skin.'.index', $result);
     } else {
       return $this->errorHandle($result);
@@ -70,12 +74,12 @@ class BbsController extends Controller {
   */
   public function store(Request $request, $tbl_name) {
     $result =  $this->_store($request, $tbl_name);
-    if(isset($result['error'])) {
-      return $this->errorHandle($result);
 
+    if($result['error']) {
+      return $this->errorHandle($result);
     }
     // return redirect()->route('admin.bbs.show', [$result[0], $result[1]]);
-    return redirect()->route('bbs.show', [$result[0], $result[1]]);
+    return redirect()->route('bbs.show', [$result['tbl_name'], $result['article']->id]);
   }
 
   /*
@@ -95,10 +99,23 @@ class BbsController extends Controller {
 
   public function update(Request $request, $tbl_name, Articles $article) {
 
-    return;
     $result =  $this->_update($request, $tbl_name, $article);
-    // exit;
-    return redirect()->route('bbs.show', [$result[0], $result[1]]);
+    if($result['error']) {
+      switch($result['error']) {
+        case 'login': 
+          return redirect()->route('login');
+          break;
+        case 'NotAuthenticated': 
+          return redirect()->back()->withErrors(['NotAuthenticated'=>'Not Authenticated']);
+          break;
+        case 'validation': 
+          return redirect()->back()->withErrors($result['errors']);
+          break;
+      }
+    } else {
+      return redirect()->route('bbs.show', [$result['tbl_name'], $result['article']->id]);
+    }
+    
   }
 
   public function destroy(Request $request, $tbl_name, Articles $article) {
@@ -121,15 +138,19 @@ class BbsController extends Controller {
   */
 
   public function show(Request $request, $tbl_name, Articles $article) {
-    $result =  $this->_show($request, $tbl_name, $article);
+    $result =  $this->_show($request, $tbl_name, $article); // ['error', 'article', 'cfg', 'isAdmin'];
+    $meta = Meta::get()->title($article->title)->keywords($article->keywords)->image(\Storage::url($article->image));
     if ($result['error']) {
       return $this->errorHandle($result);
-    }
-    else {
+    } else {
+      if($request->ajax()){
+        return response()->json([$result['article']], 200);//500, 203
+      } else {
+      $result['meta'] = $meta;
       return view('bbs.templates.user.'.$result['cfg']->skin.'.show', $result);
+      }
     }
   }
-
 
   public function comment(Request $request, $tbl_name, Articles $article)
   {

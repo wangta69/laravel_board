@@ -11,12 +11,6 @@ class BbsCommentController extends \Pondol\Bbs\BbsExtendsCommentController
 {
 
 
-  // use BbsTraits;
-    // BBS Items per Page
-    // protected $itemsPerPage = 10;
-    //protected $deaultUrlParams = array('blade_extends' =>'bbs.layouts.default');
-    // protected $deaultUrlParams = array('blade_extends' =>'bbs.admin.default-layout');
-
      /**
      * Create a new controller instance.
      *

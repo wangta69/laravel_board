@@ -60,9 +60,11 @@ class AdminController extends Controller
 
   public function show(Request $request, Tables $table)
   {
-    $data = $this->_show($request, $table); //['cfg', 'skins's, 'roles']
+    $rtnObj = $this->_show($request, $table); //['cfg', 'skins's, 'roles']
 
-    return view('bbs::admin.create', $data);
+    return view('bbs::admin.create', [
+      'cfg'=> $table, 'skins' => $rtnObj->skins, 'roles' => $rtnObj->roles
+    ]);
   }
 
   public function destroy(Request $request, $id)
@@ -75,4 +77,5 @@ class AdminController extends Controller
       return redirect()->route('bbs.admin.index', []);
     }
   }
+  
 }

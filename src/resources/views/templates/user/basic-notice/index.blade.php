@@ -1,6 +1,9 @@
-@extends($cfg->extends)
-@section ($cfg->section)
+@section('meta_tags')
+<x-pondol-meta::meta :meta="$meta"/>
+@endsection
+@section('title', $meta->title)
 
+<x-bbs::front :cfg="$cfg">
 <div class="container">
   <div class="bbs index">
     <h1 class='title'>{{ $cfg->name }}</h1>
@@ -67,7 +70,7 @@
         </table>
 
         <div class='navigation'>
-          {!! $articles->render() !!}
+          {!! $articles->links('pagination::bootstrap-4') !!}
         </div>
       </div><!-- .card-body -->
       <div class="card-footer">
@@ -79,8 +82,6 @@
   </div><!-- .bbs index -->
 </div><!-- .container -->
 
-@stop
-
 @section ('styles')
 @parent
 @include ('bbs.templates.user.'.$cfg->skin.'.style')
@@ -91,3 +92,5 @@
 <script src="/pondol/route.js"></script>
 <script src="/pondol/bbs/bbs.js"></script>
 @stop
+</x-bbs::front>
+

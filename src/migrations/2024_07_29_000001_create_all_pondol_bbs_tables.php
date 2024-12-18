@@ -46,8 +46,10 @@ class CreateAllPondolBbsTables extends Migration
         $table->string('table_name', '20')->unique();
         $table->string('skin', '20');
         $table->string('skin_admin', '20');
-        $table->string('section', '50');
-        $table->string('extends', '50');
+        $table->string('blade', '50')->nullable();
+        $table->string('extends', '50')->nullable();
+        $table->string('section', '50')->nullable();
+        $table->string('component', '50')->nullable();
         $table->tinyInteger('lists')->unsigned()->default(10)->comment('reply 기능 활성');
         $table->tinyInteger('editor')->unsigned()->default(0)->comment('0: disable, 1: enable');
         $table->tinyInteger('enable_reply')->unsigned()->default(0)->comment('articles count displayed on index');

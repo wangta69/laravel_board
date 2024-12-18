@@ -106,6 +106,8 @@ trait AdminTrait {
     $table->table_name = $request->get('table_name');
     $table->skin = $request->get('skin');
     $table->skin_admin = $request->skin_admin;
+    $table->blade = $request->get('blade');
+    $table->component = $request->get('component');
     $table->extends = $request->get('extends');
     $table->section = $request->get('section');
     $table->lists = $request->input('lists', 10);
@@ -160,8 +162,11 @@ trait AdminTrait {
     $table->table_name = $request->table_name;
     $table->skin = $request->skin;
     $table->skin_admin = $request->skin_admin;
+    $table->blade = $request->get('blade');
+    $table->component = $request->get('component');
     $table->extends = $request->extends;
     $table->section = $request->get('section');
+    
     $table->lists = $request->input('lists', 10);
     $table->editor = $request->input('editor', 0);
     $table->auth_list= $request->get('auth_list');
@@ -226,15 +231,20 @@ trait AdminTrait {
      */
   public function _show($request, $table)
   {
+
+    $obj = new \stdClass;
+    $obj->roles = Role::get();
+
     $skin_dir =  resource_path('views/bbs/templates/');
     $tmp_skins = array_map('basename',\File::directories($skin_dir));
 
-    //키를 text로 변경
+    $obj->skins = [];
     foreach($tmp_skins as $v){
-      $skins[$v] = $v;
+      $obj->skins[$v] = $v;
     }
 
-    return ['cfg'=> $table, 'skins' => $skins, 'roles' => Role::get()];
+    return $obj;
+
   }
 
   /*
@@ -258,5 +268,7 @@ trait AdminTrait {
     $cfg = Tables::findOrFail($id);
     $cfg->delete();
   }
+
+
 
 }

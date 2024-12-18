@@ -42,6 +42,7 @@ class InstallCommand extends Command
 
 
     $this->call('pondol:install-editor'); // soft storage link and editor resource publish
+    $this->call('pondol:install-meta');
 
     \Artisan::call('vendor:publish',  [
       '--force'=> true,

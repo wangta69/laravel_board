@@ -62,23 +62,47 @@
               {{resource_path('views/bbs/templates/admin')}}
             </div>
           </div>
-
           <div class='form-group row mt-1'>
-            <label for='skin' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.blade-extends')</label>
-            <div class='col-sm-10'>
-            <x-pondol::text name="extends" id="extends" class="form-control" placeholder="extends" 
-            value="{{isset($table) && $table->extends ? $table->extends : old('extends')}}" />
+            <label for='editor' class='col-sm-2 control-label'>Blade</label>
+            <div class='col-sm-10 row'>
+              <div class="col-auto">
+                <x-pondol::radio class="form-check-input act-switch-component" name="blade" value="component" 
+                curval="{{ old('blade', isset($table) &&  $table->blade ? $table->blade :'component')}}"/>
+                <label class="form-check-label">Component</label>
+
+              </div>
+              <div class="col-auto">
+                <x-pondol::radio class="form-check-input act-switch-component" name="blade" value="extends" 
+                curval="{{ old('blade', isset($table) &&  $table->blade ? $table->blade :'component')}}" />
+                <label class="form-check-label">Extends</label>
+              </div>
             </div>
           </div>
-
-          <div class='form-group row mt-1'>
-            <label for='skin' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.blade-section')</label>
+          <div class='form-group row mt-1 blade-div'>
+            <label for='skin' class='col-sm-2 control-label'>Component</label>
             <div class='col-sm-10'>
-            <x-pondol::text name="section" id="section" class="form-control" placeholder="extesectionnds" 
-            value="{{isset($table) && $table->section ? $table->section : old('section')}}" />
+            <x-pondol::text name="component" id="component" class="form-control" placeholder="component" 
+            value="{{isset($table) && $table->component ? $table->component : old('component')}}" />
+            remove x- (x-myapp => myapp )
             </div>
           </div>
+          <div class="blade-div" style="display: none;">
+            <div class='form-group row mt-1'>
+              <label for='skin' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.blade-extends')</label>
+              <div class='col-sm-10'>
+              <x-pondol::text name="extends" id="extends" class="form-control" placeholder="extends" 
+              value="{{isset($table) && $table->extends ? $table->extends : old('extends')}}" />
+              </div>
+            </div>
 
+            <div class='form-group row mt-1'>
+              <label for='skin' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.blade-section')</label>
+              <div class='col-sm-10'>
+              <x-pondol::text name="section" id="section" class="form-control" placeholder="extesectionnds" 
+              value="{{isset($table) && $table->section ? $table->section : old('section')}}" />
+              </div>
+            </div>
+          </div>
           <div class='form-group row mt-1'>
             <label for='editor' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.editor')</label>
             <div class='col-sm-10 row'>
@@ -293,6 +317,16 @@ function setCategoryOrder(id, order) {
   })
 }
 
+function switchComponent() {
+  var val = $('input:radio[name="blade"]:checked').val();
+  $blade = $(".blade-div");
+  $blade.hide();
+  switch(val) {
+    case 'extends': $blade.eq(1).show();break;
+    case 'component': $blade.eq(0).show();break;
+  }
+}
+
 function init() {
   if ($('input[name="auth_list"]:checked').val() == 'role') {
     $("#roles-list").show();
@@ -306,10 +340,11 @@ function init() {
     $("#roles-write").show();
   }
 
+  switchComponent();
+
 }
 
 $(function () {
-
 
   $("input[name='auth_list']").change(function () {
     $("#roles-list").hide();
@@ -398,6 +433,10 @@ $(function () {
     setCategoryOrder(categoryId, 'down');
     $tr.next().after($tr);
   });
+
+  $(".act-switch-component").on('click', function(e){
+    switchComponent();
+  })
   // 카테고리 관련 끝
 
   init();

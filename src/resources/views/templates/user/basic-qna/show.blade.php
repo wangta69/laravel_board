@@ -1,7 +1,9 @@
-@extends($cfg->extends)
-@section('title', $article->title)
-@section('keywords', $article->keywords)
-@section ($cfg->section)
+@section('meta_tags')
+<x-pondol-meta::meta :meta="$meta"/>
+@endsection
+@section('title', $meta->title)
+
+<x-bbs::front :cfg="$cfg">
 <div class="container">
   <div class="bbs show">
     <h1 class='title'>{{ $cfg->name }}</h1>
@@ -46,7 +48,6 @@
   @include ('bbs::templates.user.basic.comment')
 
 </div><!-- .container -->
-@stop
 
 @section ('styles')
 @parent
@@ -79,3 +80,4 @@ $(function(){
 })
 </script>
 @stop
+</x-bbs::front>

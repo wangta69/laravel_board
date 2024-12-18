@@ -31,10 +31,11 @@ class ApiController extends Controller {
    *
    * @return void
    */
-  public function __construct(BbsService $bbsSvc)
-  {
-    $this->bbsSvc = $bbsSvc;
-  }
+  // public function __construct(BbsService $bbsSvc)
+  // {
+  //     //$this->middleware('guest', ['except' => 'logout']);
+  //     $this->bbsSvc = $bbsSvc;
+  // }
 
   /**
    * 리스트 가져오기

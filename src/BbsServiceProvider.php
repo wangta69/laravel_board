@@ -36,9 +36,11 @@ class BbsServiceProvider extends ServiceProvider {
   {
 
     // Register config
-    $this->publishes([
-      __DIR__ . '/config/pondol-bbs.php' => config_path('pondol-bbs.php'),
-    ], 'config');
+    if (!config()->has('pondol-bbs')) {
+      $this->publishes([
+        __DIR__ . '/config/pondol-bbs.php' => config_path('pondol-bbs.php'),
+      ], 'config');
+    }
     $this->mergeConfigFrom(
       __DIR__ . '/config/pondol-bbs.php',
       'pondol-bbs'

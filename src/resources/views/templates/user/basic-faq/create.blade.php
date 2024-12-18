@@ -1,5 +1,4 @@
-@extends($cfg->extends)
-@section ($cfg->section)
+<x-bbs::front :cfg="$cfg">
 <div class="container">
   <div class="bbs create">
     <h1 class='title'>
@@ -96,7 +95,6 @@
     </div><!-- .card -->
   </div>
 </div>
-@stop
 
 @section ('styles')
 @parent
@@ -126,3 +124,4 @@
   })
 </script>
 @stop
+</x-pondol-common::app-bare>

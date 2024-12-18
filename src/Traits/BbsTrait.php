@@ -17,11 +17,15 @@ use Pondol\Bbs\Models\BbsArticles as Articles;
 use Pondol\Bbs\Models\BbsComments as Comments;
 use Pondol\Bbs\Models\BbsFiles as Files;
 
+// use Pondol\Meta\Facades\Meta;
 use Pondol\Bbs\BbsService;
 
 
 trait BbsTrait  {
 
+
+  // private $isAdmin;
+  // private $cfg;
   /*
    * List Page
    *
@@ -127,18 +131,17 @@ trait BbsTrait  {
     return ['error'=>false, 'cfg'=>$cfg, 'article' => new Articles];
   }
 
-    /*
-     * Store to BBS
-     *
-     * @param String $tbl_name
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-  public function _store($request, $tbl_name)
-  {
-
+  private function storeOrUpdateValidation($request, $tbl_name) {
+    
     $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
 
+    //check permission
+    $permission_result = $cfg->hasPermission('write');
+    if(!$permission_result) {
+      return ['error'=>'NotAuthenticated'];
+    }
+
+    
     $validator = Validator::make($request->all(), [
       'title' => 'required|min:2|max:100',
       // 'content' => 'required',
@@ -152,120 +155,34 @@ trait BbsTrait  {
     $validator->sometimes('content', 'required', function ($input) use ($request) {
       return !$request->no_content;
     });
+
+
     $validator->sometimes('password', 'required', function ($input) use ($cfg) {
       return $cfg->enable_password == 1;
     });
 
-
-    // if ($validator->fails()) return redirect()->back()->withInput()->withErrors($validator->errors());
-
-    if ($validator->fails()) 
+    if ($validator->fails()) {
       return ['error'=>'validation', 'errors'=>$validator->errors()];
-
-    $parent_id = $request->get('parent_id');//if this vaule setted it means reply
-
-    //check permission
-    $permission_result = $cfg->hasPermission('write');
-
-    if(!$permission_result)
-      abort(403, 'Unauthorized action.');
-
-
-    $article = new Articles;
-
-    $article->bbs_table_id = $cfg->id;
-    $article->writer = $request->get('writer');
-
-    if (Auth::check()) {
-      $article->user_id = Auth::user()->id;
-      $article->writer = $article->writer ? $article->writer : Auth::user()->name;
-    } else {
-      $article->user_id = 0;
     }
 
-    $article->order_num = $this->get_order_num();
-    $article->parent_id = 0;//firt fill then update
-    $article->comment_cnt = 0;
+    return ['error'=>false, 'cfg'=>$cfg];
+  }
+
+  private function storeOrUpdate($request, $article) {
+
     $article->title = $request->get('title');
+    $article->writer = $request->get('writer') ?? $article->writer;
     $article->password = $request->get('password');
     $article->content = $request->get('content');
     $article->text_type = $request->input('text_type', 'br');
     $article->keywords = $request->input('keywords');
     $article->bbs_category_id = $request->get('category');
     $article->top = $request->input('top', 0);
-    $article->save();
-    $article->parent_id = $parent_id ? $parent_id : $article->id;
-    $article->save();
 
-    $date_Ym = date("Ym");
-    $filepath = 'public/bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;
-    // $filepath = base_path().'/public/bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;
-    if(is_array($request->file('uploads')))
-      foreach ($request->file('uploads') as $index => $upload) {
-        if ($upload == null) continue;
-
-        //get file path (bbs/bbs_tables_id/YM/bbs_articles_id)
-        //upload to storage
-        $filename = $upload->getClientOriginalName();
-        $fileextension = $upload->getClientOriginalExtension();
-
-        $path=Storage::put($filepath,$upload); // //Storage::disk('local')->put($name,$file,'public');
-        // $path = File::put($filepath , $upload);
-        //save to database
-        $file = new Files;
-        $file->rank = $index;
-        $file->bbs_articles_id = $article->id;
-        $file->file_name = $filename;
-        $file->path_to_file = $path;
-        $file->name_on_disk = basename($path);
-        $file->save();
-      }//foreach if
-
-    $this->contents_update($article, $cfg->id, $date_Ym);
-    $this->set_representaion($article);
-    return [$tbl_name, $article->id, $cfg];
+    return $article;
   }
 
-    /*
-     * Modify Article
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param String $tbl_name
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-  public function _update($request, $tbl_name, $article)
-  {
-    $isAdmin = BbsService::hasRoles(config('pondol-bbs.admin_roles'));
-    $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
-
-    //check permission
-    $permission_result = $cfg->hasPermission('write');
-    if(!$permission_result)
-      abort(403, 'Unauthorized action.');
-
-    if (!$article->isOwner(Auth::user()) && !$isAdmin) {
-      return redirect()->route('bbs.index', [$tbl_name]);
-    }
-
-    $validator = Validator::make($request->all(), [
-      'title' => 'required|min:2|max:100',
-      'content' => 'required',
-        //'username' => 'required|unique:users|min:2|max:8',
-    ]);
-
-    if ($validator->fails()) 
-      return redirect()->back()->withErrors($validator->errors());
-
-    $article->title = $request->get('title');
-    $article->keywords = $request->input('keywords');
-    $article->writer = $request->get('writer') ? $request->get('writer') : $article->writer;
-    $article->content = $request->get('content');
-    $article->bbs_category_id = $request->get('category');
-    $article->top = $request->input('top', 0);
-    $article->save();
-
-    // Upload Attached files
+  private function storeOrUpdateTrimContents($request, $article, $cfg) {
     $date_Ym = date("Ym", strtotime($article->created_at));//수정일경우 기존 데이타의 생성일을 기준으로 가져온다.
 
     //$filepath = 'bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;////5.6부터는 이렇게 처리하면 storage/app/public 이하로 들어간다.
@@ -284,6 +201,7 @@ trait BbsTrait  {
         }
 
         $filename = $upload->getClientOriginalName();
+        $fileextension = $upload->getClientOriginalExtension();
         $path=Storage::put($filepath, $upload); // //Storage::disk('local')->put($name,$file,'public');
 
         //save to database
@@ -299,8 +217,73 @@ trait BbsTrait  {
 
     $this->contents_update($article, $cfg->id, $date_Ym);
     $this->set_representaion($article);
-    // return [$tbl_name, $article->id];
-    return [$tbl_name, $article->id, $cfg];
+  }
+  /*
+    * Store to BBS
+    *
+    * @param String $tbl_name
+    * @param  \Illuminate\Http\Request  $request
+    * @return \Illuminate\Http\Response
+    */
+  public function _store($request, $tbl_name)
+  {
+
+    $validation = $this->storeOrUpdateValidation($request, $tbl_name);
+    if($validation['error']) {
+      return $validation;
+    }
+
+    $article = new Articles;
+    $article = $this->storeOrUpdate($request, $article);
+
+    $article->bbs_table_id = $validation['cfg']->id;
+    // $article->writer = $request->get('writer');
+
+    if (Auth::check()) {
+      $article->user_id = Auth::user()->id;
+      $article->writer = $article->writer ?? Auth::user()->name;
+    } else {
+      $article->user_id = 0;
+    }
+
+    $article->order_num = $this->get_order_num();
+    $article->parent_id = 0;//firt fill then update
+    $article->comment_cnt = 0;
+    $article->save();
+    $article->parent_id = $request->get('parent_id') ?? $article->id;
+    $article->save();
+
+    $this->storeOrUpdateTrimContents($request, $article, $validation['cfg']);
+
+    return ['error'=>false, 'tbl_name'=>$tbl_name, 'article'=>$article];
+  }
+
+    /*
+     * Modify Article
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param String $tbl_name
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+  public function _update($request, $tbl_name, $article)
+  {
+
+    $validation = $this->storeOrUpdateValidation($request, $tbl_name);
+    if($validation['error']) {
+      return $validation;
+    }
+
+    $isAdmin = BbsService::hasRoles(config('pondol-bbs.admin_roles'));
+    if (!$article->isOwner(Auth::user()) && !$isAdmin) {
+      return ['error'=>'NotAuthenticated'];
+    }
+         
+    $article = $this->storeOrUpdate($request, $article);
+    $article->save();
+    $this->storeOrUpdateTrimContents($request, $article, $validation['cfg']);
+
+    return ['error'=>false, 'tbl_name'=>$tbl_name, 'article'=>$article];
   }
 
     /*
@@ -339,12 +322,10 @@ trait BbsTrait  {
     $files = Files::where('bbs_articles_id', $article->id)->get();
     foreach($files as $file) { 
       if($file->path_to_file){
-        Log::info('file->path_to_file:'.$file);
         $tmp = explode('.', $file->path_to_file);
         $extension = end($tmp);
         if(in_array($extension, $representaion_image_array)){
           $article->image = $file->path_to_file;
-          Log::info('article->image:'.$file->path_to_file);
           break;
         }
       }
@@ -406,9 +387,6 @@ trait BbsTrait  {
     }
 
     Cookie::queue(Cookie::make($tbl_name.$article->id, '1'));
-    if($request->ajax()){
-      return response()->json([$article], 200);//500, 203
-    }
 
     return ['error'=>false, 'article' => $article, 'cfg'=>$cfg, 'isAdmin'=>$isAdmin];
   }
@@ -453,7 +431,7 @@ trait BbsTrait  {
     Cookie::queue(Cookie::make($tbl_name.$content->id, '1'));
     return response()->json(['error'=>false, 'article' => $content], 200);//500, 203
   }
-
+/*
   public function _comment($request, $tbl_name, $article)
   {
     $comment = $article->comment[0];
@@ -462,7 +440,7 @@ trait BbsTrait  {
       return response()->json([$comment], 200);//500, 203
     }
   }
-
+*/
     /*
      * Modify Form
      *
@@ -539,6 +517,7 @@ trait BbsTrait  {
    * @param Object $cfg  Bbs Config
    * @return Boolean
    */
+  /*
   private function permission($mode, $cfg){
     $rtn = false;
     switch($mode){
@@ -572,4 +551,5 @@ trait BbsTrait  {
     }
     return $rtn;
   }
+  */
 }
