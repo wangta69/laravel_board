@@ -44,10 +44,11 @@ class BbsController extends Controller {
   */
   public function index(Request $request, $tbl_name) {
     $result =  $this->_index($request, $tbl_name); // ['error', 'articles', 'top_articles', 'cfg']
-    $meta = Meta::get()->suffix(function($suffix) use($result){
-      $suffix->title = $result['cfg']->name;
-    });
+
     if(!$result['error']) {
+      $meta = Meta::get()->suffix(function($suffix) use($result){
+        $suffix->title = $result['cfg']->name;
+      });
       $result['meta']= $meta;
       return view('bbs.templates.user.'.$result['cfg']->skin.'.index', $result);
     } else {

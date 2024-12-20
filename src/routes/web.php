@@ -1,4 +1,7 @@
 <?php
+
+Route::get('/', 'WelcomeController@welcome')->name('welcome');
+
 Route::get('/file/{file}', 'BbsController@download')->name('file.download');
 Route::delete('/file/{file}', 'BbsController@deletFile')->name('file.delete');
 

@@ -52,7 +52,7 @@ trait AdminTrait {
 
     // set default value;
     $table->lists = $table->lists ?? 10;
-    $table->component = $table->component ?? 'pondol-common::app-bare';
+    $table->component = $table->component ?? 'bbs::default';
     $table->extends = $table->extends ?? 'bbs::front-app';
     $table->section = $table->section ?? 'content';
 

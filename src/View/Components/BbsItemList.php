@@ -1,15 +1,14 @@
 <?php
+/**
+ * 생성된 bbs 리스트를 자동으로 출력
+ */
 namespace Pondol\Bbs\View\Components;
 
 use Illuminate\View\Component;
 use Pondol\Bbs\Models\BbsTables;
 class BbsItemList extends Component
 {
-  public $item;
-  public $item_id;
-  public $skin;
   public function __construct() {
-
   }
 
   /**

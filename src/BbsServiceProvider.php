@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Blade;
 use Pondol\Bbs\View\Components\ItemCommnents;
 use Pondol\Bbs\View\Components\BbsItemList;
+use Pondol\Bbs\View\Components\BbsCard;
 
 class BbsServiceProvider extends ServiceProvider {
 
@@ -61,8 +62,8 @@ class BbsServiceProvider extends ServiceProvider {
     $this->publishes([
       // copy resource 파일
       __DIR__.'/resources/views/components' => resource_path('views/bbs/components'),
-      __DIR__.'/resources/views/templates' => resource_path('views/bbs/templates'),
-      __DIR__.'/resources/pondol/' => public_path('pondol'),
+      __DIR__.'/resources/templates' => resource_path('views/bbs/templates'),
+      __DIR__.'/resources/assets/' => public_path('pondol/bbs'),
       // controllers;
       // __DIR__.'/Http/Controllers/Bbs/' => app_path('Http/Controllers/Bbs')
     ]);
@@ -72,8 +73,8 @@ class BbsServiceProvider extends ServiceProvider {
 
     Blade::component('item-comments', ItemCommnents::class);
     Blade::component('bbs-lists', BbsItemList::class);
+    Blade::component('bbs-card', BbsCard::class);
     
-
     // Language Files
     $this->loadTranslationsFrom(__DIR__.'/resources/lang', 'bbs');
   }

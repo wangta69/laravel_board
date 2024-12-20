@@ -1,4 +1,8 @@
 <?php
+/**
+ * 독립페이지 아이템용으로 처리
+ */
+
 namespace Pondol\Bbs\View\Components;
 
 use Illuminate\View\Component;
