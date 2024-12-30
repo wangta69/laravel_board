@@ -34,10 +34,10 @@ class ItemCommentController extends Controller
     // 아래와 같이 사용자정의를 하여 각각의 데이타를 가져와야 한다.
     switch($item) {
       case 'story':
-        $comments->join('keywords', function($join){
-          $join->on('bbs_item_comments.item_id', '=', 'keywords.id');
+        $comments->join('metas', function($join){
+          $join->on('bbs_item_comments.item_id', '=', 'metas.id');
         })
-        ->addSelect('keywords.title', 'keywords.path');
+        ->addSelect('metas.title', 'metas.path');
     }
 
     $comments =  $comments->orderBy('bbs_item_comments.id', 'desc')->paginate(20)->appends(request()->query());

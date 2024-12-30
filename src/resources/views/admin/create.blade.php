@@ -69,7 +69,6 @@
                 <x-pondol::radio class="form-check-input act-switch-component" name="blade" value="component" 
                 curval="{{ old('blade', isset($table) &&  $table->blade ? $table->blade :'component')}}"/>
                 <label class="form-check-label">Component</label>
-
               </div>
               <div class="col-auto">
                 <x-pondol::radio class="form-check-input act-switch-component" name="blade" value="extends" 
