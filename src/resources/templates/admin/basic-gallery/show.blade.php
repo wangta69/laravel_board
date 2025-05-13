@@ -28,7 +28,7 @@
         </div>
 
         <div class="card-text mt-5">
-            {!! nl2br($article->content) !!}
+            {!! $article->content !!}
 
             <!-- 겔러리의 경우 첨부된 파일을 모두 보여준다. -->
             @foreach ($article->files as $file)

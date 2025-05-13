@@ -142,7 +142,11 @@ class BbsController extends Controller {
     $result =  $this->_show($request, $tbl_name, $article); // ['error', 'article', 'cfg', 'isAdmin'];
     $meta = Meta::get()->title($article->title)->keywords($article->keywords)->image(\Storage::url($article->image));
     if ($result['error']) {
-      return $this->errorHandle($result);
+      if ($result['error'] == 'password') {
+        return view('bbs.templates.user.'.$result['cfg']->skin.'.password-confirm', $result);
+      } else {
+        return $this->errorHandle($result);
+      }
     } else {
       if($request->ajax()){
         return response()->json([$result['article']], 200);//500, 203
@@ -151,6 +155,18 @@ class BbsController extends Controller {
       return view('bbs.templates.user.'.$result['cfg']->skin.'.show', $result);
       }
     }
+  }
+
+  public function passwordConfirm(Request $request, $tbl_name, Articles $article) {
+    $result =  $this->_passwordConfirm($request, $tbl_name, $article);
+
+    if(isset($result['error'])) {
+      if ($result['error'] == 'validation') {
+        return redirect()->back()->withInput()->withErrors($result['errors']);
+      }
+    }
+
+    return redirect()->route('bbs.show', [$tbl_name, $article->id]);
   }
 
   public function comment(Request $request, $tbl_name, Articles $article)

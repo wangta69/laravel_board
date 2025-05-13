@@ -128,7 +128,7 @@ class BbsController extends Controller
           break;
       }
     } else {
-      return redirect()->route('bbs.admin.tbl.show', [$result->tbl_name, $result->article]);
+      return redirect()->route('bbs.admin.tbl.show', [$result['tbl_name'], $result['article']]);
     }
 
 

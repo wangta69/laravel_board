@@ -213,6 +213,10 @@
                 <x-pondol::checkbox class="form-check-input" name="enable_comment" value="1" 
                   curval="{{ old('enable_comment', $table->enable_comment)}}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.enable-comment')</label>
+
+                <x-pondol::checkbox class="form-check-input" name="enable_password" value="1" 
+                  curval="{{ old('enable_password', $table->enable_password)}}" />
+                <label class="form-check-label">@lang('bbs::messages.admin.bbs.enable-password')</label>
               </div>
             </div>
           </div>

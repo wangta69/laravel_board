@@ -28,7 +28,7 @@
         </div>
 
         <div class="card-text mt-5">
-            {!! nl2br($article->content) !!}
+            {!! $article->content !!}
         </div>
       </div><!-- .card-body -->
       <div class="card-footer">

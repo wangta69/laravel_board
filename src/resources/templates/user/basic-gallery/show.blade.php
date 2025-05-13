@@ -31,12 +31,12 @@
         </div>
 
         <div class="card-text mt-5">
-            {!! nl2br($article->content) !!}
+          {!! $article->content !!}
 
-            <!-- 겔러리의 경우 첨부된 파일을 모두 보여준다. -->
-            @foreach ($article->files as $file)
-              <div><img src="{{ bbs_image_url_from_storage($file->path_to_file) }}" alt="{{$file->file_name}}"></div>
-            @endforeach
+          <!-- 겔러리의 경우 첨부된 파일을 모두 보여준다. -->
+          @foreach ($article->files as $file)
+            <div><img src="{{ bbs_image_url_from_storage($file->path_to_file) }}" alt="{{$file->file_name}}"></div>
+          @endforeach
         </div>
       </div><!-- .card-body -->
       <div class="card-footer">

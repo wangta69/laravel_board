@@ -179,6 +179,8 @@ trait BbsTrait  {
     $article->bbs_category_id = $request->get('category');
     $article->top = $request->input('top', 0);
 
+
+
     return $article;
   }
 
@@ -252,6 +254,10 @@ trait BbsTrait  {
     $article->save();
     $article->parent_id = $request->get('parent_id') ?? $article->id;
     $article->save();
+
+    if($article->password) {
+      Cookie::queue(Cookie::make('pass-'.$tbl_name.$article->id, '1'));
+    }
 
     $this->storeOrUpdateTrimContents($request, $article, $validation['cfg']);
 
@@ -374,7 +380,7 @@ trait BbsTrait  {
     }
 
     if (!$isAdmin && $article->password && $request->cookie('pass-'.$tbl_name.$article->id) != '1') {
-      return ['error'=>'password', 'cfg'=>$cfg];
+      return ['error'=>'password', 'cfg'=>$cfg, 'tbl_name'=>$tbl_name, 'article'=>$article];
     }
 
     if ($request->cookie($tbl_name.$article->id) != '1') {
