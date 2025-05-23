@@ -132,7 +132,7 @@ trait BbsTrait  {
   }
 
   private function storeOrUpdateValidation($request, $tbl_name) {
-    
+    $isAdmin = BbsService::hasRoles(config('pondol-bbs.admin_roles'));
     $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
 
     //check permission
@@ -156,10 +156,11 @@ trait BbsTrait  {
       return !$request->no_content;
     });
 
-
-    $validator->sometimes('password', 'required', function ($input) use ($cfg) {
-      return $cfg->enable_password == 1;
-    });
+    if(!$isAdmin) {
+      $validator->sometimes('password', 'required', function ($input) use ($cfg) {
+        return $cfg->enable_password == 1;
+      });
+    }
 
     if ($validator->fails()) {
       return ['error'=>'validation', 'errors'=>$validator->errors()];
