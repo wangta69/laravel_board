@@ -1,10 +1,3 @@
-<nav id="sidebar">
-  <div class="sidebar-header">
-    <h3><a href="{{ route('auth.admin.dashboard') }}">OnStory</a></h3>
-    <strong>ON</strong>
-  </div>
-
-  <ul class="list-unstyled components" id="navbar-sidebar">
     <li>
       <a href="#bbs-sub-menu" data-bs-toggle="collapse" 
         aria-expanded="{{ request()->routeIs(['bbs*']) ? 'true' : 'false' }}"
@@ -26,5 +19,3 @@
         </li>
       </ul>
     </li>
-  </ul>
-</nav>

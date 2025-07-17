@@ -40,7 +40,7 @@ class InstallCommand extends Command
   {
     if ($type === 'skip') return; // 타 컴포저에서 테스트 시
 
-
+    $this->call('pondol:install-common');
     $this->call('pondol:install-editor'); // soft storage link and editor resource publish
     $this->call('pondol:install-meta');
 

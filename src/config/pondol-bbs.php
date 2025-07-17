@@ -19,5 +19,6 @@ return [
   ],
   'login_route_name' => 'login',
   'admin_roles'=>'administrator',
-  'component' => ['admin'=>['layout'=>'bbs::admin', 'lnb'=>'bbs::navigation']],
+  // 'component' => ['admin'=>['layout'=>'bbs::admin', 'lnb'=>'bbs::navigation']],
+  'component' => ['admin'=>['layout'=>'pondol-common::common-admin', 'lnb'=>'bbs::lnb-partial']],
 ];
