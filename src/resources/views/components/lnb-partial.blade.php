@@ -15,7 +15,7 @@
         </li> -->
         <hr/>
         <li class="{{ request()->routeIs(['bbs.admin.index']) ? 'current-page' : '' }}">
-          <a href="{{ route('bbs.admin.index') }}">환경 설정1</a>
+          <a href="{{ route('bbs.admin.index') }}">환경 설정</a>
         </li>
       </ul>
     </li>

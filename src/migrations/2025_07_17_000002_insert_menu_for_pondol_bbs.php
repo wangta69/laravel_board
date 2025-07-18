@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class  InsertJsonKeyForPondolBbs extends Migration
+class  InsertMenuForPondolBbs extends Migration
 {
   /**
    * Run the migrations.
@@ -13,9 +13,9 @@ class  InsertJsonKeyForPondolBbs extends Migration
    */
   public function up()
   {
-    if (Schema::hasTable('json_key_values')) {
-      DB::table('json_key_values')->updateOrInsert(
-        ['key' => 'lnb.enable.pondol-bbs'],['v' => '1']
+    if (Schema::hasTable('manage_menus')) {
+      DB::table('manage_menus')->updateOrInsert(
+        ['type' => 'lnb', 'title'=>'pondol-bbs'],['component'=>'bbs::lnb-partial', 'order' => '1']
       );
     }
   }
