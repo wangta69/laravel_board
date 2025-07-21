@@ -1,7 +1,7 @@
 <x-dynamic-component 
   :component="config('pondol-bbs.component.admin.layout')" 
   :path="['환경설정']"> 
-<div class="container">
+<div id="content">
   <div class="bbs admin">
     @if (isset($table->id))
     <h2 class='title'>@lang('bbs::messages.admin.bbs.edit')</h2>

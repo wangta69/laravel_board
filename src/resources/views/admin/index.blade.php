@@ -2,7 +2,7 @@
 <x-dynamic-component 
   :component="config('pondol-bbs.component.admin.layout')" 
   :path="['게시판', 'BBS  관리']"> 
-<div class="container">
+<div id="content">
   <div class="bbs admin">
   <h2 class='title'>@lang('bbs::messages.admin.configure')</h2>
     <div class="card">
