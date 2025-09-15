@@ -81,25 +81,34 @@ class BbsServiceProvider extends ServiceProvider {
 
   private function loadBbsRoutes()
   {
-    $config = config('pondol-bbs.route_admin');
-    Route::prefix($config['prefix'])
-      ->as($config['as'])
-      ->middleware($config['middleware'])
-      ->namespace('Pondol\Bbs\Http\Controllers\Admin')
-      ->group(__DIR__ . '/routes/admin.php');
+    $admin_config = config('pondol-bbs.route_admin', []);
+    $admin_user_middleware = $admin_config['middleware'] ?? [];
+    $admin_final_middleware = array_unique(array_merge(['web'], $admin_user_middleware));
 
-    $config = config('pondol-bbs.route_front');
-    Route::prefix($config['prefix'])
-      ->as($config['as'])
-      ->middleware($config['middleware'])
-      ->namespace('Pondol\Bbs\Http\Controllers')
-      ->group(__DIR__ . '/routes/web.php');
+    Route::middleware($admin_final_middleware)
+        ->prefix($admin_config['prefix'] ?? 'bbs/admin')
+        ->as($admin_config['as'] ?? 'bbs.admin.')
+        ->namespace('Pondol\Bbs\Http\Controllers\Admin')
+        ->group(__DIR__ . '/routes/admin.php');
 
-    $config = config('pondol-bbs.route_api');
-    Route::prefix($config['prefix'])
-      ->as($config['as'])
-      ->middleware($config['middleware'])
-      ->namespace('Pondol\Bbs\Http\Controllers')
-      ->group(__DIR__ . '/routes/api.php');
+    $front_config = config('pondol-bbs.route_front', []);
+    $front_user_middleware = $front_config['middleware'] ?? [];
+    $front_final_middleware = array_unique(array_merge(['web'], $front_user_middleware));
+    Route::middleware($front_final_middleware)
+        ->prefix($front_config['prefix'] ?? 'bbs')
+        ->as($front_config['as'] ?? 'bbs.')
+        ->namespace('Pondol\Bbs\Http\Controllers')
+        ->group(__DIR__ . '/routes/web.php');;
+
+    $api_config = config('pondol-bbs.route_api', []);
+    $api_user_middleware = $api_config['middleware'] ?? [];
+    // API 라우트는 기본적으로 'api' 그룹에 속합니다.
+    $api_final_middleware = array_unique(array_merge(['api'], $api_user_middleware));
+
+    Route::middleware($api_final_middleware)
+        ->prefix($api_config['prefix'] ?? 'api/v1/bbs')
+        ->as($api_config['as'] ?? 'bbs.api.')
+        ->namespace('Pondol\Bbs\Http\Controllers')
+        ->group(__DIR__ . '/routes/api.php');
   }
 }

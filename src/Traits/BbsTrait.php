@@ -163,7 +163,7 @@ trait BbsTrait  {
     }
 
     if ($validator->fails()) {
-      return ['error'=>'validation', 'errors'=>$validator->errors()];
+      return ['error'=>'validation', 'errors'=>$validator->errors(), 'input' => $request->all()];
     }
 
     return ['error'=>false, 'cfg'=>$cfg];
@@ -257,7 +257,9 @@ trait BbsTrait  {
     $article->save();
 
     if($article->password) {
-      Cookie::queue(Cookie::make('pass-'.$tbl_name.$article->id, '1'));
+      // Cookie::queue(Cookie::make('pass-'.$tbl_name.$article->id, '1'));
+      $session_key = "bbs.viewed.{$tbl_name}.{$article->id}";
+      session()->put($session_key, true);
     }
 
     $this->storeOrUpdateTrimContents($request, $article, $validation['cfg']);
@@ -380,20 +382,25 @@ trait BbsTrait  {
       return ['error'=>'login'];
     }
 
-    if (!$isAdmin && $article->password && $request->cookie('pass-'.$tbl_name.$article->id) != '1') {
+    $session_key = "bbs.viewed.{$tbl_name}.{$article->id}";
+
+    if (!$isAdmin && $article->password && !session()->has($session_key)) {
       return ['error'=>'password', 'cfg'=>$cfg, 'tbl_name'=>$tbl_name, 'article'=>$article];
     }
 
-    if ($request->cookie($tbl_name.$article->id) != '1') {
-      $article->hit ++;
-      $article->save();
+    if (!session()->has($session_key)) {
+        $article->hit++;
+        $article->save();
+
+        // ★★★ 조회수를 올린 후, 세션에 "조회함" 상태를 기록합니다. ★★★
+        session()->put($session_key, true);
     }
 
     if($article->text_type == 'br') {
       $article->content = nl2br($article->content);
     }
 
-    Cookie::queue(Cookie::make($tbl_name.$article->id, '1'));
+    // Cookie::queue(Cookie::make($tbl_name.$article->id, '1'));
 
     return ['error'=>false, 'article' => $article, 'cfg'=>$cfg, 'isAdmin'=>$isAdmin];
   }
@@ -419,7 +426,8 @@ trait BbsTrait  {
 
         return ['error'=>'validation', 'errors'=>$validator->errors()];
     } else {
-      Cookie::queue(Cookie::make('pass-'.$tbl_name.$article->id, '1'));
+      $session_key = "bbs.viewed.{$tbl_name}.{$article->id}";
+      session()->put($session_key, true);
       return ['error'=>false];
     }
   }
@@ -430,12 +438,17 @@ trait BbsTrait  {
 
     $content = Articles::find($article);
 
-    if ($request->cookie($tbl_name.$content->id) != '1') {
-      $content->hit ++;
-      $content->save();
+    $session_key = "bbs.viewed.{$tbl_name}.{$content->id}";
+
+    if (!session()->has($session_key)) {
+        $content->hit++;
+        $content->save();
+        
+        // ★★★ 조회수를 올린 후, 세션에 "조회함" 상태를 기록합니다. ★★★
+        session()->put($session_key, true);
     }
 
-    Cookie::queue(Cookie::make($tbl_name.$content->id, '1'));
+    // Cookie::queue(Cookie::make($tbl_name.$content->id, '1'));
     return response()->json(['error'=>false, 'article' => $content], 200);//500, 203
   }
 /*

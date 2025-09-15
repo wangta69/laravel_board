@@ -262,7 +262,8 @@ class BbsController extends Controller {
   private function errorHandle($result) {
     switch($result['error']) {
       case 'validation':
-        return redirect()->back()->withInput()->withErrors($result['errors']);
+        // return redirect()->back()->withInput()->withErrors($result['errors']);
+        return redirect()->back()->withErrors($result['errors'])->withInput($result['input']);
         break;
       case 'login':
         return redirect()->route(config('pondol-bbs.login_route_name'));

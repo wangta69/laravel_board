@@ -13,7 +13,7 @@
     ],
     "minimum-stability": "stable",
     "require": {
-      "php": ">=8.0.0",
+      "php": ">=7.0.0",
       "wangta69/php-thumbnail": "^1",
       "wangta69/laravel-pondol": "*",
       "wangta69/laravel-editor": "*",
