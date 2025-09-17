@@ -130,6 +130,7 @@ class BbsService
               $result->save($thum_to_storage);
           }
         } catch (\Exception $e) {
+          \Log::error($e);
         }
       }
 

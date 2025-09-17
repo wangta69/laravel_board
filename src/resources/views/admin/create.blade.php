@@ -19,7 +19,7 @@
             <div class='col-sm-10'>
 
               <x-pondol::text name="name" class="form-control" id="name" placeholder="bbs title like 'free bbs for child'" 
-              value="{{isset($table) &&  $table->name ? $table->name : old('name')}}" />
+              value="{{ old('name', $table->name ?? null) }}" />
             </div>
           </div>
 
@@ -27,7 +27,7 @@
             <label for='table_name' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.name')</label>
             <div class='col-sm-10'>
             <x-pondol::text name="table_name" id="table_name" class="form-control" placeholder="bbs name like 'free'"
-             value="{{isset($table) && $table->table_name ? $table->table_name : old('table_name')}}" />
+             value="{{ old('table_name', $table->table_name ?? null) }}" />
 
             </div>
           </div>
@@ -67,12 +67,12 @@
             <div class='col-sm-10 row'>
               <div class="col-auto">
                 <x-pondol::radio class="form-check-input act-switch-component" name="blade" value="component" 
-                curval="{{ old('blade', isset($table) &&  $table->blade ? $table->blade :'component')}}"/>
+                curval="{{ old('blade', $table->blade ?? 'component') }}"/>
                 <label class="form-check-label">Component</label>
               </div>
               <div class="col-auto">
                 <x-pondol::radio class="form-check-input act-switch-component" name="blade" value="extends" 
-                curval="{{ old('blade', isset($table) &&  $table->blade ? $table->blade :'component')}}" />
+                curval="{{ old('blade', $table->blade ?? 'component') }}" />
                 <label class="form-check-label">Extends</label>
               </div>
             </div>
@@ -81,7 +81,7 @@
             <label for='skin' class='col-sm-2 control-label'>Component</label>
             <div class='col-sm-10'>
             <x-pondol::text name="component" id="component" class="form-control" placeholder="component" 
-            value="{{isset($table) && $table->component ? $table->component : old('component')}}" />
+            value="{{ old('component', $table->component ?? null) }}" />
             remove x- (x-myapp => myapp )
             </div>
           </div>
@@ -90,7 +90,7 @@
               <label for='skin' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.blade-extends')</label>
               <div class='col-sm-10'>
               <x-pondol::text name="extends" id="extends" class="form-control" placeholder="extends" 
-              value="{{isset($table) && $table->extends ? $table->extends : old('extends')}}" />
+              value="{{ old('extends', $table->extends ?? null) }}" />
               </div>
             </div>
 
@@ -98,7 +98,7 @@
               <label for='skin' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.blade-section')</label>
               <div class='col-sm-10'>
               <x-pondol::text name="section" id="section" class="form-control" placeholder="extesectionnds" 
-              value="{{isset($table) && $table->section ? $table->section : old('section')}}" />
+              value="{{ old('section', $table->section ?? null) }}" />
               </div>
             </div>
           </div>
@@ -107,13 +107,13 @@
             <div class='col-sm-10 row'>
               <div class="col-auto">
                 <x-pondol::radio class="form-check-input" name="editor" value="0" 
-                curval="{{ old('editor', isset($table) &&  $table->editor ? $table->editor :'0')}}"/>
+                curval="{{ old('editor', $table->editor ?? '0') }}"/>
                 <label class="form-check-label">Disable</label>
 
               </div>
               <div class="col-auto">
                 <x-pondol::radio class="form-check-input" name="editor" value="1" 
-                curval="{{ old('editor', isset($table) &&  $table->editor ? $table->editor :'0')}}" />
+                curval="{{ old('editor', $table->editor ?? '0') }}" />
                 <label class="form-check-label">Enable</label>
               </div>
             </div>
@@ -123,17 +123,17 @@
             <div class='col-sm-10 row'>
               <div class="col-auto">
                 <x-pondol::radio class="form-check-input" name="auth_list" value="none"
-                curval="{{ old('auth_list', isset($table) &&  $table->auth_list ? $table->auth_list :'login')}}" />
+                curval="{{ old('auth_list', $table->auth_list ?? 'login') }}" />
                 <label class="form-check-label"> @lang('bbs::messages.admin.bbs.a-none')</label>
               </div>
               <div class="col-auto">
                 <x-pondol::radio class="form-check-input" name="auth_list" value="login" 
-                curval="{{ old('auth_list', isset($table) &&  $table->auth_list ? $table->auth_list :'login')}}" />
+                curval="{{ old('auth_list', $table->auth_list ?? 'login') }}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.a-login')</label>
               </div>
               <div class="col-auto">
               <x-pondol::radio class="form-check-input" name="auth_list" value="role"
-              curval="{{ old('auth_list', isset($table) &&  $table->auth_list ? $table->auth_list :'login')}}" />
+              curval="{{ old('auth_list', $table->auth_list ?? 'login') }}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.a-role')</label>
               </div>
 
@@ -151,19 +151,19 @@
             <div class='col-sm-10 row'>
               <div class="col-auto">
                 <x-pondol::radio class="form-check-input" name="auth_read" value="none"
-                  curval="{{ old('auth_read', $table->auth_read ? $table->auth_read :'login')}}" />
+                  curval="{{ old('auth_read', $table->auth_read ?? 'login') }}" />
                 <label class="form-check-label"> @lang('bbs::messages.admin.bbs.a-none')</label>
               </div>
 
               <div class="col-auto">
                 <x-pondol::radio class="form-check-input" name="auth_read" value="login" 
-                curval="{{ old('auth_read', isset($table) &&  $table->auth_read ? $table->auth_read :'login')}}" />
+                curval="{{ old('auth_read', $table->auth_read ?? 'login') }}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.a-login')</label>
               </div>
 
               <div class="col-auto">
                 <x-pondol::radio class="form-check-input" name="auth_read" value="role"
-                curval="{{ old('auth_read', isset($table) &&  $table->auth_read ? $table->auth_read :'login')}}" />
+                curval="{{ old('auth_read', $table->auth_read ?? 'login') }}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.a-role')</label>
               </div>
 
@@ -182,17 +182,17 @@
             <div class='col-sm-10 row'>
               <div class="col-auto">
                 <x-pondol::radio class="form-check-input" name="auth_write" value="none"
-                curval="{{ old('auth_write', isset($table) &&  $table->auth_write ? $table->auth_write :'login')}}" />
+                curval="{{ old('auth_write', $table->auth_write ?? 'login') }}" />
                 <label class="form-check-label"> @lang('bbs::messages.admin.bbs.a-none')</label>
               </div>
               <div class="col-auto">
                 <x-pondol::radio class="form-check-input" name="auth_write" value="login" 
-                curval="{{ old('auth_write', isset($table) &&  $table->auth_write ? $table->auth_write :'login')}}" />
+                curval="{{ old('auth_write', $table->auth_write ?? 'login') }}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.a-login')</label>
               </div>
               <div class="col-auto">
                 <x-pondol::radio class="form-check-input" name="auth_write" value="role"
-                curval="{{ old('auth_write', isset($table) &&  $table->auth_write ? $table->auth_write :'login')}}" />
+                curval="{{ old('auth_write', $table->auth_write ?? 'login') }}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.a-role')</label>
               </div>
          
@@ -211,11 +211,11 @@
             <div class='col-sm-10 row'>
               <div class="col-auto">
                 <x-pondol::checkbox class="form-check-input" name="enable_comment" value="1" 
-                  curval="{{ old('enable_comment', $table->enable_comment)}}" />
+                  curval="{{ old('enable_comment', $table->enable_comment ?? null) }}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.enable-comment')</label>
 
                 <x-pondol::checkbox class="form-check-input" name="enable_password" value="1" 
-                  curval="{{ old('enable_password', $table->enable_password)}}" />
+                  curval="{{ old('enable_password', $table->enable_password ?? null) }}" />
                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.enable-password')</label>
               </div>
             </div>
@@ -263,7 +263,7 @@
             <label for='lists' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.lists-per-page')</label>
             <div class='col-sm-10'>
             <x-pondol::text name="lists" id="lists" class="form-control" 
-              value="{{isset($table) && $table->lists ? $table->lists : old('lists')}}" />
+              value="{{ old('lists', $table->lists ?? null) }}" />
             </div>
           </div>
         </div> <!-- .card-body -->

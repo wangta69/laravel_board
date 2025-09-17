@@ -1,5 +1,5 @@
 @php
-$path = isset($path) ? $path : [];
+$path = $path ?? [];
 @endphp
 <x-pondol-common::app>
   <div class="wrapper">

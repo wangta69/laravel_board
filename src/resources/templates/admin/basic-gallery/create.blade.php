@@ -20,7 +20,7 @@
       @endif
       @csrf
       <input type="hidden" name="text_type" value="{{$cfg->editor == 'none' ? 'br' : 'html'}}">
-      <input type="hidden" name="parent_id" value="{{isset($article) ? $article->id : ''}}">
+      <input type="hidden" name="parent_id" value="{{ $article->id ?? ''}}">
 
       <div class="card-body">
       @if (!$errors->isEmpty())
@@ -48,7 +48,7 @@
             <tr>
               <th> @lang('bbs::messages.bbs.title.title')</th>
               <td>
-                <input type="text" name="title" value="{{  old('title', isset($article) ? $article->title: '' ) }} " class='form-control input-sm' id='title'>
+                <input type="text" name="title" value="{{  old('title', $article->title ?? '' ) }} " class='form-control input-sm' id='title'>
               </td>
             </tr>
             <tr>
@@ -56,9 +56,9 @@
               <input type="checkbox" class="form-check-input" name="no_content" value="1"> 내용없음</th>
               <td>
                 @if($cfg->editor)
-                  @include ('editor::default', ['name'=>'content', 'id'=>'content-id', 'value'=>isset($article) ? $article->content : old('content'), 'attr'=>['class'=>'form-control input-sm']])
+                  @include ('editor::default', ['name'=>'content', 'id'=>'content-id', 'value'=>old('content', $article->content ?? null), 'attr'=>['class'=>'form-control input-sm']])
                 @else
-                  <textarea name="content" class="form-control">{{  isset($article) ? $article->content : old('content') }}</textarea>
+                  <textarea name="content" class="form-control">{{ old('content', $article->content ?? null) }}</textarea>
                 @endif
 
               </td>
