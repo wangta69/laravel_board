@@ -1,94 +1,128 @@
-This library is used in the production of [gilra.kr](https://www.gilra.kr) (Online Fortune Service).
+# Laravel Board (K-BBS)
 
-# Waht is pondol's Laravel Board
+A Korean-style Bulletin Board System (BBS) package for Laravel.  
+한국형 계층형 게시판(BBS)을 라라벨에서 쉽고 빠르게 구축하기 위한 패키지입니다.
 
-> 한국형 라라벨용 게시판 입니다. <br />
-> 현재 진행중인 프로젝트에 사용하려고 간단하게 만들고 테스트 중입니다. <br />
+[![Latest Stable Version](https://poser.pugx.org/wangta69/laravel-board/v/stable)](https://packagist.org/packages/wangta69/laravel-board)
+[![License](https://poser.pugx.org/wangta69/laravel-board/license)](https://packagist.org/packages/wangta69/laravel-board)
 
-> This package was tested on Laravel 8.x
+## 💡 Overview
 
-[공식문서](https://www.onstory.fun/packages/laravel-board)
+This library is designed to implement the hierarchical board structure (List, View, Write, Reply, Comment) commonly used in Korea within the Laravel environment. It supports **Bootstrap 5** by default.
 
-[Demo](https://www.onstory.fun/community)
+이 라이브러리는 **[길라(Gilra)](https://gilra.kr)** (Online Fortune Service)의 커뮤니티 및 공지사항 기능을 구축하는 데 실제로 사용되었습니다.
 
-[version 2.x installation](./documents/5.x.md)
-[version 8.1.x installation](./documents/8.1.x.md)
+- **Demo:** [Live Demo Link](https://www.onstory.fun/community)
+- **Official Docs:** [Documentation](https://www.onstory.fun/packages/laravel-board)
 
-## Installation
+## 🚀 Features
 
-> over ver 8.2
+- **Korean Style BBS:** Hierarchical posts (Reply), Comments, Secret posts.
+- **Admin Panel:** Built-in controller and views for board management.
+- **Thumbnails:** Real-time thumbnail generator helper.
+- **Widgets:** Latest posts widget helper.
+- **Comments Component:** Easily add comment functionality to any model.
 
-```
+## 📦 Installation
+
+### Requirements
+
+- PHP >= 7.4
+- Laravel >= 8.x (Tested on 8.x ~ 11.x)
+- Bootstrap 5.x
+- jQuery 3.6.x
+
+### 1. Require the package via Composer
+
+```bash
 composer require wangta69/laravel-board
+```
+
+### 2. Install Assets & Config
+
+Run the installation command to publish assets and migration files.
+
+```bash
 php artisan pondol:install-bbs
 ```
 
-## resources
+## 🛠 Configuration & Usage
 
-- design : bootstrp 5.x
-- jquery : 3.6.x
+### 1. Admin Security Setup
 
-<!-- breeze install
-```
-composer require laravel/breeze:1.9.2   // 라라벨 8.x 일경우
-php artisan breeze:install
-``` -->
+After installation, you should secure the Admin Controller.
+Go to `App/Http/Controllers/Bbs/Admin/BbsController.php` (or similar admin controllers) and set up the middleware or permission check in the `__construct` method.
 
-## How to Use
-
-### Set Security for Admin.
-
-> After Install, Goto App/Http/Controllers/Bbs/Admin and you can find controllers for Admin.<br>
-> Set Access Auth on \_\_construct for security <br>
-
-```
-if(!Auth::user()->hasRole('administrator')) => hasRole('Your Admin Role name')
-```
-
-### Login To Admin
-
-> Type url http://YourDomain/bbs/admin and Create What you want Bbs. <br />
-> If you have rolls not yet, do 'php artisan make:model Role -m' <br />
-
-### Create BBS
-
-> You can make any bbs what you want <br>
-> After create bbs link for admin : http://YourDomain//bbs/admin/tbl/[table name] <br>
-> link for user : http://YourDomain//bbs/[table name] <br>
-
-### functions
-
-#### bbs_get_thumb
-
-> realtime thumbnail generator
-
-```
-<img src="{{bbs_get_thumb($article->image, 205, 205) }}" alt="{{$article->title}}">
-```
-
-#### bbs_get_latest
-
-> if you want some data to dispay from bbs, follow below explain
-
-```
-public function Anything()
+```php
+public function __construct()
 {
-	$notice = bbs_get_latest(array('table'=>'notice', 'cnt'=>5));
+    $this->middleware('auth');
+
+    // Example: Check for administrator role
+    // if (!Auth::user()->hasRole('administrator')) {
+    //     abort(403, 'Unauthorized action.');
+    // }
 }
 ```
 
-### Make Additional Template
+### 2. Create a Board
 
-Go to resources/views/bbs/templates And add a template like exist template
+1. Access the admin panel: `http://YourDomain/bbs/admin`
+2. Create a new board configuration (e.g., table name: `notice`).
+3. (Optional) If you need a role management system:
+   ```bash
+   php artisan make:model Role -m
+   ```
 
-### Forum
+### 3. Access the Board
 
-> if you have any article not bbs and you want add comment like forum, just insert below code
+- **Admin URL:** `http://YourDomain/bbs/admin/tbl/{table_name}`
+- **User URL:** `http://YourDomain/bbs/{table_name}`
 
+## 🎨 Helpers & Components
+
+### Real-time Thumbnail
+
+Generate thumbnails on the fly.
+
+```html
+<!-- usage: bbs_get_thumb($image_path, $width, $height) -->
+<img
+  src="{{ bbs_get_thumb($article->image, 205, 205) }}"
+  alt="{{ $article->title }}"
+/>
 ```
-<x-item-comments item="story" :itemId="1" skin="default"/>
+
+### Latest Posts Widget
+
+Display the latest posts from a specific board.
+
+```php
+public function index()
+{
+    // usage: bbs_get_latest(['table' => 'table_name', 'cnt' => count])
+    $notices = bbs_get_latest(['table' => 'notice', 'cnt' => 5]);
+
+    return view('welcome', compact('notices'));
+}
 ```
 
-- skin : currently only 'default' skin exist(i'm gonna add more skins)
-- item : what you want (string type)
-- itemId : this is important one, if you have many articles, you put itemId for every articles
+### Forum (Comment) Component
+
+You can attach a comment section to any arbitrary model or page, not just the BBS.
+
+```html
+<x-item-comments item="story" :itemId="$story->id" skin="default" />
+```
+
+- **skin:** Skin name (currently 'default' is available).
+- **item:** Target category or model name (string).
+- **itemId:** Unique ID of the target content.
+
+## 📂 Customization
+
+To customize the templates, look into the `resources/views/bbs/templates` directory. You can duplicate an existing template and modify it to create your own skin.
+
+## 📜 License
+
+The MIT License (MIT). Please see [License File](LICENSE) for more information.
