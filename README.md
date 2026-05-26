@@ -123,6 +123,66 @@ You can attach a comment section to any arbitrary model or page, not just the BB
 
 To customize the templates, look into the `resources/views/bbs/templates` directory. You can duplicate an existing template and modify it to create your own skin.
 
+## 🛠 SEO & Meta Data Customization
+
+Laravel Board supports dynamic meta data management through `Pondol\Meta`. You can customize how meta titles, descriptions, and images are generated for each board by implementing a custom Resolver.
+
+### 1. Create a Custom Meta Resolver
+
+Create a class in your app (e.g., `App\Services\BbsMetaResolver.php`) that implements `Pondol\Bbs\Contracts\BbsMetaResolver`.
+
+```php
+namespace App\Services;
+
+use Pondol\Bbs\Contracts\BbsMetaResolver;
+use Illuminate\Support\Str;
+
+class MyBbsMetaResolver implements BbsMetaResolver
+{
+    /**
+     * @param \Pondol\Meta\Meta $meta
+     * @param string $type 'index' or 'show'
+     * @param object $cfg Board Configuration (BbsTables)
+     * @param object|null $article Article Data (BbsArticles)
+     */
+    public function resolve($meta, $type, $cfg, $article = null)
+    {
+        // Custom logic for specific boards
+        if ($cfg->table_name === 'notice') {
+            $meta->title("[Notice] " . ($article ? $article->title : $cfg->name));
+        }
+
+        // Custom image logic for detailed view
+        if ($type === 'show' && $article) {
+            $description = Str::limit(strip_tags($article->content), 160);
+            $meta->description($description);
+
+            if ($article->image) {
+                $meta->image(\Storage::url($article->image));
+            }
+        }
+
+        return $meta;
+    }
+}
+```
+
+### 2. Register the Resolver
+
+Bind your custom class to the interface in `App\Providers\AppServiceProvider.php`.
+
+```php
+public function register()
+{
+    $this->app->bind(
+        \Pondol\Bbs\Contracts\BbsMetaResolver::class,
+        \App\Services\MyBbsMetaResolver::class
+    );
+}
+```
+
+By doing this, you can fully control the SEO strategy for each board without modifying the package core.
+
 ## 📜 License
 
 The MIT License (MIT). Please see [License File](LICENSE) for more information.
