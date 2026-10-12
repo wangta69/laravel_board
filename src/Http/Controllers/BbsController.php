@@ -233,7 +233,12 @@ class BbsController extends Controller
 
     public function deletFile(Request $request, Files $file)
     {
-        Storage::delete($file->path_to_file);
+        $relativePath = ltrim(str_replace('public/', '', $file->path_to_file), '/');
+
+        if (\Storage::disk('public')->exists($relativePath)) {
+            \Storage::disk('public')->delete($relativePath);
+        }
+
         $file->delete();
 
         return response()->json(['error' => false, 'file' => $file], 200);

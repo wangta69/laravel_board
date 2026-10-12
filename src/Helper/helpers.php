@@ -18,25 +18,16 @@ function bbs_image_url_from_storage($path)
         return null;
     }
 
-    $ext = substr($path, strrpos($path, '.') + 1);
-    $bbs_allowed_image = config('pondol-bbs.allowed_images');
+    $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+    $allowedImages = config('pondol-bbs.allowed_images', ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp']);
 
-    if (in_array(strtolower($ext), $bbs_allowed_image)) {
-
-        // [Case 1] 예전 데이터 처리: 'public/'으로 시작하는 경우
-        // 결과: /storage/bbs/...
-        if (strpos($path, 'public/') === 0) {
-            return str_replace('public', '/storage', $path);
-        }
-
-        // [Case 2] 새로운 데이터 처리: 'bbs/'로 시작하는 경우
-        // 'public/'이라는 글자가 없으므로 그냥 앞에 '/storage/'를 붙여줍니다.
-        // 결과: /storage/bbs/...
-        return '/storage/'.$path;
-
-    } else {
+    if (! in_array($ext, $allowedImages)) {
         return null;
     }
+
+    $cleanPath = ltrim(str_replace('public/', '', $path), '/');
+
+    return \Storage::disk('public')->url($cleanPath);
 }
 
 /**

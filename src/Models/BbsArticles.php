@@ -3,74 +3,79 @@
 namespace Pondol\Bbs\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Kyslik\ColumnSortable\Sortable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
+use Kyslik\ColumnSortable\Sortable;
 
 class BbsArticles extends Model
 {
-    use Sortable,
-    SoftDeletes,
-    Notifiable;
+    use Notifiable, SoftDeletes, Sortable;
+
+    protected $table = 'bbs_articles';
+
+    protected $primaryKey = 'id';
 
     public $sortable = [];
 
-    protected $fillable = [];
+    protected $guarded = [];
 
-    protected $table = 'bbs_articles';
-    //protected $dateFormat = 'U';
-    protected $primaryKey = 'id';
-
-   /**
-     * The attributes that should be mutated to dates.
+    /**
+     * The attributes that should be cast.
+     * (Laravel 10, 11 호환)
      *
      * @var array
      */
-    protected $dates = ['deleted_at'];
+    protected $casts = [
+        'top' => 'boolean',
+        'hit' => 'integer',
+        'comment_cnt' => 'integer',
+        'order_num' => 'integer',
+        'deleted_at' => 'datetime',
+    ];
 
-
-    /*
-     *
-     * @return App\User
-     * If you have Defferent UserTable, OverWrite This.
+    /**
+     * User 관계 설정 (폴백 기본값 포함)
      */
-    public function user() {
-        $auth = config('auth.providers.users.model');
-        return $this->belongsTo($auth);
-    //    return $this->belongsTo(config('pondol-bbs.user'));
+    public function user()
+    {
+        $authModel = config('auth.providers.users.model', \App\Models\User::class);
+
+        return $this->belongsTo($authModel);
     }
 
     public function table()
     {
-        return $this->belongsTo('Pondol\Bbs\Models\BbsTables', 'bbs_table_id');
+        return $this->belongsTo(BbsTables::class, 'bbs_table_id');
     }
 
-    /*
-     *
-     * @return ArticleFiles Model
-     */
-    public function comments() {
-       return $this->HasMany('Pondol\Bbs\Models\BbsComments');
+    public function category()
+    {
+        return $this->belongsTo(BbsCategories::class, 'bbs_category_id');
     }
 
-    public function comment() {
+    public function comments()
+    {
+        return $this->hasMany(BbsComments::class, 'bbs_articles_id');
+    }
+
+    public function comment()
+    {
         return $this->comments()->latest();
     }
-    /*
-     *
-     * @return ArticleFiles Model
-     */
-    public function files() {
-       return $this->HasMany('Pondol\Bbs\Models\BbsFiles');
-    }
-    /*
-     * find owner of a article
-     *
-     * @param \App\User $user
-     * @return bool
-     */
-    public function isOwner($user) {
-        return ($user != null && $this->user_id == $user->id);
+
+    public function files()
+    {
+        return $this->hasMany(BbsFiles::class, 'bbs_articles_id');
     }
 
+    /**
+     * 게시글 소유자 확인
+     *
+     * @param  mixed  $user
+     * @return bool
+     */
+    public function isOwner($user)
+    {
+        return $user !== null && (int) $this->user_id === (int) $user->id;
+    }
 }

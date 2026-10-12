@@ -25,56 +25,51 @@ trait BbsTrait
      */
     public function _index($request, $tbl_name)
     {
-
-        // \DB::enableQueryLog();
         $preIndex = $this->preIndex($tbl_name);
         $articles = $preIndex->articles;
         $top_articles = Articles::where('bbs_table_id', $preIndex->cfg->id);
         $cfg = $preIndex->cfg;
-
-        $f = $request->input('f', null); // Searching Field ex) title, content
-        $s = $request->input('s', null); // Searching text
 
         $user = $request->user();
         if ($cfg->auth_list === 'login' && ! $user) {
             return ['error' => 'login'];
         }
 
-        // $top_articles = $all_articles->orderBy('order_num')->where('top', 1);
-        $articles->orderBy('order_num')->where('top', 0);
-        $top_articles = $top_articles->orderBy('order_num')->where('top', 1)->get();
+        $f = $request->input('f', null); // 검색 필드
+        $s = trim($request->input('s', '')); // 검색어
 
-        if ($s) {
-            if (! $f) {
-                $articles = $articles->when($s, function ($query, $s) {
-                    $query->whereFullText(['title', 'content'], $s, ['mode' => 'boolean']);
-                }, function ($query) {
-                    $query->latest();
-                });
+        // [고도화 1] 검색 필드 화이트리스트 및 검색 쿼리 안정화
+        $allowedFields = ['title', 'content', 'writer'];
+        if ($s !== '') {
+            if ($f && in_array($f, $allowedFields)) {
+                $articles->where($f, 'like', '%'.$s.'%');
             } else {
-                $articles = $articles->where($f, 'like', '%'.$s.'%');
+                // 전체 검색: 제목 또는 내용 Like 검색 (길이 제약 없이 가장 안정적)
+                $articles->where(function ($q) use ($s) {
+                    $q->where('title', 'like', '%'.$s.'%')
+                        ->orWhere('content', 'like', '%'.$s.'%');
+                });
             }
         }
 
-        $adminrole = config('pondol-bbs.admin_roles'); // administrator
-
-        // 관리자 권한 및 본인에게만 데이타를 보여 준다.
+        // [고도화 2] 1:1 QnA 모드일 때 본인 글만 필터링
         if ($cfg->enable_qna == '1') {
-            $adminrole = config('pondol-bbs.admin_roles'); // administrator
+            $adminrole = config('pondol-bbs.admin_roles', 'administrator');
             $hasrole = BbsService::hasRoles($adminrole);
-            if (! $hasrole) { // admin 권한을 가지고 있지 않은 경우 본인 글만 디스플레이 한다.
-                if (! $user) { // 로그인 페이지로 이동
+            if (! $hasrole) {
+                if (! $user) {
                     return ['error' => 'login'];
-                } else {
-                    $articles = $articles->where('user_id', $user->id);
                 }
+                $articles = $articles->where('user_id', $user->id);
             }
         }
 
-        $articles = $articles->paginate($cfg->lists)
-            ->appends(request()->query());
+        // 상단 공지 및 일반 글 정렬
+        $articles->orderBy('order_num', 'asc')->where('top', 0);
+        $top_articles = $top_articles->where('top', 1)->orderBy('order_num', 'asc')->get();
 
-        //  print_r(\DB::getQueryLog()); // 'top_articles'=>$top_articles,
+        $articles = $articles->paginate($cfg->lists)->appends($request->query());
+
         return ['error' => false, 'articles' => $articles, 'top_articles' => $top_articles, 'cfg' => $cfg];
     }
 
@@ -181,31 +176,24 @@ trait BbsTrait
     private function storeOrUpdateTrimContents($request, $article, $cfg)
     {
         $date_Ym = date('Ym', strtotime($article->created_at));
-
-        // [변경 1] 'public/' 접두어 제거
-        // disk('public')을 쓰면 자동으로 storage/app/public/ 안으로 들어갑니다.
-        // 여기서 'public/'을 또 붙이면 storage/app/public/public/bbs/... 가 되므로 뺍니다.
         $directory = 'bbs/'.$cfg->id.'/'.$date_Ym.'/'.$article->id;
 
         if (is_array($request->file('uploads'))) {
             foreach ($request->file('uploads') as $index => $upload) {
-
                 if ($upload == null) {
                     continue;
                 }
 
-                // [변경 2] 기존 파일 삭제 시에도 disk('public') 명시
+                // 기존 파일이 있으면 Storage에서 삭제 후 교체
                 if (($file = $article->files->where('rank', $index)->first())) {
-                    if (\Storage::disk('public')->exists($file->path_to_file)) {
-                        \Storage::disk('public')->delete($file->path_to_file);
+                    $oldPath = ltrim(str_replace('public/', '', $file->path_to_file), '/');
+                    if (\Storage::disk('public')->exists($oldPath)) {
+                        \Storage::disk('public')->delete($oldPath);
                     }
                     $file->delete();
                 }
 
                 $filename = $upload->getClientOriginalName();
-
-                // [변경 3] ★★★ 핵심: disk('public') 사용 ★★★
-                // 이렇게 해야 storage/app/public/bbs/... 에 저장됩니다.
                 $path = \Storage::disk('public')->putFileAs($directory, $upload, $filename);
 
                 if ($path) {
@@ -213,11 +201,7 @@ trait BbsTrait
                     $file->rank = $index;
                     $file->bbs_articles_id = $article->id;
                     $file->file_name = $filename;
-
-                    // DB에는 path를 저장합니다. (예: bbs/2/202512/46/image.png)
-                    // 나중에 불러올 때 asset('storage/'.$file->path_to_file) 형태로 씁니다.
-                    $file->path_to_file = $path;
-
+                    $file->path_to_file = $path; // bbs/1/202610/12/example.png
                     $file->name_on_disk = basename($path);
                     $file->save();
                 }
@@ -318,58 +302,56 @@ trait BbsTrait
      */
     protected function contents_update($article, $table_id, $date_Ym)
     {
+        $sessionId = session()->getId();
+        $sourceDir = storage_path('app/public/tmp/editor/'.$sessionId);
+        $destinationDir = storage_path('app/public/bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor');
 
-        $sourceDir = storage_path().'/app/public/tmp/editor/'.session()->getId();
-        $destinationDir = storage_path().'/app/public/bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor';
+        if (File::exists($sourceDir)) {
+            $article->content = str_replace(
+                '/storage/tmp/editor/'.$sessionId,
+                '/storage/bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor',
+                $article->content
+            );
+            $article->save();
 
-        $article->content = str_replace('/storage/tmp/editor/'.session()->getId(), '/storage/bbs/'.$table_id.'/'.$date_Ym.'/'.$article->id.'/editor', $article->content);
-
-        $article->save();
-
-        $success = File::copyDirectory($sourceDir, $destinationDir);
-        Storage::deleteDirectory('public/tmp/editor/'.session()->getId());
+            File::copyDirectory($sourceDir, $destinationDir);
+            \Storage::disk('public')->deleteDirectory('tmp/editor/'.$sessionId);
+        }
     }
 
     /**
-     * 대표 이미지 설정
+     * 대표 이미지 설정 (첨부파일 1순위 -> 에디터 본문 이미지 2순위)
      */
     protected function set_representaion($article)
     {
         $article->image = null;
-        // $representaion_image = null;//1순위: 첨부화일에 이미지가 있을 경우, 2순위 : editor에 이미지가 있을 경우
-        $representaion_image_array = ['jpeg', 'jpg', 'png', 'gif'];
-        // foreach($article->files as $file) { // 이럴 경우 이전의 정보를 가지고 옮
-        $files = Files::where('bbs_articles_id', $article->id)->get();
+        $imageExtensions = ['jpeg', 'jpg', 'png', 'gif', 'webp', 'bmp'];
+
+        // 1순위: 첨부파일 중 이미지
+        $files = Files::where('bbs_articles_id', $article->id)->orderBy('rank', 'asc')->get();
         foreach ($files as $file) {
             if ($file->path_to_file) {
-                $tmp = explode('.', $file->path_to_file);
-                $extension = end($tmp);
-                if (in_array($extension, $representaion_image_array)) {
-                    $article->image = $file->path_to_file;
+                $ext = strtolower(pathinfo($file->path_to_file, PATHINFO_EXTENSION));
+                if (in_array($ext, $imageExtensions)) {
+                    $article->image = ltrim(str_replace('public/', '', $file->path_to_file), '/');
                     break;
                 }
             }
         }
 
+        // 2순위: 본문 에디터 내 이미지
         if (! $article->image && $article->content) {
-            // 2순위 : editor에 이미지가 있을 경우
-            preg_match_all('/<img[^>]+>/i', $article->content, $result);
-            // [0] => Array(
-            // [0] => <img src="/Content/Img/stackoverflow-logo-250.png" width="250" height="70" alt="logo link to homepage" />
-            // [1] => <img class="vote-up" src="/content/img/vote-arrow-up.png" alt="vote up" title="This was helpful (click again to undo)" />
+            preg_match_all('/<img[^>]+src=[\'"]([^\'"]+)[\'"][^>]*>/i', $article->content, $matches);
+            if (! empty($matches[1])) {
+                $firstImgSrc = $matches[1][0];
 
-            if ($result && count($result) > 1) {
-                preg_match_all('/(src)=("[^"]*")/i', $result[0][0], $i_result);
-                $src = str_replace(['"', '/storage'], ['', 'public'], $i_result[2][0]);
-
-                $date_Ym = date('Ym', strtotime($article->created_at)); // 수정일경우 기존 데이타의 생성일을 기준으로 가져온다.
-                $filepath = 'public/bbs/'.$article->bbs_table_id.'/'.$date_Ym.'/'.$article->id; // 5.5에서는 5.6버젼을 고려하여 public 을 상단에 더 붙혀 준다.
-
-                $contents = Storage::get($src);
-                $name = substr($src, strrpos($src, '/') + 1);
-                Storage::put($filepath.'/'.$name, $contents);
-                $article->image = $filepath.'/'.$name;
-                // 로컬 경로로 파일 copy
+                // 에디터 이미지가 storage 내 경로인 경우
+                if (strpos($firstImgSrc, '/storage/') !== false) {
+                    $relativePath = ltrim(str_replace('/storage/', '', $firstImgSrc), '/');
+                    if (\Storage::disk('public')->exists($relativePath)) {
+                        $article->image = $relativePath;
+                    }
+                }
             }
         }
 
@@ -385,34 +367,43 @@ trait BbsTrait
       */
     public function _show($request, $tbl_name, $article)
     {
-        $isAdmin = BbsService::hasRoles(config('pondol-bbs.admin_roles'));
+        $isAdmin = BbsService::hasRoles(config('pondol-bbs.admin_roles', 'administrator'));
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
-
-        // 시간되면 이 부분은 좀더 고도화 필요
         $user = $request->user();
+
+        // 1. 읽기 권한 검사
         if ($cfg->auth_read === 'login' && ! $user) {
             return ['error' => 'login'];
         }
 
-        $session_key = "bbs.viewed.{$tbl_name}.{$article->id}";
-
-        if (! $isAdmin && $article->password && ! session()->has($session_key)) {
-            return ['error' => 'password', 'cfg' => $cfg, 'tbl_name' => $tbl_name, 'article' => $article];
+        // [고도화 3] 1:1 QnA 모드 URL 직접 접근 차단
+        if ($cfg->enable_qna == '1' && ! $isAdmin) {
+            if (! $user || (int) $article->user_id !== (int) $user->id) {
+                abort(403, '작성자 본인만 열람할 수 있는 게시글입니다.');
+            }
         }
 
-        if (! session()->has($session_key)) {
-            $article->hit++;
-            $article->save();
+        // [고도화 4] 세션 키 분리 (비밀번호 인증 키 vs 조회수 증가 키)
+        $auth_key = "bbs.auth.{$tbl_name}.{$article->id}";
+        $hit_key = "bbs.hit.{$tbl_name}.{$article->id}";
 
-            // ★★★ 조회수를 올린 후, 세션에 "조회함" 상태를 기록합니다. ★★★
-            session()->put($session_key, true);
+        // 비밀글 접근 통제
+        if (! $isAdmin && $article->password && ! session()->has($auth_key)) {
+            // 본인 작성글(로그인 회원)인 경우 비밀번호 면제
+            if (! ($user && $article->isOwner($user))) {
+                return ['error' => 'password', 'cfg' => $cfg, 'tbl_name' => $tbl_name, 'article' => $article];
+            }
         }
 
-        if ($article->text_type == 'br') {
+        // 조회수 중복 증가 방지 및 카운트 증가
+        if (! session()->has($hit_key)) {
+            $article->increment('hit');
+            session()->put($hit_key, true);
+        }
+
+        if ($article->text_type === 'br') {
             $article->content = nl2br($article->content);
         }
-
-        // Cookie::queue(Cookie::make($tbl_name.$article->id, '1'));
 
         return ['error' => false, 'article' => $article, 'cfg' => $cfg, 'isAdmin' => $isAdmin];
     }
@@ -422,7 +413,6 @@ trait BbsTrait
      */
     public function _passwordConfirm($request, $tbl_name, $article)
     {
-
         $validator = Validator::make($request->all(), [
             'password' => 'required',
         ], [
@@ -431,16 +421,17 @@ trait BbsTrait
 
         if (trim($request->password) !== trim($article->password)) {
             $validator->after(function ($validator) {
-                $validator->errors()->add('password', '일치하지 않은 패스워드입니다.');
+                $validator->errors()->add('password', '일치하지 않는 패스워드입니다.');
             });
 
             return ['error' => 'validation', 'errors' => $validator->errors()];
-        } else {
-            $session_key = "bbs.viewed.{$tbl_name}.{$article->id}";
-            session()->put($session_key, true);
-
-            return ['error' => false];
         }
+
+        // [고도화 5] 전용 인증 세션에 기록
+        $auth_key = "bbs.auth.{$tbl_name}.{$article->id}";
+        session()->put($auth_key, true);
+
+        return ['error' => false];
     }
 
     public function _viewApi($tbl_name, $article, $request)
@@ -503,7 +494,6 @@ trait BbsTrait
       */
     public function _destroy($request, $tbl_name, $article)
     {
-
         $isAdmin = BbsService::hasRoles(config('pondol-bbs.admin_roles'));
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
 
@@ -511,14 +501,14 @@ trait BbsTrait
             return ['error' => '삭제권한이 없습니다.'];
         }
 
-        // 1. delete files
-        Storage::deleteDirectory('public/bbs/'.$cfg->id.'/'.date('Ym', strtotime($article->created_at)).'/'.$article->id);
+        // 1. Storage 파일 및 디렉터리 삭제 (disk('public') 사용)
+        $directory = 'bbs/'.$cfg->id.'/'.date('Ym', strtotime($article->created_at)).'/'.$article->id;
+        \Storage::disk('public')->deleteDirectory($directory);
 
-        // 2. delete files table
-        // $article->files->delete();
+        // 2. Files DB 삭제
         Files::where('bbs_articles_id', $article->id)->delete();
 
-        // 3. delete article
+        // 3. Article 모델 삭제 (SoftDelete)
         $article->delete();
 
         return ['error' => false];
@@ -529,16 +519,21 @@ trait BbsTrait
      */
     public function _download($file)
     {
-        // get file name
-        // $file = Files::findOrFail($id);
+        $relativePath = ltrim(str_replace('public/', '', $file->path_to_file), '/');
 
-        $file_path = storage_path().'/app/'.$file->path_to_file;
+        if (\Storage::disk('public')->exists($relativePath)) {
+            $filePath = \Storage::disk('public')->path($relativePath);
 
-        if (file_exists($file_path)) {
-            return ['error' => false, 'file_path' => $file_path, 'file' => $file];
-        } else {
-            return ['error' => 'Requested file does not exist on our server!'];
+            return ['error' => false, 'file_path' => $filePath, 'file' => $file];
         }
+
+        // 레거시 storage/app 직하위 경로 폴백 체크
+        $fallbackPath = storage_path('app/'.$file->path_to_file);
+        if (file_exists($fallbackPath)) {
+            return ['error' => false, 'file_path' => $fallbackPath, 'file' => $file];
+        }
+
+        return ['error' => 'Requested file does not exist on our server!'];
     }
 
     /**

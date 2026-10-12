@@ -1,30 +1,32 @@
+// src/resources/pondol/bbs/bbs.js
 var BBS = {
-  _tbl_name:'',
-  _article_id:0,
-  _comment_id:0,
-  csrf_token: $("meta[name=csrf-token]" ).attr("content"),
-  get tbl_name(){
+  _tbl_name: "",
+  _article_id: 0,
+  _comment_id: 0,
+  csrf_token: $("meta[name=csrf-token]").attr("content"),
+  get tbl_name() {
     return this._tbl_name;
   },
-  set tbl_name(str){
+  set tbl_name(str) {
     this._tbl_name = str;
   },
-  set article_id(num){
+  set article_id(num) {
     this._article_id = num;
   },
-  get article_id(){
+  get article_id() {
     return this._article_id;
   },
-  set comment_id(num){
+  set comment_id(num) {
     this._comment_id = num;
   },
-  get comment_id(){
+  get comment_id() {
     return this._comment_id;
   },
 
-  createFileElement: function() {
-    var ele = `<li class="mt-1">` + 
-    `<input type="file" name="uploads[]" class="form-control">`;
+  createFileElement: function () {
+    var ele =
+      `<li class="mt-1">` +
+      `<input type="file" name="uploads[]" class="form-control">`;
     ele = ele + `<li>`;
     return ele;
   },

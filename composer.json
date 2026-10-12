@@ -21,7 +21,7 @@
   ],
   "minimum-stability": "stable",
   "require": {
-    "php": ">=7.0.0",
+    "php": "^8.0 || ^8.1 || ^8.2 || ^8.3",
     "wangta69/php-thumbnail": "^1",
     "wangta69/laravel-pondol": "^8.12",
     "wangta69/laravel-editor": "*",

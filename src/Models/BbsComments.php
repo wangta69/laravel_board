@@ -3,52 +3,51 @@
 namespace Pondol\Bbs\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Kyslik\ColumnSortable\Sortable;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use Kyslik\ColumnSortable\Sortable;
 
 class BbsComments extends Model
 {
-  use Sortable,
-  SoftDeletes;
+    use SoftDeletes, Sortable;
 
-  public $sortable = [];
-  protected $fillable = [];
-  protected $table = 'bbs_comments';
-  //protected $dateFormat = 'U';
-  protected $primaryKey = 'id';
+    protected $table = 'bbs_comments';
 
-  /**
-   * The attributes that should be mutated to dates.
-   *
-   * @var array
-   */
-  protected $dates = ['deleted_at'];
+    protected $primaryKey = 'id';
 
+    public $sortable = [];
 
-  /*
-    *
-    * @return App\User
-    * If you have Defferent UserTable, OverWrite This.
-    */
-  public function user() {
-    $auth = config('auth.providers.users.model');
-    return $this->belongsTo($auth);
-  }
+    protected $guarded = [];
 
-  public function article()
-  {
-    return $this->belongsTo('Pondol\Bbs\Models\BbsArticles', 'bbs_articles_id');
-  }
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'order_num' => 'integer',
+        'deleted_at' => 'datetime',
+    ];
 
-  /*
-    * 게시글의 소유자인지 확인
-    *
-    * @param \App\User $user
-    * @return bool
-    */
-  public function isOwner($user) {
-    return ($user != null && $this->user_id == $user->id);
-  }
+    public function user()
+    {
+        $authModel = config('auth.providers.users.model', \App\Models\User::class);
 
+        return $this->belongsTo($authModel);
+    }
+
+    public function article()
+    {
+        return $this->belongsTo(BbsArticles::class, 'bbs_articles_id');
+    }
+
+    /**
+     * 댓글 소유자 확인
+     *
+     * @param  mixed  $user
+     * @return bool
+     */
+    public function isOwner($user)
+    {
+        return $user !== null && (int) $this->user_id === (int) $user->id;
+    }
 }

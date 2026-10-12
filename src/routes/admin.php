@@ -1,4 +1,6 @@
 <?php
+
+// src/routes/admin.php
 Route::get('', 'AdminController@index')->name('index');
 
 // 환경설정
@@ -8,9 +10,8 @@ Route::get('create', 'AdminController@createForm')->name('create');
 Route::post('create', 'AdminController@store')->name('store');
 Route::put('{table}/create', 'AdminController@update')->name('update');
 
-Route::get('{table}/create', 'AdminController@createForm')->name('show');  
+Route::get('{table}/create', 'AdminController@createForm')->name('show');
 Route::delete('{table}/delete', 'AdminController@destroy')->name('destroy');
-
 
 // 캬테고리 관련
 Route::post('category/add/{table}', 'CategoryController@addCategory')->name('category.store');
@@ -31,6 +32,5 @@ Route::post('tbl/{tbl_name}/{article}/comment/{comment}', 'CommentController@sto
 Route::put('tbl/{tbl_name}/{article}/comment/{comment}', 'CommentController@update')->name('tbl.comment.update');
 Route::delete('tbl/{tbl_name}/{article}/comment/{comment}', 'CommentController@destroy')->name('tbl.comment.destroy');
 
-// 아이템코멘트 
+// 아이템코멘트
 Route::get('item-comment/{item}', 'ItemCommentController@index')->name('comments');
-

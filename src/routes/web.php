@@ -1,10 +1,10 @@
 <?php
 
+// src/routes/web.php
 Route::get('/', 'WelcomeController@welcome')->name('welcome');
 
 Route::get('/file/{file}', 'BbsController@download')->name('file.download');
 Route::delete('/file/{file}', 'BbsController@deletFile')->name('file.delete');
-
 
 Route::get('/{tbl_name}', 'BbsController@index')->name('index');
 Route::get('/{tbl_name}/{article}/show', 'BbsController@show')->name('show');
