@@ -110,15 +110,18 @@ class BbsService
      */
     public static function next($tableIdOrArticle, $articleId = null)
     {
-        $article = ($tableIdOrArticle instanceof Articles)
-            ? $tableIdOrArticle
-            : Articles::find($articleId);
+        if ($tableIdOrArticle instanceof Articles) {
+            $article = $tableIdOrArticle;
+        } else {
+            // ($table_id, $article_id) 또는 단일 ($article_id) 형태 모두 지원
+            $targetId = $articleId ?? $tableIdOrArticle;
+            $article = Articles::find($targetId);
+        }
 
         if (! $article) {
             return null;
         }
 
-        // 목록(order_num ASC)에서 현재 글 다음(아래)에 나오는 글 -> order_num이 더 큰 글 중 가장 작은 것
         return Articles::where('bbs_table_id', $article->bbs_table_id)
             ->where('top', 0)
             ->where('order_num', '>', $article->order_num)
@@ -128,15 +131,17 @@ class BbsService
 
     public static function previous($tableIdOrArticle, $articleId = null)
     {
-        $article = ($tableIdOrArticle instanceof Articles)
-            ? $tableIdOrArticle
-            : Articles::find($articleId);
+        if ($tableIdOrArticle instanceof Articles) {
+            $article = $tableIdOrArticle;
+        } else {
+            $targetId = $articleId ?? $tableIdOrArticle;
+            $article = Articles::find($targetId);
+        }
 
         if (! $article) {
             return null;
         }
 
-        // 목록(order_num ASC)에서 현재 글 이전(위)에 나오는 글 -> order_num이 더 작은 글 중 가장 큰 것
         return Articles::where('bbs_table_id', $article->bbs_table_id)
             ->where('top', 0)
             ->where('order_num', '<', $article->order_num)

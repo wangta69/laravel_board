@@ -78,9 +78,16 @@ trait BbsTrait
      */
     private function preIndex($tbl_name)
     {
+        $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+
+        // [방어 추가] 존재하지 않는 게시판명이면 즉시 404 반환 (500 에러 원천 차단)
+        if (! $cfg) {
+            abort(404, '존재하지 않는 게시판입니다.');
+        }
+
         $obj = new \stdClass;
-        $obj->cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
-        $obj->articles = Articles::where('bbs_table_id', $obj->cfg->id);
+        $obj->cfg = $cfg;
+        $obj->articles = Articles::where('bbs_table_id', $cfg->id);
 
         return $obj;
     }
@@ -91,6 +98,10 @@ trait BbsTrait
     public function _indexApi($request, $tbl_name)
     {
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+
+        if (! $cfg) {
+            return response()->json(['error' => 'NOT_FOUND_BOARD', 'message' => '존재하지 않는 게시판입니다.'], 404);
+        }
 
         $articles = Articles::where('bbs_table_id', $cfg->id)
             ->orderBy('order_num')
@@ -111,6 +122,10 @@ trait BbsTrait
     {
 
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+
+        if (! $cfg) {
+            abort(404, '존재하지 않는 게시판입니다.');
+        }
 
         // check permission
         $permission_result = $cfg->hasPermission('write');
@@ -248,9 +263,8 @@ trait BbsTrait
         $article->save();
 
         if ($article->password) {
-            // Cookie::queue(Cookie::make('pass-'.$tbl_name.$article->id, '1'));
-            $session_key = "bbs.viewed.{$tbl_name}.{$article->id}";
-            session()->put($session_key, true);
+            $auth_key = "bbs.auth.{$tbl_name}.{$article->id}";
+            session()->put($auth_key, true);
         }
 
         $this->storeOrUpdateTrimContents($request, $article, $validation['cfg']);
@@ -367,8 +381,13 @@ trait BbsTrait
       */
     public function _show($request, $tbl_name, $article)
     {
-        $isAdmin = BbsService::hasRoles(config('pondol-bbs.admin_roles', 'administrator'));
+
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
+        if (! $cfg) {
+            abort(404, '존재하지 않는 게시판입니다.');
+        }
+
+        $isAdmin = BbsService::hasRoles(config('pondol-bbs.admin_roles', 'administrator'));
         $user = $request->user();
 
         // 1. 읽기 권한 검사

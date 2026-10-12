@@ -6,8 +6,14 @@ Route::get('/', 'WelcomeController@welcome')->name('welcome');
 Route::get('/file/{file}', 'BbsController@download')->name('file.download');
 Route::delete('/file/{file}', 'BbsController@deletFile')->name('file.delete');
 
-Route::get('/{tbl_name}', 'BbsController@index')->name('index');
-Route::get('/{tbl_name}/{article}/show', 'BbsController@show')->name('show');
+Route::get('/{tbl_name}', 'BbsController@index')
+    ->where('tbl_name', '[a-zA-Z0-9_\-]+')
+    ->name('index');
+
+Route::get('/{tbl_name}/{article}/show', 'BbsController@show')
+    ->where('tbl_name', '[a-zA-Z0-9_\-]+')
+    ->where('article', '[0-9]+')
+    ->name('show');
 // Route::get('bbs/{tbl_name}/{article}/show/confirm', 'BBSController@passwordConfirm')->name('bbs.show.password');
 Route::post('/{tbl_name}/{article}/show/confirm', 'BbsController@passwordConfirm')->name('show.password');
 Route::get('/{tbl_name}/create', 'BbsController@create')->name('create');
