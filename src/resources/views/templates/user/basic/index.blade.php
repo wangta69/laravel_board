@@ -1,3 +1,4 @@
+{{-- src/resources/views/templates/user/basic/index.blade.php --}}
 @section('meta_tags')
     <x-pondol-meta::meta :meta="$meta" />
 @endsection
@@ -92,10 +93,9 @@
         </div><!-- .bbs index -->
     </div><!-- .container -->
 
-
     @section('styles')
         @parent
-        @include ('bbs.templates.user.' . $cfg->skin . '.style')
+        @include ('bbs::templates.user.' . $cfg->skin . '.style')
     @stop
 
     @section('scripts')
@@ -103,14 +103,12 @@
         <script src="/pondol/route.js" defer></script>
         <script src="/pondol/bbs/bbs.js" defer></script>
         <script>
-            // 모든 defer 스크립트(jQuery 포함)가 로드된 후 실행됩니다.
             window.addEventListener('load', function() {
                 if (typeof BBS !== 'undefined') {
                     BBS.tbl_name = "{{ $cfg->table_name }}";
-                    BBS.init(); // 여기서 $를 사용하는 init을 호출합니다.
+                    BBS.init();
                 }
             });
         </script>
     @stop
-
 </x-bbs::front>

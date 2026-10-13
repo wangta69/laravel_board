@@ -1,56 +1,59 @@
+{{-- src/resources/views/templates/user/basic/style.blade.php --}}
 <style>
-.bbs.index {
-}
+    .bbs.index {}
 
-.bbs.index .card-footer, .bbs.show .card-footer, .bbs.create .card-footer {
-  text-align: right;
-}
-.bbs.show ul.link {
-  list-style-type : none;
-  padding: 0;
-  margin: 0;
-}
+    .bbs.index .card-footer,
+    .bbs.show .card-footer,
+    .bbs.create .card-footer {
+        text-align: right;
+    }
 
-.bbs.show .card-body > div.row {
-  border-bottom: 1px dotted #dfdede;
-}
-.bbs.create {
-}
+    .bbs.show ul.link {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
 
-.comment-article ul {
-  list-style-type : none;
-}
+    .bbs.show .card-body>div.row {
+        border-bottom: 1px dotted #dfdede;
+    }
 
-.comment-article .comment-content {
-  background-color: #f9f9f9;
-  padding: 10px;
-}
+    .bbs.create {}
 
-.comment-article.depth-1 {
-  border-top: 1px solid #dfdddd;
-}
+    .comment-article ul {
+        list-style-type: none;
+    }
 
-.comment-article.depth-1 ul {
-  margin-top: 20px;
-}
+    .comment-article .comment-content {
+        background-color: #f9f9f9;
+        padding: 10px;
+    }
 
-.comment-article.depth-2 {
-  padding-left: 20px;
-}
-.comment-article.depth-3 {
-  padding-left: 40px;
-}
+    .comment-article.depth-1 {
+        border-top: 1px solid #dfdddd;
+    }
 
-.comment-article.depth-4 {
-  padding-left: 60px;
-}
+    .comment-article.depth-1 ul {
+        margin-top: 20px;
+    }
 
-.comment-article.depth-5 {
-  padding-left: 80px;
-}
+    .comment-article.depth-2 {
+        padding-left: 20px;
+    }
 
-.comment-article.depth-6 {
-  padding-left: 100px;
-}
+    .comment-article.depth-3 {
+        padding-left: 40px;
+    }
 
+    .comment-article.depth-4 {
+        padding-left: 60px;
+    }
+
+    .comment-article.depth-5 {
+        padding-left: 80px;
+    }
+
+    .comment-article.depth-6 {
+        padding-left: 100px;
+    }
 </style>

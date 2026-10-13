@@ -3,7 +3,6 @@
 namespace Pondol\Bbs\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Auth;
 use File;
 use Illuminate\Http\Request;
 use Pondol\Bbs\BbsService;
@@ -14,9 +13,6 @@ use Pondol\Bbs\Traits\BbsTrait;
 use Pondol\Meta\Facades\Meta;
 use Response;
 use Storage;
-
-// 이 줄이 없으면 인터페이스를 인식 못 함
-// 폴백용 클래스 인식
 
 class BbsController extends Controller
 {
@@ -55,7 +51,8 @@ class BbsController extends Controller
             $meta = $resolver->resolve(Meta::get(), 'index', $cfg, null, $articles);
             $top_articles = $result['top_articles'];
 
-            return view('bbs.templates.user.'.$cfg->skin.'.index', compact(
+            // [수정] bbs. -> bbs:: 로 네임스페이스 적용
+            return view('bbs::templates.user.'.$cfg->skin.'.index', compact(
                 'result',   // 기존 스킨 호환용 (사용자들이 쓰던 {{ $result['article'] }} 유지)
                 'cfg',      // 신규 방식용
                 'meta',     // 분리된 메타 변수
@@ -77,7 +74,8 @@ class BbsController extends Controller
     {
         $result = $this->_create($request, $tbl_name);
 
-        return view('bbs.templates.user.'.$result['cfg']->skin.'.create', $result);
+        // [수정] bbs. -> bbs:: 로 네임스페이스 적용
+        return view('bbs::templates.user.'.$result['cfg']->skin.'.create', $result);
     }
 
     /*
@@ -95,7 +93,6 @@ class BbsController extends Controller
             return $this->errorHandle($result);
         }
 
-        // return redirect()->route('admin.bbs.show', [$result[0], $result[1]]);
         return redirect()->route('bbs.show', [$result['tbl_name'], $result['article']->id]);
     }
 
@@ -111,13 +108,13 @@ class BbsController extends Controller
         if ($result['error']) {
             return redirect()->route('bbs.index', [$tbl_name]);
         } else {
-            return view('bbs.templates.user.'.$result['cfg']->skin.'.create', $result);
+            // [수정] bbs. -> bbs:: 로 네임스페이스 적용
+            return view('bbs::templates.user.'.$result['cfg']->skin.'.create', $result);
         }
     }
 
     public function update(Request $request, $tbl_name, Articles $article)
     {
-
         $result = $this->_update($request, $tbl_name, $article);
         if ($result['error']) {
             switch ($result['error']) {
@@ -134,12 +131,10 @@ class BbsController extends Controller
         } else {
             return redirect()->route('bbs.show', [$result['tbl_name'], $result['article']->id]);
         }
-
     }
 
     public function destroy(Request $request, $tbl_name, Articles $article)
     {
-
         $result = $this->_destroy($request, $tbl_name, $article);
 
         if ($request->ajax()) {
@@ -156,14 +151,14 @@ class BbsController extends Controller
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-
     public function show(Request $request, $tbl_name, Articles $article)
     {
         $result = $this->_show($request, $tbl_name, $article); // ['error', 'article', 'cfg', 'isAdmin'];
 
         if ($result['error']) {
             if ($result['error'] == 'password') {
-                return view('bbs.templates.user.'.$result['cfg']->skin.'.password-confirm', $result);
+                // [수정] bbs. -> bbs:: 로 네임스페이스 적용
+                return view('bbs::templates.user.'.$result['cfg']->skin.'.password-confirm', $result);
             } else {
                 return $this->errorHandle($result);
             }
@@ -178,12 +173,10 @@ class BbsController extends Controller
                     ? app(BbsMetaResolver::class)
                     : new \Pondol\Bbs\Services\DefaultMetaResolver;
 
-                // $result['meta'] = $resolver->resolve(Meta::get(), 'show', $result['cfg'], $article);
                 $meta = $resolver->resolve(Meta::get(), 'show', $cfg, $article);
 
-                // print_r($meta);
-
-                return view('bbs.templates.user.'.$cfg->skin.'.show', compact(
+                // [수정] bbs. -> bbs:: 로 네임스페이스 적용
+                return view('bbs::templates.user.'.$cfg->skin.'.show', compact(
                     'result',   // 기존 스킨 호환용 (사용자들이 쓰던 {{ $result['article'] }} 유지)
                     'article',  // 신규 방식용
                     'cfg',      // 신규 방식용
@@ -244,54 +237,10 @@ class BbsController extends Controller
         return response()->json(['error' => false, 'file' => $file], 200);
     }
 
-    /**
-     * check Permission for Read, write
-     *
-     * @param  string  $mode  read/write
-     * @param  object  $cfg  Bbs Config
-     * @return bool
-     */
-    private function permission($mode, $cfg)
-    {
-        $rtn = false;
-        switch ($mode) {
-            case 'read':
-                if ($cfg->auth_read == 'none') {
-                    return true;
-                } else {
-
-                }
-                break;
-            case 'write':
-                switch ($cfg->auth_write) {
-                    case 'none':
-                        return true;
-                        break;
-                    case 'login':
-                        if (Auth::check()) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                        break;
-                    case 'role':
-                        if (! Auth::check()) {
-                            return false;
-                        } else {
-                            break;
-                        }
-                }
-                break;
-        }
-
-        return $rtn;
-    }
-
     private function errorHandle($result)
     {
         switch ($result['error']) {
             case 'validation':
-                // return redirect()->back()->withInput()->withErrors($result['errors']);
                 return redirect()->back()->withErrors($result['errors'])->withInput($result['input']);
                 break;
             case 'login':

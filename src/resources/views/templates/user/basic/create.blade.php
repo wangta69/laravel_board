@@ -1,3 +1,4 @@
+{{-- src/resources/views/templates/user/basic/create.blade.php --}}
 <x-bbs::front :cfg="$cfg" :meta="$meta">
     <div class="container">
         <div class="bbs create">
@@ -14,7 +15,7 @@
                             enctype='multipart/form-data'>
                 @endif
                 @csrf
-                <input type="hidden" name="text_type" value="{{ $cfg->editor == 'none' ? 'br' : 'html' }}">
+                <input type="hidden" name="text_type" value="{{ $cfg->editor ? 'html' : 'br' }}">
                 <input type="hidden" name="parent_id" value="{{ $article->id ?? '' }}">
 
                 <div class="card-body">
@@ -74,7 +75,6 @@
                             <td>
                                 <ul class='list-inline' id="file-box">
                                     @forelse ($article->files as $file)
-                                        <!-- 파일 다운로드 경로 등을 넣으세요.. -->
                                         <li class="mt-1">
                                             <input type="file" name="uploads[]" class="form-control"
                                                 style="display: none;">
@@ -112,7 +112,7 @@
 
     @section('styles')
         @parent
-        @include ('bbs.templates.user.' . $cfg->skin . '.style')
+        @include ('bbs::templates.user.' . $cfg->skin . '.style')
     @stop
 
     @section('scripts')
@@ -120,19 +120,17 @@
         <script src="/pondol/route.js" defer></script>
         <script src="/pondol/bbs/bbs.js" defer></script>
         <script>
-            // 모든 defer 스크립트(jQuery 포함)가 로드된 후 실행됩니다.
             window.addEventListener('load', function() {
                 if (typeof BBS !== 'undefined') {
                     BBS.tbl_name = "{{ $cfg->table_name }}";
-                    BBS.article_id = {{ $article->id }};
-                    BBS.init(); // 여기서 $를 사용하는 init을 호출합니다.
+                    BBS.article_id = {{ $article->id ?? 0 }}; // 신규 작성 시 SyntaxError 방지
+                    BBS.init();
                 }
 
                 $("#add-file").click('on', function() {
                     $('#file-box').append(BBS.createFileElement());
-                })
+                });
 
-                // 첨부파일 삭제
                 $(".act-delete-file").click('on', function() {
                     var param = $(this).attr('user-attr-file-id');
                     var $delElem = $(this).parents('li');
@@ -141,9 +139,9 @@
                         segments: [param]
                     }, function(resp) {
                         $delElem.remove();
-                    })
-                })
+                    });
+                });
             });
         </script>
     @stop
-    </x-pondol-common::app-bare>
+</x-bbs::front>
