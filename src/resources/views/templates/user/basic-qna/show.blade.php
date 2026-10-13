@@ -56,7 +56,7 @@
 
     @section('styles')
         @parent
-        @include ('bbs.templates.user.' . $cfg->skin . '.style')
+        @include ('bbs::templates.user.' . $cfg->skin . '.style')
     @stop
 
     @section('scripts')

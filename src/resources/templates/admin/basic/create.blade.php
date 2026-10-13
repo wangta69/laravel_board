@@ -109,7 +109,7 @@
 
 @section ('styles')
 @parent
-@include ('bbs.templates.admin.'.$cfg->skin_admin.'.style')
+@include ('bbs::templates.admin.'.$cfg->skin_admin.'.style')
 @stop
 
 @section ('scripts')
