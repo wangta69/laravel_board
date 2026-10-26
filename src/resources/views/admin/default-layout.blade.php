@@ -1,20 +1,21 @@
+{{-- src/resources/views/admiin/default-layout.blade.php --}}
 @extends('bbs::layouts.default')
 @section('title', 'HOME')
 
 @section('head')
 @endsection
 @section('content')
-<div class="main-contents">
-    <div class="section__content section__content--p30">
-        @yield('bbs-content')
+    <div class="main-contents">
+        <div class="section__content section__content--p30">
+            @yield('bbs-content')
+        </div>
     </div>
-</div>
 @endsection
 
-@section ('styles')
-@parent
+@section('styles')
+    @parent
 @endsection
 
-@section ('scripts')
-@parent
+@section('scripts')
+    @parent
 @endsection

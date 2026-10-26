@@ -1,5 +1,5 @@
 {{-- src/resources/views/admin/create.blade.php --}}
-<x-dynamic-component :component="config('pondol-bbs.component.admin.layout')" :path="['환경설정']">
+<x-bbs-admin-layout :title="isset($table->id) ? trans('bbs::messages.admin.bbs.edit') : trans('bbs::messages.admin.bbs.create')" :path="['환경설정']">
     <div id="content">
         <div class="bbs admin">
             @if (isset($table->id))
@@ -279,7 +279,7 @@
     @section('styles')
         @parent
         <style>
-            @include ('bbs::admin.css.style');
+            @include ('bbs::admin.css.style')
         </style>
     @stop
 
@@ -289,11 +289,6 @@
         <script>
             var table_id = '{{ $table->id }}';
 
-
-            /**
-             * @param Number id : catetory ID
-             * @param String order : up | down
-             */
             function setCategoryOrder(id, order) {
                 ROUTE.ajaxroute('PUT', {
                     route: 'bbs.admin.category.update',
@@ -354,9 +349,7 @@
                         $("#roles-write").show();
                 });
 
-                // 카테고리 관련 시작
                 // 카테고리 등록
-
                 $("#act-add-category").click(function() {
                     var category = $("input[name='category']").val();
                     var url = '/bbs/admin/category/add/' + table_id
@@ -385,8 +378,6 @@
                             $("#category-list").append(addLine);
 
                             $(".blank-category-list").remove();
-                        } else {
-                            //    alert(res.error);
                         }
                     })
                 })
@@ -397,14 +388,11 @@
                     var categoryId = $tr.attr('user-attr-id');
 
                     if (confirm('카테고리를 삭제하시겠습니까?')) {
-                        var url = '/bbs/admin/category/delete/' + categoryId;
-
                         ROUTE.ajaxroute('DELETE', {
                             route: 'bbs.admin.category.destroy',
                             segments: [categoryId]
                         }, function(resp) {
                             $tr.remove();
-                            if (resp.error === false) {}
                         })
                     }
                 })
@@ -428,11 +416,9 @@
                 $(".act-switch-component").on('click', function(e) {
                     switchComponent();
                 })
-                // 카테고리 관련 끝
 
                 init();
             });
         </script>
     @stop
-
-</x-dynamic-component>
+</x-bbs-admin-layout>

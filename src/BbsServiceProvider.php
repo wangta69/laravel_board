@@ -5,6 +5,7 @@ namespace Pondol\Bbs;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Pondol\Bbs\View\Components\AdminLayout;
 use Pondol\Bbs\View\Components\BbsCard;
 use Pondol\Bbs\View\Components\BbsItemList;
 use Pondol\Bbs\View\Components\ItemCommnents;
@@ -53,8 +54,6 @@ class BbsServiceProvider extends ServiceProvider
         ]);
 
         // LOAD THE VIEWS
-        // - first the published views (in case they have any changes)
-        // LOAD THE VIEWS
         $this->publishes([
             // 1. 뷰 템플릿 전체를 라라벨 표준 오버라이드 경로(views/vendor/bbs)로 복사
             __DIR__.'/resources/views' => resource_path('views/vendor/bbs'),
@@ -65,9 +64,11 @@ class BbsServiceProvider extends ServiceProvider
         // 패키지 뷰 로드 (1순위: views/vendor/bbs 확인 -> 2순위: 패키지 내부 views 실행)
         $this->loadViewsFrom(__DIR__.'/resources/views', 'bbs');
 
+        // Blade Components 등록
         Blade::component('item-comments', ItemCommnents::class);
         Blade::component('bbs-lists', BbsItemList::class);
         Blade::component('bbs-card', BbsCard::class);
+        Blade::component('bbs-admin-layout', AdminLayout::class); // [추가] 유니버설 관리자 레이아웃
 
         // Language Files
         $this->loadTranslationsFrom(__DIR__.'/resources/lang', 'bbs');
