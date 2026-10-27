@@ -1,4 +1,4 @@
-<x-dynamic-component :component="config('pondol-bbs.component.admin.layout')" :path="['게시판', $cfg->name, 'Write']">
+<x-bbs-admin-layout :title="$cfg->name" :path="['게시판 관리', $cfg->name]">
     <div class="container">
         <div class="bbs create">
             <h1 class='title'>
@@ -84,4 +84,4 @@
     @section('scripts')
         @parent
     @stop
-</x-dynamic-component>
+</x-bbs-admin-layout>

@@ -19,6 +19,7 @@ This library is designed to implement the hierarchical board structure (List, Vi
 
 - **Korean Style BBS:** Hierarchical posts (Reply), Comments, Secret posts with session-based access control.
 - **Universal Admin Layout:** Seamlessly integrates with both Blade Components (`<x-...>`) and traditional `@extends` admin templates.
+- **Custom Query Customizer:** Easily attach custom `leftJoin`, `where`, and `addSelect` without overriding controllers.
 - **Event-Driven Architecture:** Dispatches events for post/comment creation, updates, and deletion.
 - **Thumbnails:** Real-time thumbnail generator helper with Laravel Storage disk support.
 - **Widgets:** Latest posts widget helper.
@@ -159,7 +160,7 @@ Laravel Board dispatches events on post and comment lifecycle activities. You ca
 
 ### Listening to Events
 
-Register listeners in your `App\Providers\EventServiceProvider.php` (or `AppServiceProvider.php`):
+Register listeners in your `App\Providers\EventServiceProvider.php` (or `AppServiceProvider.php` in Laravel 11):
 
 ```php
 use Pondol\Bbs\Events\ArticleCreated;
@@ -173,15 +174,72 @@ public function boot()
     Event::listen(ArticleCreated::class, function (ArticleCreated $event) {
         $message = "📢 [새 글 등록] <b>{$event->cfg->name}</b>\n";
         $message .= "제목: {$event->article->title}\n";
-        $message .= "작성자: {$event->article->writer}";
+        $message .= "작성자: {$event->article->writer}\n";
+        $message .= "링크: " . route('bbs.show', [$event->cfg->table_name, $event->article->id]);
 
         TelegramHelper::send($message);
     });
 
-    // Example 2: Notify the post author when a new comment is posted
+    // Example 2: Hook into comment creation
     Event::listen(CommentCreated::class, function (CommentCreated $event) {
-        // Custom logic: Send notification to $event->article->user_id
+        // Custom logic: Notify article author, award points, etc.
     });
+}
+```
+
+## 🔍 Custom Queries & Joins (게시판별 커스텀 쿼리 및 조인)
+
+You can customize query building (such as adding custom `leftJoin`, `where`, and `addSelect`) for specific boards without overriding the package's controllers by implementing `Pondol\Bbs\Contracts\BbsQueryCustomizer`.
+
+### 1. Create a Query Customizer
+
+Create a class in your app (e.g., `App\Services\BbsQueryCustomizer.php`):
+
+```php
+namespace App\Services;
+
+use Pondol\Bbs\Contracts\BbsQueryCustomizer as BbsQueryCustomizerInterface;
+
+class BbsQueryCustomizer implements BbsQueryCustomizerInterface
+{
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \Pondol\Bbs\Models\BbsTables $cfg
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function indexQuery($query, $cfg, $request)
+    {
+        // Custom join for 'qna' board
+        if ($cfg->table_name === 'qna') {
+            $query->leftJoin('users as u', 'u.id', '=', 'bbs_articles.user_id')
+                  ->leftJoin('agents as a', 'u.agent', '=', 'a.id')
+                  ->addSelect([
+                      'bbs_articles.*',
+                      'a.name as agent_name',
+                      'u.email'
+                  ]);
+        }
+
+        return $query;
+    }
+}
+```
+
+### 2. Register the Customizer
+
+Bind your class in `App\Providers\AppServiceProvider.php`:
+
+```php
+use Pondol\Bbs\Contracts\BbsQueryCustomizer;
+use App\Services\BbsQueryCustomizer as MyBbsQueryCustomizer;
+
+public function register()
+{
+    $this->app->bind(
+        BbsQueryCustomizer::class,
+        MyBbsQueryCustomizer::class
+    );
 }
 ```
 

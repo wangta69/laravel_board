@@ -1,4 +1,4 @@
-<x-dynamic-component :component="config('pondol-bbs.component.admin.layout')" :path="['게시판', $cfg->name]">
+<x-bbs-admin-layout :title="$cfg->name" :path="['게시판 관리', $cfg->name]">
     <div class="container">
         <div class="bbs index">
             <h1 class='title'>{{ $cfg->name }}</h1>
@@ -112,4 +112,4 @@
         <script src="/pondol/route.js"></script>
         <script src="/pondol/bbs/bbs.js"></script>
     @stop
-</x-dynamic-component>
+</x-bbs-admin-layout>

@@ -25,8 +25,15 @@ trait BbsTrait
     {
         $preIndex = $this->preIndex($tbl_name);
         $articles = $preIndex->articles;
-        $top_articles = Articles::where('bbs_table_id', $preIndex->cfg->id);
         $cfg = $preIndex->cfg;
+
+        // [외부 쿼리 커스터마이저 실행]
+        if (app()->bound(\Pondol\Bbs\Contracts\BbsQueryCustomizer::class)) {
+            $articles = app(\Pondol\Bbs\Contracts\BbsQueryCustomizer::class)
+                ->indexQuery($articles, $cfg, $request);
+        }
+
+        $top_articles = Articles::where('bbs_table_id', $preIndex->cfg->id);
 
         $user = $request->user();
         if ($cfg->auth_list === 'login' && ! $user) {
