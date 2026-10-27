@@ -3,6 +3,7 @@
 namespace Pondol\Bbs\Traits;
 
 use Auth;
+use Pondol\Bbs\Events\CommentCreated;
 use Pondol\Bbs\Models\BbsComments as Comments;
 use Response;
 
@@ -54,6 +55,9 @@ trait CommentTrait
 
         $article->comment_cnt++;
         $article->save();
+
+        // [이벤트 발행] 새 댓글 등록 완료 이벤트 발생
+        event(new CommentCreated($comment, $article, $cfg, Auth::user()));
 
         return ['error' => false];
     }
@@ -138,7 +142,6 @@ trait CommentTrait
         $article->comment_cnt--;
         $article->save();
 
-        // return redirect()->route('bbs.index', [$tbl_name, 'urlParams='.$urlParams->enc]);
         return Response::json(['error' => false, 'comment' => $comment], 200);
     }
 }

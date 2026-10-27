@@ -17,9 +17,10 @@ This library is designed to implement the hierarchical board structure (List, Vi
 
 ## 🚀 Features
 
-- **Korean Style BBS:** Hierarchical posts (Reply), Comments, Secret posts.
-- **Admin Panel:** Built-in controller and views for board management.
-- **Thumbnails:** Real-time thumbnail generator helper.
+- **Korean Style BBS:** Hierarchical posts (Reply), Comments, Secret posts with session-based access control.
+- **Universal Admin Layout:** Seamlessly integrates with both Blade Components (`<x-...>`) and traditional `@extends` admin templates.
+- **Event-Driven Architecture:** Dispatches events for post/comment creation, updates, and deletion.
+- **Thumbnails:** Real-time thumbnail generator helper with Laravel Storage disk support.
 - **Widgets:** Latest posts widget helper.
 - **Comments Component:** Easily add comment functionality to any model.
 
@@ -27,7 +28,7 @@ This library is designed to implement the hierarchical board structure (List, Vi
 
 ### Requirements
 
-- PHP >= 7.4
+- PHP >= 8.0 (Tested on PHP 8.0 ~ 8.3)
 - Laravel >= 8.x (Tested on 8.x ~ 11.x)
 - Bootstrap 5.x
 - jQuery 3.6.x
@@ -40,7 +41,7 @@ composer require wangta69/laravel-board
 
 ### 2. Install Assets & Config
 
-Run the installation command to publish assets and migration files.
+Run the installation command to publish assets, configuration, and migration files.
 
 ```bash
 php artisan pondol:install-bbs
@@ -50,8 +51,7 @@ php artisan pondol:install-bbs
 
 ### 1. Admin Security Setup
 
-After installation, you should secure the Admin Controller.
-Go to `App/Http/Controllers/Bbs/Admin/BbsController.php` (or similar admin controllers) and set up the middleware or permission check in the `__construct` method.
+After installation, secure the Admin Controller by setting up middleware or permissions.
 
 ```php
 public function __construct()
@@ -65,7 +65,32 @@ public function __construct()
 }
 ```
 
-### 2. Create a Board
+### 2. Universal Admin Layout Configuration
+
+You can configure the admin layout in `config/pondol-bbs.php` to seamlessly blend into your existing project:
+
+```php
+// config/pondol-bbs.php
+'admin' => [
+    'layout' => [
+        // 1) Component format (e.g. 'pondol-common::common-admin')
+        // 2) Traditional @extends format (e.g. 'admin.layouts.admin')
+        // 3) null: Runs standalone with package default layout
+        'name' => 'pondol-common::common-admin',
+
+        // LNB sidebar view (set null to use host's native sidebar)
+        'lnb' => 'bbs::lnb-partial',
+
+        // Section name for @extends mode (default: 'content')
+        'section' => 'content',
+
+        // Title section name for @extends mode (default: 'title')
+        'title_section' => 'title',
+    ],
+],
+```
+
+### 3. Create a Board
 
 1. Access the admin panel: `http://YourDomain/bbs/admin`
 2. Create a new board configuration (e.g., table name: `notice`).
@@ -74,7 +99,7 @@ public function __construct()
    php artisan make:model Role -m
    ```
 
-### 3. Access the Board
+### 4. Access the Board
 
 - **Admin URL:** `http://YourDomain/bbs/admin/tbl/{table_name}`
 - **User URL:** `http://YourDomain/bbs/{table_name}`
@@ -83,7 +108,7 @@ public function __construct()
 
 ### Real-time Thumbnail
 
-Generate thumbnails on the fly.
+Generate thumbnails on the fly using Laravel's Storage system.
 
 ```html
 <!-- usage: bbs_get_thumb($image_path, $width, $height) -->
@@ -109,27 +134,80 @@ public function index()
 
 ### Forum (Comment) Component
 
-You can attach a comment section to any arbitrary model or page, not just the BBS.
+You can attach a comment section to any arbitrary model or page.
 
 ```html
 <x-item-comments item="story" :itemId="$story->id" skin="default" />
 ```
 
-- **skin:** Skin name (currently 'default' is available).
+- **skin:** Skin name (default: `'default'`).
 - **item:** Target category or model name (string).
 - **itemId:** Unique ID of the target content.
 
-## 📂 Customization
+## ⚡ Events & Webhooks (이벤트 시스템)
 
-To customize the templates, look into the `resources/views/bbs/templates` directory. You can duplicate an existing template and modify it to create your own skin.
+Laravel Board dispatches events on post and comment lifecycle activities. You can hook into these events in your host application to trigger Telegram alerts, push notifications, reward points, or logging.
+
+### Available Events
+
+| Event Class                        | Description                       | Properties                                                          |
+| :--------------------------------- | :-------------------------------- | :------------------------------------------------------------------ |
+| `Pondol\Bbs\Events\ArticleCreated` | 새 글이 등록되었을 때 발생        | `$event->article`, `$event->cfg`, `$event->user`                    |
+| `Pondol\Bbs\Events\ArticleUpdated` | 글이 수정되었을 때 발생           | `$event->article`, `$event->cfg`, `$event->user`                    |
+| `Pondol\Bbs\Events\ArticleDeleted` | 글이 삭제되었을 때 발생           | `$event->article`, `$event->cfg`, `$event->user`                    |
+| `Pondol\Bbs\Events\CommentCreated` | 새 댓글/답글이 등록되었을 때 발생 | `$event->comment`, `$event->article`, `$event->cfg`, `$event->user` |
+
+### Listening to Events
+
+Register listeners in your `App\Providers\EventServiceProvider.php` (or `AppServiceProvider.php`):
+
+```php
+use Pondol\Bbs\Events\ArticleCreated;
+use Pondol\Bbs\Events\CommentCreated;
+use Illuminate\Support\Facades\Event;
+use App\Helpers\TelegramHelper;
+
+public function boot()
+{
+    // Example 1: Send Telegram alert when a new post is created
+    Event::listen(ArticleCreated::class, function (ArticleCreated $event) {
+        $message = "📢 [새 글 등록] <b>{$event->cfg->name}</b>\n";
+        $message .= "제목: {$event->article->title}\n";
+        $message .= "작성자: {$event->article->writer}";
+
+        TelegramHelper::send($message);
+    });
+
+    // Example 2: Notify the post author when a new comment is posted
+    Event::listen(CommentCreated::class, function (CommentCreated $event) {
+        // Custom logic: Send notification to $event->article->user_id
+    });
+}
+```
+
+## 📂 Skin Customization (스킨 커스터마이징)
+
+Laravel Board fully supports Laravel's native **Vendor View Overriding**.
+
+To customize templates, publish the views:
+
+```bash
+php artisan vendor:publish --tag=bbs-views
+```
+
+Templates will be copied to `resources/views/vendor/bbs/templates`.
+
+- **Zero Configuration:** If uncustomized, the package automatically falls back to its built-in default skins.
+- **Pinpoint Customization:** You only need to keep the files you modified in `resources/views/vendor/bbs/templates/user/{skin}/`. Unmodified templates can safely be deleted from your Git repository.
+- **Add Custom Skins:** Create a folder inside `resources/views/vendor/bbs/templates/user/your-skin-name`, and it will automatically appear in the admin board configuration selector.
 
 ## 🛠 SEO & Meta Data Customization
 
-Laravel Board supports dynamic meta data management through `Pondol\Meta`. You can customize how meta titles, descriptions, and images are generated for each board by implementing a custom Resolver.
+Laravel Board supports dynamic metadata management through `Pondol\Meta`. You can customize metadata by implementing a custom Resolver.
 
 ### 1. Create a Custom Meta Resolver
 
-Create a class in your app (e.g., `App\Services\BbsMetaResolver.php`) that implements `Pondol\Bbs\Contracts\BbsMetaResolver`.
+Create a class implementing `Pondol\Bbs\Contracts\BbsMetaResolver`:
 
 ```php
 namespace App\Services;
@@ -144,21 +222,20 @@ class MyBbsMetaResolver implements BbsMetaResolver
      * @param string $type 'index' or 'show'
      * @param object $cfg Board Configuration (BbsTables)
      * @param object|null $article Article Data (BbsArticles)
+     * @param mixed|null $collection Articles Collection (on index)
      */
-    public function resolve($meta, $type, $cfg, $article = null)
+    public function resolve($meta, $type, $cfg, $article = null, $collection = null)
     {
-        // Custom logic for specific boards
         if ($cfg->table_name === 'notice') {
             $meta->title("[Notice] " . ($article ? $article->title : $cfg->name));
         }
 
-        // Custom image logic for detailed view
         if ($type === 'show' && $article) {
             $description = Str::limit(strip_tags($article->content), 160);
             $meta->description($description);
 
             if ($article->image) {
-                $meta->image(\Storage::url($article->image));
+                $meta->image(\Storage::disk('public')->url($article->image));
             }
         }
 
@@ -169,7 +246,7 @@ class MyBbsMetaResolver implements BbsMetaResolver
 
 ### 2. Register the Resolver
 
-Bind your custom class to the interface in `App\Providers\AppServiceProvider.php`.
+Bind your custom class in `App\Providers\AppServiceProvider.php`:
 
 ```php
 public function register()
@@ -180,8 +257,6 @@ public function register()
     );
 }
 ```
-
-By doing this, you can fully control the SEO strategy for each board without modifying the package core.
 
 ## 📜 License
 

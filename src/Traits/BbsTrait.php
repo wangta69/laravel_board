@@ -3,20 +3,18 @@
 namespace Pondol\Bbs\Traits;
 
 use Auth;
-use Cookie;
 use File;
 use Pondol\Bbs\BbsService;
+use Pondol\Bbs\Events\ArticleCreated;
+use Pondol\Bbs\Events\ArticleDeleted;
+use Pondol\Bbs\Events\ArticleUpdated;
 use Pondol\Bbs\Models\BbsArticles as Articles;
 use Pondol\Bbs\Models\BbsFiles as Files;
-use Response;
 use Storage;
-// use Pondol\Meta\Facades\Meta;
 use Validator;
 
 trait BbsTrait
 {
-    // private $isAdmin;
-    // private $cfg;
     /*
      * List Page
      *
@@ -108,7 +106,7 @@ trait BbsTrait
             ->paginate($cfg->lists)
             ->appends(request()->query());
 
-        return response()->json(['error' => false, 'articles' => $articles, 'cfg' => $cfg], 200); // 500, 203
+        return response()->json(['error' => false, 'articles' => $articles, 'cfg' => $cfg], 200);
 
     }
 
@@ -120,7 +118,6 @@ trait BbsTrait
      */
     public function _create($request, $tbl_name)
     {
-
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
 
         if (! $cfg) {
@@ -149,7 +146,6 @@ trait BbsTrait
 
         $validator = Validator::make($request->all(), [
             'title' => 'required|min:2|max:100',
-            // 'content' => 'required',
         ], [
             'title.*' => '2글자 이상의 제목을 입력해 주세요',
             'content.required' => '내용을 입력해 주세요',
@@ -175,7 +171,6 @@ trait BbsTrait
 
     private function storeOrUpdate($request, $article)
     {
-
         $article->title = $request->get('title');
         $article->writer = $request->get('writer') ?? $article->writer;
         $article->password = $request->get('password');
@@ -236,7 +231,6 @@ trait BbsTrait
       */
     public function _store($request, $tbl_name)
     {
-
         $validation = $this->storeOrUpdateValidation($request, $tbl_name);
         if ($validation['error']) {
             return $validation;
@@ -246,7 +240,6 @@ trait BbsTrait
         $article = $this->storeOrUpdate($request, $article);
 
         $article->bbs_table_id = $validation['cfg']->id;
-        // $article->writer = $request->get('writer');
 
         if (Auth::check()) {
             $article->user_id = Auth::user()->id;
@@ -256,7 +249,7 @@ trait BbsTrait
         }
 
         $article->order_num = $this->get_order_num();
-        $article->parent_id = 0; // firt fill then update
+        $article->parent_id = 0;
         $article->comment_cnt = 0;
         $article->save();
         $article->parent_id = $request->get('parent_id') ?? $article->id;
@@ -268,6 +261,9 @@ trait BbsTrait
         }
 
         $this->storeOrUpdateTrimContents($request, $article, $validation['cfg']);
+
+        // [이벤트 발행] 새 글 등록 완료 이벤트 발생
+        event(new ArticleCreated($article, $validation['cfg'], Auth::user()));
 
         return ['error' => false, 'tbl_name' => $tbl_name, 'article' => $article];
     }
@@ -282,7 +278,6 @@ trait BbsTrait
      */
     public function _update($request, $tbl_name, $article)
     {
-
         $validation = $this->storeOrUpdateValidation($request, $tbl_name);
         if ($validation['error']) {
             return $validation;
@@ -297,12 +292,12 @@ trait BbsTrait
         $article->save();
         $this->storeOrUpdateTrimContents($request, $article, $validation['cfg']);
 
+        // [이벤트 발행] 글 수정 완료 이벤트 발생
+        event(new ArticleUpdated($article, $validation['cfg'], Auth::user()));
+
         return ['error' => false, 'tbl_name' => $tbl_name, 'article' => $article];
     }
 
-    /*
-     *
-     */
     protected function get_order_num($params = null)
     {
         $order_num = Articles::min('order_num');
@@ -310,10 +305,6 @@ trait BbsTrait
         return $order_num ? $order_num - 1 : -1;
     }
 
-    /**
-     * 에디터에 이미지가 포함된 경우 이미지를 현재 아이템에 editor라는 폴더를 만들고 그곳에 모두 복사한다.
-     * 그리고 contents에 포함된 링크 주소고 변경하여 데이타를 업데이트 한다.
-     */
     protected function contents_update($article, $table_id, $date_Ym)
     {
         $sessionId = session()->getId();
@@ -333,9 +324,6 @@ trait BbsTrait
         }
     }
 
-    /**
-     * 대표 이미지 설정 (첨부파일 1순위 -> 에디터 본문 이미지 2순위)
-     */
     protected function set_representaion($article)
     {
         $article->image = null;
@@ -381,7 +369,6 @@ trait BbsTrait
       */
     public function _show($request, $tbl_name, $article)
     {
-
         $cfg = $this->bbsSvc->get_table_info_by_table_name($tbl_name);
         if (! $cfg) {
             abort(404, '존재하지 않는 게시판입니다.');
@@ -446,7 +433,6 @@ trait BbsTrait
             return ['error' => 'validation', 'errors' => $validator->errors()];
         }
 
-        // [고도화 5] 전용 인증 세션에 기록
         $auth_key = "bbs.auth.{$tbl_name}.{$article->id}";
         session()->put($auth_key, true);
 
@@ -465,24 +451,12 @@ trait BbsTrait
             $content->hit++;
             $content->save();
 
-            // ★★★ 조회수를 올린 후, 세션에 "조회함" 상태를 기록합니다. ★★★
             session()->put($session_key, true);
         }
 
-        // Cookie::queue(Cookie::make($tbl_name.$content->id, '1'));
-        return response()->json(['error' => false, 'article' => $content], 200); // 500, 203
+        return response()->json(['error' => false, 'article' => $content], 200);
     }
 
-    /*
-      public function _comment($request, $tbl_name, $article)
-      {
-        $comment = $article->comment[0];
-        $comment->content = htmlentities($comment->content);
-        if($request->ajax()){
-          return response()->json([$comment], 200);//500, 203
-        }
-      }
-    */
     /*
      * Modify Form
      *
@@ -504,9 +478,7 @@ trait BbsTrait
 
     /*
       * Delete Article
-      * Step1 : delete files
-      * Step2 : files table
-      * Step3 : delete article
+      *
       * @param String $tbl_name
       * @param  int  $id
       * @return \Illuminate\Http\Response
@@ -529,6 +501,9 @@ trait BbsTrait
 
         // 3. Article 모델 삭제 (SoftDelete)
         $article->delete();
+
+        // [이벤트 발행] 글 삭제 완료 이벤트 발생
+        event(new ArticleDeleted($article, $cfg, Auth::user()));
 
         return ['error' => false];
     }
@@ -554,47 +529,4 @@ trait BbsTrait
 
         return ['error' => 'Requested file does not exist on our server!'];
     }
-
-    /**
-     * check Permission for Read, write
-     *
-     * @param  string  $mode  read/write
-     * @param  object  $cfg  Bbs Config
-     * @return bool
-     */
-    /*
-    private function permission($mode, $cfg){
-      $rtn = false;
-      switch($mode){
-        case "read":
-          if($cfg->auth_read == 'none')
-            return true;
-          else{
-
-          }
-        break;
-        case "write":
-          switch($cfg->auth_write){
-            case "none":
-              return true;
-              break;
-            case "login":
-              if(Auth::check())
-                return true;
-              else
-                return false;
-              break;
-            case "role":
-              if(!Auth::check())
-                return false;
-              else
-
-              break;
-          }
-
-        break;
-      }
-      return $rtn;
-    }
-    */
 }
