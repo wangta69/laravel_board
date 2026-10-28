@@ -90,7 +90,17 @@ class BbsController extends Controller
         $result = $this->_store($request, $tbl_name);
 
         if ($result['error']) {
+            // AJAX 요청일 때는 에러 내용도 JSON으로 반환!
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json($result, 200);
+            }
+
             return $this->errorHandle($result);
+        }
+
+        // AJAX 요청일 때는 성공 데이터(['error' => false, 'article' => ...])를 JSON으로 반환!
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json($result, 200);
         }
 
         return redirect()->route('bbs.show', [$result['tbl_name'], $result['article']->id]);

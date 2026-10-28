@@ -65,7 +65,7 @@ trait BbsTrait
                 if (! $user) {
                     return ['error' => 'login'];
                 }
-                $articles = $articles->where('user_id', $user->id);
+                $articles = $articles->where('bbs_articles.user_id', $user->id);
             }
         }
 

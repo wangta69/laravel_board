@@ -1,4 +1,3 @@
-{{-- src/resources/views/admin/create.blade.php --}}
 <x-bbs-admin-layout :title="isset($table->id) ? trans('bbs::messages.admin.bbs.edit') : trans('bbs::messages.admin.bbs.create')" :path="['환경설정']">
     <div id="content">
         <div class="bbs admin">
@@ -16,7 +15,6 @@
                     <div class='form-group row mt-1'>
                         <label for='name' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.title')</label>
                         <div class='col-sm-10'>
-
                             <x-pondol::text name="name" class="form-control" id="name"
                                 placeholder="bbs title like 'free bbs for child'"
                                 value="{{ old('name', $table->name ?? null) }}" />
@@ -29,10 +27,10 @@
                             <x-pondol::text name="table_name" id="table_name" class="form-control"
                                 placeholder="bbs name like 'free'"
                                 value="{{ old('table_name', $table->table_name ?? null) }}" />
-
                         </div>
                     </div>
 
+                    <!-- 사용자단 스킨 -->
                     <div class='form-group row mt-1'>
                         <label for='skin' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.skin-user')</label>
                         <div class='col-sm-10'>
@@ -55,6 +53,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class='form-group row mt-1'>
                         <label for='editor' class='col-sm-2 control-label'>Blade</label>
                         <div class='col-sm-10 row'>
@@ -70,17 +69,19 @@
                             </div>
                         </div>
                     </div>
+
                     <div class='form-group row mt-1 blade-div'>
-                        <label for='skin' class='col-sm-2 control-label'>Component</label>
+                        <label for='component' class='col-sm-2 control-label'>Component</label>
                         <div class='col-sm-10'>
                             <x-pondol::text name="component" id="component" class="form-control" placeholder="component"
                                 value="{{ old('component', $table->component ?? null) }}" />
-                            remove x- (x-myapp => myapp )
+                            <small class="text-muted">remove x- (x-myapp => myapp)</small>
                         </div>
                     </div>
+
                     <div class="blade-div" style="display: none;">
                         <div class='form-group row mt-1'>
-                            <label for='skin' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.blade-extends')</label>
+                            <label for='extends' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.blade-extends')</label>
                             <div class='col-sm-10'>
                                 <x-pondol::text name="extends" id="extends" class="form-control" placeholder="extends"
                                     value="{{ old('extends', $table->extends ?? null) }}" />
@@ -88,14 +89,14 @@
                         </div>
 
                         <div class='form-group row mt-1'>
-                            <label for='skin' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.blade-section')</label>
+                            <label for='section' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.blade-section')</label>
                             <div class='col-sm-10'>
-                                <x-pondol::text name="section" id="section" class="form-control"
-                                    placeholder="extesectionnds"
+                                <x-pondol::text name="section" id="section" class="form-control" placeholder="section"
                                     value="{{ old('section', $table->section ?? null) }}" />
                             </div>
                         </div>
                     </div>
+
                     <div class='form-group row mt-1'>
                         <label for='editor' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.editor')</label>
                         <div class='col-sm-10 row'>
@@ -103,7 +104,6 @@
                                 <x-pondol::radio class="form-check-input" name="editor" value="0"
                                     curval="{{ old('editor', $table->editor ?? '0') }}" />
                                 <label class="form-check-label">Disable</label>
-
                             </div>
                             <div class="col-auto">
                                 <x-pondol::radio class="form-check-input" name="editor" value="1"
@@ -112,6 +112,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class='form-group row mt-1'>
                         <label for='roles-list' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.auth-list')</label>
                         <div class='col-sm-10 row'>
@@ -145,13 +146,11 @@
                                     curval="{{ old('auth_read', $table->auth_read ?? 'login') }}" />
                                 <label class="form-check-label"> @lang('bbs::messages.admin.bbs.a-none')</label>
                             </div>
-
                             <div class="col-auto">
                                 <x-pondol::radio class="form-check-input" name="auth_read" value="login"
                                     curval="{{ old('auth_read', $table->auth_read ?? 'login') }}" />
                                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.a-login')</label>
                             </div>
-
                             <div class="col-auto">
                                 <x-pondol::radio class="form-check-input" name="auth_read" value="role"
                                     curval="{{ old('auth_read', $table->auth_read ?? 'login') }}" />
@@ -189,14 +188,29 @@
                         </div>
                     </div>
 
+                    <!-- [옵션 영역: 4개 옵션 완비] -->
                     <div class='form-group row mt-1'>
-                        <label for='roles-write' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.option')</label>
+                        <label class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.option')</label>
                         <div class='col-sm-10 row'>
                             <div class="col-auto">
                                 <x-pondol::checkbox class="form-check-input" name="enable_comment" value="1"
                                     curval="{{ old('enable_comment', $table->enable_comment ?? null) }}" />
                                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.enable-comment')</label>
+                            </div>
 
+                            <div class="col-auto">
+                                <x-pondol::checkbox class="form-check-input" name="enable_reply" value="1"
+                                    curval="{{ old('enable_reply', $table->enable_reply ?? null) }}" />
+                                <label class="form-check-label">@lang('bbs::messages.admin.bbs.enable-reply')</label>
+                            </div>
+
+                            <div class="col-auto">
+                                <x-pondol::checkbox class="form-check-input" name="enable_qna" value="1"
+                                    curval="{{ old('enable_qna', $table->enable_qna ?? null) }}" />
+                                <label class="form-check-label">@lang('bbs::messages.admin.bbs.enable-qna')</label>
+                            </div>
+
+                            <div class="col-auto">
                                 <x-pondol::checkbox class="form-check-input" name="enable_password" value="1"
                                     curval="{{ old('enable_password', $table->enable_password ?? null) }}" />
                                 <label class="form-check-label">@lang('bbs::messages.admin.bbs.enable-password')</label>
@@ -206,7 +220,7 @@
 
                     @if (isset($table->id))
                         <div class='form-group row mt-1'>
-                            <label for='lists' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.category')</label>
+                            <label for='category' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.category')</label>
                             <div class='col-sm-10'>
                                 <div class='row'>
                                     <div class='col-6 input-group'>
@@ -243,6 +257,7 @@
                             </div>
                         </div>
                     @endif
+
                     <div class='form-group row mt-1'>
                         <label for='lists' class='col-sm-2 control-label'>@lang('bbs::messages.admin.bbs.lists-per-page')</label>
                         <div class='col-sm-10'>
@@ -253,7 +268,6 @@
                 </div> <!-- .card-body -->
                 <div class="card-footer">
                     <div class='form-group'>
-
                         @if (!$errors->isEmpty())
                             <div class="alert alert-danger" role="alert">
                                 {!! $errors->first() !!}
@@ -326,11 +340,9 @@
                 }
 
                 switchComponent();
-
             }
 
             $(function() {
-
                 $("input[name='auth_list']").change(function() {
                     $("#roles-list").hide();
                     if ($("input[name='auth_list']:checked").val() == 'role')
